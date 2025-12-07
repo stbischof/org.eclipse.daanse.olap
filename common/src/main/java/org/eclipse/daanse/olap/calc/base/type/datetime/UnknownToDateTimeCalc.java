@@ -14,6 +14,8 @@
 
 package org.eclipse.daanse.olap.calc.base.type.datetime;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -28,14 +30,17 @@ public class UnknownToDateTimeCalc extends AbstractProfilingNestedDateTimeCalc {
 	}
 
 	@Override
-	public Date evaluateInternal(Evaluator evaluator) {
+	public LocalDateTime evaluateInternal(Evaluator evaluator) {
 		Object o = getFirstChildCalc().evaluate(evaluator);
 		if (o == null) {
 			return null;
+		} else if (o instanceof LocalDateTime ldt) {
+			return ldt;
 		} else if (o instanceof Date d) {
-			return d;
+			// Support legacy Date conversion
+			return LocalDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
 		}
 
-		throw evaluator.newEvalException(null, "expected Date was " + o);
+		throw evaluator.newEvalException(null, "expected LocalDateTime was " + o);
 	}
 }

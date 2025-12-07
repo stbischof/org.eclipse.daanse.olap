@@ -25,14 +25,14 @@
 
 package org.eclipse.daanse.olap.calc.base.nested;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
 
-public abstract class AbstractProfilingNestedDateTimeCalc extends AbstractProfilingNestedCalc<Date>
+public abstract class AbstractProfilingNestedDateTimeCalc extends AbstractProfilingNestedCalc<LocalDateTime>
 		implements DateTimeCalc {
 
 	protected AbstractProfilingNestedDateTimeCalc(Type type, Calc<?>... calcs) {

@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -42,8 +42,8 @@ class DateDiffCalcTest {
     private IntegerCalc firstDayOfWeekCalc;
     private IntegerCalc firstWeekOfYearCalc;
     private Evaluator evaluator;
-    private Date date1;
-    private Date date2;
+    private LocalDateTime date1;
+    private LocalDateTime date2;
 
     @BeforeEach
     void setUp() {
@@ -57,15 +57,8 @@ class DateDiffCalcTest {
                 firstDayOfWeekCalc, firstWeekOfYearCalc);
 
         // Set up test dates
-        Calendar cal1 = Calendar.getInstance();
-        cal1.clear();
-        cal1.set(2024, Calendar.JANUARY, 15, 10, 30, 0);
-        date1 = cal1.getTime();
-
-        Calendar cal2 = Calendar.getInstance();
-        cal2.clear();
-        cal2.set(2024, Calendar.FEBRUARY, 20, 14, 45, 30);
-        date2 = cal2.getTime();
+        date1 = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
+        date2 = LocalDateTime.of(2024, 2, 20, 14, 45, 30);
     }
 
     @ParameterizedTest(name = "{0}: DateDiff({1}) between Jan 15 and Feb 20, 2024 = {2}")

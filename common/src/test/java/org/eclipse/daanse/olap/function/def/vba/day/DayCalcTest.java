@@ -17,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -47,7 +46,7 @@ class DayCalcTest {
     @ParameterizedTest(name = "{0}: day({1}) = {2}")
     @MethodSource("arguments")
     @DisplayName("Should extract day from date correctly")
-    void shouldExtractDay(String testName, Date inputDate, Integer expected) {
+    void shouldExtractDay(String testName, LocalDateTime inputDate, Integer expected) {
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(inputDate);
 
         Integer result = dayCalc.evaluate(evaluator);
@@ -56,36 +55,13 @@ class DayCalcTest {
     }
 
     static Stream<Arguments> arguments() {
-        Calendar cal = Calendar.getInstance();
-
-        // January 1, 2023
-        cal.set(2023, Calendar.JANUARY, 1, 0, 0, 0);
-        Date jan1 = cal.getTime();
-
-        // February 28, 2023 (non-leap year)
-        cal.set(2023, Calendar.FEBRUARY, 28, 12, 30, 45);
-        Date feb28 = cal.getTime();
-
-        // March 31, 2024
-        cal.set(2024, Calendar.MARCH, 31, 23, 59, 59);
-        Date mar31 = cal.getTime();
-
-        // February 29, 2024 (leap year)
-        cal.set(2024, Calendar.FEBRUARY, 29, 6, 15, 30);
-        Date feb29LeapYear = cal.getTime();
-
-        // December 31, 2025
-        cal.set(2025, Calendar.DECEMBER, 31, 18, 45, 0);
-        Date dec31 = cal.getTime();
-
-        // Random mid-month date
-        cal.set(2023, Calendar.JUNE, 15, 9, 30, 0);
-        Date jun15 = cal.getTime();
-
-        return Stream.of(Arguments.of("first day of month", jan1, 1),
-                Arguments.of("last day of February non-leap", feb28, 28), Arguments.of("last day of March", mar31, 31),
-                Arguments.of("leap year February 29", feb29LeapYear, 29), Arguments.of("last day of year", dec31, 31),
-                Arguments.of("mid-month date", jun15, 15));
+        return Stream.of(
+                Arguments.of("first day of month", LocalDateTime.of(2023, 1, 1, 0, 0, 0), 1),
+                Arguments.of("last day of February non-leap", LocalDateTime.of(2023, 2, 28, 12, 30, 45), 28),
+                Arguments.of("last day of March", LocalDateTime.of(2024, 3, 31, 23, 59, 59), 31),
+                Arguments.of("leap year February 29", LocalDateTime.of(2024, 2, 29, 6, 15, 30), 29),
+                Arguments.of("last day of year", LocalDateTime.of(2025, 12, 31, 18, 45, 0), 31),
+                Arguments.of("mid-month date", LocalDateTime.of(2023, 6, 15, 9, 30, 0), 15));
     }
 
     @Test

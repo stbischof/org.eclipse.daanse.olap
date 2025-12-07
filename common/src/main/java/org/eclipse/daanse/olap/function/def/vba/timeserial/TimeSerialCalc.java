@@ -13,8 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.timeserial;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
@@ -28,16 +27,12 @@ public class TimeSerialCalc extends AbstractProfilingNestedDateTimeCalc {
     }
 
     @Override
-    public Date evaluateInternal(Evaluator evaluator) {
+    public LocalDateTime evaluateInternal(Evaluator evaluator) {
         Integer hour = getChildCalc(0, IntegerCalc.class).evaluate(evaluator);
         Integer minute = getChildCalc(1, IntegerCalc.class).evaluate(evaluator);
         Integer second = getChildCalc(2, IntegerCalc.class).evaluate(evaluator);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, second);
-        return calendar.getTime();
+        // Use epoch date (1970-01-01) as base for time-only values
+        return LocalDateTime.of(1970, 1, 1, hour, minute, second);
     }
 
 }

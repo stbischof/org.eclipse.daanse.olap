@@ -13,8 +13,8 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.timevalue;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -28,13 +28,10 @@ public class TimeValueCalc extends AbstractProfilingNestedDateTimeCalc {
     }
 
     @Override
-    public Date evaluateInternal(Evaluator evaluator) {
-        Date time = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.setTime(time);
-        calendar.set(1970, 0, 1);
-        return calendar.getTime();
+    public LocalDateTime evaluateInternal(Evaluator evaluator) {
+        LocalDateTime dateTime = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
+        // Return time portion only (with epoch date)
+        return LocalDateTime.of(LocalDate.of(1970, 1, 1), dateTime.toLocalTime());
     }
 
 }

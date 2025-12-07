@@ -18,8 +18,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -54,10 +54,7 @@ class WeekdayCalcTest {
     @DisplayName("Should calculate weekday correctly")
     void shouldCalculateWeekdayCorrectly(String testName, Integer firstDayOfWeek, Integer expectedWeekday) {
         // Create a known date - let's use January 1, 2024 (which is a Monday)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.JANUARY, 1, 12, 0, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date testDate = cal.getTime();
+        LocalDateTime testDate = LocalDateTime.of(2024, 1, 1, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(testDate);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(firstDayOfWeek);
@@ -101,10 +98,7 @@ class WeekdayCalcTest {
     @DisplayName("Should handle different weekdays consistently")
     void shouldHandleDifferentWeekdaysConsistently() {
         // Test with a known Sunday (January 7, 2024)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.JANUARY, 7, 12, 0, 0); // Sunday
-        cal.set(Calendar.MILLISECOND, 0);
-        Date sunday = cal.getTime();
+        LocalDateTime sunday = LocalDateTime.of(2024, 1, 7, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(sunday);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(Calendar.SUNDAY);
@@ -118,10 +112,7 @@ class WeekdayCalcTest {
     @DisplayName("Should handle Saturday correctly")
     void shouldHandleSaturdayCorrectly() {
         // Test with a known Saturday (January 6, 2024)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.JANUARY, 6, 12, 0, 0); // Saturday
-        cal.set(Calendar.MILLISECOND, 0);
-        Date saturday = cal.getTime();
+        LocalDateTime saturday = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(saturday);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(Calendar.SUNDAY);
@@ -143,8 +134,7 @@ class WeekdayCalcTest {
     @Test
     @DisplayName("Should handle null first day of week")
     void shouldHandleNullFirstDayOfWeek() {
-        Calendar cal = Calendar.getInstance();
-        Date testDate = cal.getTime();
+        LocalDateTime testDate = LocalDateTime.now();
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(testDate);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(null);
@@ -161,13 +151,9 @@ class WeekdayCalcTest {
     @Test
     @DisplayName("Should return values between 1 and 7")
     void shouldReturnValuesBetween1And7() {
-        Calendar cal = Calendar.getInstance();
-
         // Test multiple dates throughout the week
         for (int day = 1; day <= 7; day++) {
-            cal.set(2024, Calendar.JANUARY, day, 12, 0, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            Date testDate = cal.getTime();
+            LocalDateTime testDate = LocalDateTime.of(2024, 1, day, 12, 0, 0);
 
             when(dateTimeCalc.evaluate(evaluator)).thenReturn(testDate);
             when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(Calendar.SUNDAY);
@@ -182,10 +168,7 @@ class WeekdayCalcTest {
     @DisplayName("Should handle year boundaries")
     void shouldHandleYearBoundaries() {
         // Test December 31, 2023 (Sunday)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2023, Calendar.DECEMBER, 31, 12, 0, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date yearEnd = cal.getTime();
+        LocalDateTime yearEnd = LocalDateTime.of(2023, 12, 31, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(yearEnd);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(Calendar.SUNDAY);
@@ -199,10 +182,7 @@ class WeekdayCalcTest {
     @DisplayName("Should handle leap year dates")
     void shouldHandleLeapYearDates() {
         // Test February 29, 2024 (leap year, Thursday)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.FEBRUARY, 29, 12, 0, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date leapDay = cal.getTime();
+        LocalDateTime leapDay = LocalDateTime.of(2024, 2, 29, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(leapDay);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(Calendar.SUNDAY);
@@ -216,14 +196,8 @@ class WeekdayCalcTest {
     @Test
     @DisplayName("Should handle different times on same day")
     void shouldHandleDifferentTimesOnSameDay() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.MARCH, 15, 0, 0, 0); // Midnight
-        Date midnight = cal.getTime();
-
-        cal.set(Calendar.HOUR_OF_DAY, 23);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.SECOND, 59);
-        Date almostMidnight = cal.getTime();
+        LocalDateTime midnight = LocalDateTime.of(2024, 3, 15, 0, 0, 0);
+        LocalDateTime almostMidnight = LocalDateTime.of(2024, 3, 15, 23, 59, 59);
 
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(Calendar.SUNDAY);
 
@@ -246,10 +220,7 @@ class WeekdayCalcTest {
         // with adjustable first day of the week
 
         // Test with a known Wednesday (February 14, 2024)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.FEBRUARY, 14, 12, 0, 0); // Wednesday
-        cal.set(Calendar.MILLISECOND, 0);
-        Date wednesday = cal.getTime();
+        LocalDateTime wednesday = LocalDateTime.of(2024, 2, 14, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(wednesday);
 
@@ -268,9 +239,7 @@ class WeekdayCalcTest {
     @Test
     @DisplayName("Should handle invalid first day of week values gracefully")
     void shouldHandleInvalidFirstDayOfWeekValuesGracefully() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.JANUARY, 1, 12, 0, 0);
-        Date testDate = cal.getTime();
+        LocalDateTime testDate = LocalDateTime.of(2024, 1, 1, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(testDate);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(0); // Invalid value
@@ -285,9 +254,7 @@ class WeekdayCalcTest {
     @DisplayName("Should handle large first day of week values")
     @Disabled
     void shouldHandleLargeFirstDayOfWeekValues() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(2024, Calendar.JANUARY, 1, 12, 0, 0);
-        Date testDate = cal.getTime();
+        LocalDateTime testDate = LocalDateTime.of(2024, 1, 1, 12, 0, 0);
 
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(testDate);
         when(firstDayOfWeekCalc.evaluate(evaluator)).thenReturn(10); // Large value

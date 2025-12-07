@@ -13,8 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.weekday;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -30,11 +29,11 @@ public class WeekdayCalc extends AbstractProfilingNestedIntegerCalc {
 
     @Override
     public Integer evaluateInternal(Evaluator evaluator) {
-        Date date = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
+        LocalDateTime dateTime = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
         int firstDayOfWeek = getChildCalc(1, IntegerCalc.class).evaluate(evaluator);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int weekday = calendar.get(Calendar.DAY_OF_WEEK);
+        // DayOfWeek: MONDAY=1, SUNDAY=7 in java.time
+        // VBA: SUNDAY=1, SATURDAY=7 by default
+        int weekday = dateTime.getDayOfWeek().getValue() % 7 + 1; // Convert to VBA style (Sunday=1)
         // adjust for start of week
         weekday -= (firstDayOfWeek - 1);
         // bring into range 1..7

@@ -13,6 +13,8 @@
  */
 package org.eclipse.daanse.olap.function.def.udf.currentdatestring;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,11 +33,13 @@ public class CurrentDateStringCalc extends AbstractProfilingNestedStringCalc {
     @Override
     public String evaluateInternal(Evaluator evaluator) {
         StringCalc stringCalc = getChildCalc(0, StringCalc.class);
-        
+
         final Locale locale = Locale.getDefault();
         final Format format = new Format(stringCalc.evaluate(evaluator), locale);
-        Date currDate = evaluator.getQueryStartTime();
-        return format.format(currDate);
+        LocalDateTime currDate = evaluator.getQueryStartTime();
+        // Convert LocalDateTime to Date for Format compatibility
+        Date legacyDate = Date.from(currDate.atZone(ZoneId.systemDefault()).toInstant());
+        return format.format(legacyDate);
 
     }
 

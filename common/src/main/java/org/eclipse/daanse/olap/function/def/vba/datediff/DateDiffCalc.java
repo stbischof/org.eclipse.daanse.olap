@@ -13,8 +13,9 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.datediff;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -32,18 +33,18 @@ public class DateDiffCalc extends AbstractProfilingNestedLongCalc {
     @Override
     public Long evaluateInternal(Evaluator evaluator) {
         String intervalName = getChildCalc(0, StringCalc.class).evaluate(evaluator);
-        Date date1 = getChildCalc(1, DateTimeCalc.class).evaluate(evaluator);
-        Date date2 = getChildCalc(2, DateTimeCalc.class).evaluate(evaluator);
+        LocalDateTime dateTime1 = getChildCalc(1, DateTimeCalc.class).evaluate(evaluator);
+        LocalDateTime dateTime2 = getChildCalc(2, DateTimeCalc.class).evaluate(evaluator);
         int firstDayOfWeek = getChildCalc(3, IntegerCalc.class).evaluate(evaluator);
         int fwofy = getChildCalc(4, IntegerCalc.class).evaluate(evaluator);
         FirstWeekOfYear firstWeekOfYear = FirstWeekOfYear.values()[fwofy];
         return dateDiff(
-                intervalName, date1, date2,
+                intervalName, dateTime1, dateTime2,
                 firstDayOfWeek, firstWeekOfYear);
     }
 
     private static long dateDiff(
-            String intervalName, Date date1, Date date2,
+            String intervalName, LocalDateTime dateTime1, LocalDateTime dateTime2,
             int firstDayOfWeek, FirstWeekOfYear firstWeekOfYear)
         {
             Interval interval = Interval.valueOf(intervalName);
@@ -51,12 +52,13 @@ public class DateDiffCalc extends AbstractProfilingNestedLongCalc {
                 // MONDRIAN-2319
                 interval = Interval.y;
             }
+            // Convert LocalDateTime to Calendar for Interval processing
             Calendar calendar1 = Calendar.getInstance();
             firstWeekOfYear.apply(calendar1);
-            calendar1.setTime(date1);
+            calendar1.setTimeInMillis(dateTime1.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
             Calendar calendar2 = Calendar.getInstance();
             firstWeekOfYear.apply(calendar2);
-            calendar2.setTime(date2);
+            calendar2.setTimeInMillis(dateTime2.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
             return interval.diff(calendar1, calendar2, firstDayOfWeek);
         }
 

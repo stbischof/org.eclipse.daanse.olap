@@ -18,8 +18,8 @@ import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -41,7 +41,7 @@ class DateAddCalcTest {
     private DoubleCalc doubleCalc;
     private DateTimeCalc dateTimeCalc;
     private Evaluator evaluator;
-    private Date baseDate;
+    private LocalDateTime baseDate;
 
     @BeforeEach
     void setUp() {
@@ -52,10 +52,7 @@ class DateAddCalcTest {
         dateAddCalc = new DateAddCalc(DateTimeType.INSTANCE, stringCalc, doubleCalc, dateTimeCalc);
 
         // Set up base date: Jan 15, 2024 12:00:00
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(2024, Calendar.JANUARY, 15, 12, 0, 0);
-        baseDate = cal.getTime();
+        baseDate = LocalDateTime.of(2024, 1, 15, 12, 0, 0);
     }
 
     @ParameterizedTest(name = "{0}: DateAdd({1}, {2}, baseDate) should add {3}")
@@ -66,40 +63,24 @@ class DateAddCalcTest {
         when(doubleCalc.evaluate(evaluator)).thenReturn(amount);
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(baseDate);
 
-        Date result = dateAddCalc.evaluate(evaluator);
+        LocalDateTime result = dateAddCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
 
-        Calendar expected = Calendar.getInstance();
-        expected.setTime(baseDate);
-
         // Apply expected transformation based on interval
-        switch (interval) {
-        case "yyyy":
-            expected.add(Calendar.YEAR, amount.intValue());
-            break;
-        case "q":
-            expected.add(Calendar.MONTH, amount.intValue() * 3);
-            break;
-        case "m":
-            expected.add(Calendar.MONTH, amount.intValue());
-            break;
-        case "d":
-        case "y":
-            expected.add(Calendar.DAY_OF_MONTH, amount.intValue());
-            break;
-        case "h":
-            expected.add(Calendar.HOUR_OF_DAY, amount.intValue());
-            break;
-        case "n":
-            expected.add(Calendar.MINUTE, amount.intValue());
-            break;
-        case "s":
-            expected.add(Calendar.SECOND, amount.intValue());
-            break;
-        }
+        LocalDateTime expected = switch (interval) {
+            case "yyyy" -> baseDate.plusYears(amount.intValue());
+            case "q" -> baseDate.plusMonths(amount.intValue() * 3L);
+            case "m" -> baseDate.plusMonths(amount.intValue());
+            case "d", "y" -> baseDate.plusDays(amount.intValue());
+            case "h" -> baseDate.plusHours(amount.intValue());
+            case "n" -> baseDate.plusMinutes(amount.intValue());
+            case "s" -> baseDate.plusSeconds(amount.intValue());
+            default -> baseDate;
+        };
 
-        assertThat(result).isCloseTo(expected.getTime(), 1000L); // 1 second tolerance
+        // 1 second tolerance
+        assertThat(Duration.between(expected, result).abs().getSeconds()).isLessThanOrEqualTo(1);
     }
 
     static Stream<Arguments> dateAddArguments() {
@@ -122,10 +103,10 @@ class DateAddCalcTest {
         when(doubleCalc.evaluate(evaluator)).thenReturn(amount);
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(baseDate);
 
-        Date result = dateAddCalc.evaluate(evaluator);
+        LocalDateTime result = dateAddCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
-        long actualDiff = result.getTime() - baseDate.getTime();
+        long actualDiff = Duration.between(baseDate, result).toMillis();
         assertThat(actualDiff).isCloseTo(expectedMillisDiff, within(1000L)); // 1 second tolerance
     }
 
@@ -149,17 +130,10 @@ class DateAddCalcTest {
         when(doubleCalc.evaluate(evaluator)).thenReturn(100.0);
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(baseDate);
 
-        Date result = dateAddCalc.evaluate(evaluator);
+        LocalDateTime result = dateAddCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
-
-        Calendar resultCal = Calendar.getInstance();
-        resultCal.setTime(result);
-
-        Calendar baseCal = Calendar.getInstance();
-        baseCal.setTime(baseDate);
-
-        assertThat(resultCal.get(Calendar.YEAR)).isEqualTo(baseCal.get(Calendar.YEAR) + 100);
+        assertThat(result.getYear()).isEqualTo(baseDate.getYear() + 100);
     }
 
     @Test
@@ -169,11 +143,11 @@ class DateAddCalcTest {
         when(doubleCalc.evaluate(evaluator)).thenReturn(2.0);
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(baseDate);
 
-        Date result = dateAddCalc.evaluate(evaluator);
+        LocalDateTime result = dateAddCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
         long expectedDiff = 2 * 24 * 60 * 60 * 1000L; // 2 days in milliseconds
-        long actualDiff = result.getTime() - baseDate.getTime();
+        long actualDiff = Duration.between(baseDate, result).toMillis();
         assertThat(actualDiff).isCloseTo(expectedDiff, within(1000L));
     }
 }

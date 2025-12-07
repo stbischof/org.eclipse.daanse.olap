@@ -16,9 +16,8 @@ package org.eclipse.daanse.olap.function.def.vba.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -41,25 +40,25 @@ class NowCalcTest {
     @Test
     @DisplayName("Should return current date and time")
     void shouldReturnCurrentDateTime() throws Exception {
-        Instant beforeCall = Instant.now();
+        LocalDateTime beforeCall = LocalDateTime.now();
         Thread.sleep(100);
-        Date result = nowCalc.evaluate(evaluator);
+        LocalDateTime result = nowCalc.evaluate(evaluator);
         Thread.sleep(100);
-        Instant afterCall = Instant.now();
+        LocalDateTime afterCall = LocalDateTime.now();
 
         assertThat(result).isNotNull();
-        assertThat(result.toInstant()).isBetween(beforeCall, afterCall);
+        assertThat(result).isBetween(beforeCall, afterCall);
     }
 
     @Test
     @DisplayName("Should return different timestamps on subsequent calls")
     void shouldReturnDifferentTimestampsOnSubsequentCalls() throws Exception {
-        Date result1 = nowCalc.evaluate(evaluator);
+        LocalDateTime result1 = nowCalc.evaluate(evaluator);
 
         // Sleep for a small amount to ensure time difference
         Thread.sleep(10);
 
-        Date result2 = nowCalc.evaluate(evaluator);
+        LocalDateTime result2 = nowCalc.evaluate(evaluator);
 
         assertThat(result1).isNotNull();
         assertThat(result2).isNotNull();
@@ -75,27 +74,27 @@ class NowCalcTest {
     @Test
     @DisplayName("Should return current time within reasonable bounds")
     void shouldReturnCurrentTimeWithinReasonableBounds() {
-        Instant expectedTime = Instant.now();
-        Date result = nowCalc.evaluate(evaluator);
+        LocalDateTime expectedTime = LocalDateTime.now();
+        LocalDateTime result = nowCalc.evaluate(evaluator);
 
         // Should be within 1 second of current time
-        assertThat(result.toInstant()).isCloseTo(expectedTime, Assertions.within(1, ChronoUnit.SECONDS));
+        assertThat(result).isCloseTo(expectedTime, Assertions.within(1, ChronoUnit.SECONDS));
     }
 
     @Test
     @DisplayName("Should handle multiple evaluations consistently")
     void shouldHandleMultipleEvaluationsConsistently() {
         for (int i = 0; i < 10; i++) {
-            Date result = nowCalc.evaluate(evaluator);
+            LocalDateTime result = nowCalc.evaluate(evaluator);
             assertThat(result).isNotNull();
-            assertThat(result.toInstant()).isCloseTo(Instant.now(), Assertions.within(1, ChronoUnit.SECONDS));
+            assertThat(result).isCloseTo(LocalDateTime.now(), Assertions.within(1, ChronoUnit.SECONDS));
         }
     }
 
     @Test
     @DisplayName("Should return dates that advance in time")
     void shouldReturnDatesThatAdvanceInTime() throws Exception {
-        Date[] results = new Date[5];
+        LocalDateTime[] results = new LocalDateTime[5];
 
         for (int i = 0; i < 5; i++) {
             results[i] = nowCalc.evaluate(evaluator);

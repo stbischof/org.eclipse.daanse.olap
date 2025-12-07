@@ -13,8 +13,8 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.date;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
@@ -27,14 +27,9 @@ public class DateCalc extends AbstractProfilingNestedDateTimeCalc {
     }
 
     @Override
-    public Date evaluateInternal(Evaluator evaluator) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
+    public LocalDateTime evaluateInternal(Evaluator evaluator) {
+        // Returns current date at midnight
+        return LocalDate.now().atStartOfDay();
     }
 
 }

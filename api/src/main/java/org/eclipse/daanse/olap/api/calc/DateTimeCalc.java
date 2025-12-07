@@ -14,9 +14,9 @@
 
 package org.eclipse.daanse.olap.api.calc;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
-public interface DateTimeCalc extends Calc<Date> {
+public interface DateTimeCalc extends Calc<LocalDateTime> {
 
 }

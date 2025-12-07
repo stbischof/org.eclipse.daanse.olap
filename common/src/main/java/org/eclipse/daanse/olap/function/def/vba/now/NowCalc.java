@@ -13,7 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.now;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
@@ -26,8 +26,8 @@ public class NowCalc extends AbstractProfilingNestedDateTimeCalc {
     }
 
     @Override
-    public Date evaluateInternal(Evaluator evaluator) {
-        return new Date();
+    public LocalDateTime evaluateInternal(Evaluator evaluator) {
+        return LocalDateTime.now();
     }
 
 }

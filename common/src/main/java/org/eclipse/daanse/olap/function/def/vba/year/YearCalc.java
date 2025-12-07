@@ -13,8 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.year;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -29,10 +28,8 @@ public class YearCalc extends AbstractProfilingNestedIntegerCalc {
 
     @Override
     public Integer evaluateInternal(Evaluator evaluator) {
-        Date date = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.YEAR);
+        LocalDateTime dateTime = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
+        return dateTime.getYear();
     }
 
 }

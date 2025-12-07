@@ -13,8 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.month;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -29,11 +28,8 @@ public class MonthCalc extends AbstractProfilingNestedIntegerCalc {
 
     @Override
     public Integer evaluateInternal(Evaluator evaluator) {
-        Date date = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        final int month = calendar.get(Calendar.MONTH);
-        return month + 1; // convert from 0- to 1-based
+        LocalDateTime dateTime = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
+        return dateTime.getMonthValue(); // already 1-based
     }
 
 }

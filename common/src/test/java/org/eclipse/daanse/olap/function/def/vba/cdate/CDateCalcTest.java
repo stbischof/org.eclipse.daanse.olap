@@ -18,8 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -51,18 +50,18 @@ class CDateCalcTest {
     void shouldReturnNullForNullInput() {
         when(calc.evaluate(evaluator)).thenReturn(null);
 
-        Date result = cDateCalc.evaluate(evaluator);
+        LocalDateTime result = cDateCalc.evaluate(evaluator);
 
         assertThat(result).isNull();
     }
 
     @Test
-    @DisplayName("Should return same Date object for Date input")
-    void shouldReturnSameDateForDateInput() throws Exception {
-        Date testDate = new SimpleDateFormat("yyyy-MM-dd").parse("2023-05-15");
+    @DisplayName("Should return same LocalDateTime object for LocalDateTime input")
+    void shouldReturnSameDateForLocalDateTimeInput() {
+        LocalDateTime testDate = LocalDateTime.of(2023, 5, 15, 0, 0, 0);
         when(calc.evaluate(evaluator)).thenReturn(testDate);
 
-        Date result = cDateCalc.evaluate(evaluator);
+        LocalDateTime result = cDateCalc.evaluate(evaluator);
 
         assertThat(result).isSameAs(testDate);
     }
@@ -70,10 +69,10 @@ class CDateCalcTest {
     @ParameterizedTest(name = "{0}: CDate(\"{1}\")")
     @MethodSource("validDateArguments")
     @DisplayName("Should parse valid date strings")
-    void shouldParseValidDateStrings(String testName, String dateString) throws Exception {
+    void shouldParseValidDateStrings(String testName, String dateString) {
         when(calc.evaluate(evaluator)).thenReturn(dateString);
 
-        Date result = cDateCalc.evaluate(evaluator);
+        LocalDateTime result = cDateCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
     }
@@ -81,10 +80,10 @@ class CDateCalcTest {
     @ParameterizedTest(name = "{0}: CDate(\"{1}\")")
     @MethodSource("validTimeArguments")
     @DisplayName("Should parse valid time strings")
-    void shouldParseValidTimeStrings(String testName, String timeString) throws Exception {
+    void shouldParseValidTimeStrings(String testName, String timeString) {
         when(calc.evaluate(evaluator)).thenReturn(timeString);
 
-        Date result = cDateCalc.evaluate(evaluator);
+        LocalDateTime result = cDateCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
     }
@@ -101,16 +100,20 @@ class CDateCalcTest {
     }
 
     static Stream<Arguments> validDateArguments() {
-        return Stream.of(Arguments.of("full date", "May 15, 2023")
-//                ,
-//                Arguments.of("short date", "5/15/23"),
-//                Arguments.of("iso date", "2023-05-15")
-        );
+        return Stream.of(
+                Arguments.of("iso date", "2023-05-15"),
+                Arguments.of("iso datetime", "2023-05-15T14:30:45"));
     }
 
     static Stream<Arguments> validTimeArguments() {
-        return Stream.of(Arguments.of("24-hour time", "14:30:45"), Arguments.of("12-hour time with AM", "2:30:45 PM"),
-                Arguments.of("simple time", "10:15:30"));
+        return Stream.of(
+                Arguments.of("24-hour time", "14:30:45"),
+                Arguments.of("simple time", "10:15:30"),
+                Arguments.of("midnight", "00:00:00"),
+                Arguments.of("12-hour time PM", "2:30:45 PM"),
+                Arguments.of("12-hour time AM", "10:15:30 AM"),
+                Arguments.of("12-hour midnight", "12:00:00 AM"),
+                Arguments.of("12-hour noon", "12:00:00 PM"));
     }
 
     static Stream<Arguments> invalidDateArguments() {

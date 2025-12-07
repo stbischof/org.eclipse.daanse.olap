@@ -17,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -47,7 +46,7 @@ class HourCalcTest {
     @ParameterizedTest(name = "{0}: hour({1}) = {2}")
     @MethodSource("arguments")
     @DisplayName("Should extract hour from datetime correctly")
-    void shouldExtractHour(String testName, Date inputDate, Integer expected) {
+    void shouldExtractHour(String testName, LocalDateTime inputDate, Integer expected) {
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(inputDate);
 
         Integer result = hourCalc.evaluate(evaluator);
@@ -56,35 +55,13 @@ class HourCalcTest {
     }
 
     static Stream<Arguments> arguments() {
-        Calendar cal = Calendar.getInstance();
-
-        // Midnight (00:00)
-        cal.set(2023, Calendar.JANUARY, 1, 0, 0, 0);
-        Date midnight = cal.getTime();
-
-        // Early morning (06:30)
-        cal.set(2023, Calendar.JUNE, 15, 6, 30, 45);
-        Date earlyMorning = cal.getTime();
-
-        // Noon (12:00)
-        cal.set(2023, Calendar.MARCH, 20, 12, 0, 0);
-        Date noon = cal.getTime();
-
-        // Afternoon (15:45)
-        cal.set(2023, Calendar.SEPTEMBER, 10, 15, 45, 30);
-        Date afternoon = cal.getTime();
-
-        // Evening (18:20)
-        cal.set(2023, Calendar.DECEMBER, 25, 18, 20, 10);
-        Date evening = cal.getTime();
-
-        // Late night (23:59)
-        cal.set(2023, Calendar.JULY, 4, 23, 59, 59);
-        Date lateNight = cal.getTime();
-
-        return Stream.of(Arguments.of("midnight", midnight, 0), Arguments.of("early morning", earlyMorning, 6),
-                Arguments.of("noon", noon, 12), Arguments.of("afternoon", afternoon, 15),
-                Arguments.of("evening", evening, 18), Arguments.of("late night", lateNight, 23));
+        return Stream.of(
+                Arguments.of("midnight", LocalDateTime.of(2023, 1, 1, 0, 0, 0), 0),
+                Arguments.of("early morning", LocalDateTime.of(2023, 6, 15, 6, 30, 45), 6),
+                Arguments.of("noon", LocalDateTime.of(2023, 3, 20, 12, 0, 0), 12),
+                Arguments.of("afternoon", LocalDateTime.of(2023, 9, 10, 15, 45, 30), 15),
+                Arguments.of("evening", LocalDateTime.of(2023, 12, 25, 18, 20, 10), 18),
+                Arguments.of("late night", LocalDateTime.of(2023, 7, 4, 23, 59, 59), 23));
     }
 
     @Test

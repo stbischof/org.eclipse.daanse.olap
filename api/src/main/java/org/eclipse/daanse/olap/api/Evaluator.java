@@ -29,7 +29,7 @@
 
 package org.eclipse.daanse.olap.api;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -66,7 +66,7 @@ public interface Evaluator{
     /**
      * Returns the start time of the current query.
      */
-    Date getQueryStartTime();
+    LocalDateTime getQueryStartTime();
 
     /**
      * Creates a savepoint encapsulating the current state of the evalutor.

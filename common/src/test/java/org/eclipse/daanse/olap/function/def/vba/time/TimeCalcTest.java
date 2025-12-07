@@ -16,8 +16,8 @@ package org.eclipse.daanse.olap.function.def.vba.time;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.type.DateTimeType;
@@ -37,39 +37,36 @@ class TimeCalcTest {
     }
 
     @Test
-    @DisplayName("Should return current time as Date")
+    @DisplayName("Should return current time as LocalDateTime")
     void shouldReturnCurrentTimeAsDate() {
-        Date before = new Date();
+        LocalDateTime before = LocalDateTime.now();
 
-        Date result = timeCalc.evaluate(evaluator);
+        LocalDateTime result = timeCalc.evaluate(evaluator);
 
-        Date after = new Date();
+        LocalDateTime after = LocalDateTime.now();
 
         assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(Date.class);
+        assertThat(result).isInstanceOf(LocalDateTime.class);
 
-        // Result should be between before and after timestamps (allowing for test
-        // execution time)
-        assertThat(result.getTime()).isBetween(before.getTime() - 1000, // Allow 1 second before
-                after.getTime() + 1000 // Allow 1 second after
-        );
+        // Result should be between before and after timestamps
+        assertThat(result).isBetween(before.minusSeconds(1), after.plusSeconds(1));
     }
 
     @Test
     @DisplayName("Should return different times on consecutive calls")
     void shouldReturnDifferentTimesOnConsecutiveCalls() throws Exception {
-        Date result1 = timeCalc.evaluate(evaluator);
+        LocalDateTime result1 = timeCalc.evaluate(evaluator);
 
         // Sleep for a small amount to ensure time difference
         Thread.sleep(10);
 
-        Date result2 = timeCalc.evaluate(evaluator);
+        LocalDateTime result2 = timeCalc.evaluate(evaluator);
 
         assertThat(result1).isNotNull();
         assertThat(result2).isNotNull();
 
         // Second call should return a later or equal time
-        assertThat(result2.getTime()).isGreaterThanOrEqualTo(result1.getTime());
+        assertThat(result2).isAfterOrEqualTo(result1);
     }
 
     @Test
@@ -81,35 +78,34 @@ class TimeCalcTest {
     @Test
     @DisplayName("Should return time close to system current time")
     void shouldReturnTimeCloseToSystemCurrentTime() {
-        long systemTimeBefore = System.currentTimeMillis();
+        LocalDateTime systemTimeBefore = LocalDateTime.now();
 
-        Date result = timeCalc.evaluate(evaluator);
+        LocalDateTime result = timeCalc.evaluate(evaluator);
 
-        long systemTimeAfter = System.currentTimeMillis();
-        long resultTime = result.getTime();
+        LocalDateTime systemTimeAfter = LocalDateTime.now();
 
         // Result should be within the time window of the test execution
-        assertThat(resultTime).isBetween(systemTimeBefore, systemTimeAfter + 100);
+        assertThat(result).isBetween(systemTimeBefore, systemTimeAfter.plusNanos(100_000_000));
     }
 
     @Test
-    @DisplayName("Should consistently return Date objects")
+    @DisplayName("Should consistently return LocalDateTime objects")
     void shouldConsistentlyReturnDateObjects() {
         for (int i = 0; i < 10; i++) {
-            Date result = timeCalc.evaluate(evaluator);
+            LocalDateTime result = timeCalc.evaluate(evaluator);
             assertThat(result).isNotNull();
-            assertThat(result).isInstanceOf(Date.class);
+            assertThat(result).isInstanceOf(LocalDateTime.class);
         }
     }
 
     @Test
     @DisplayName("Should return time that is reasonable recent")
     void shouldReturnTimeThatIsReasonableRecent() {
-        Date result = timeCalc.evaluate(evaluator);
-        Date now = new Date();
+        LocalDateTime result = timeCalc.evaluate(evaluator);
+        LocalDateTime now = LocalDateTime.now();
 
         // The returned time should be very close to "now"
-        long timeDifference = Math.abs(result.getTime() - now.getTime());
+        long timeDifference = Math.abs(ChronoUnit.MILLIS.between(result, now));
 
         // Should be within 5 seconds (very generous for test execution)
         assertThat(timeDifference).isLessThan(5000L);
@@ -118,13 +114,10 @@ class TimeCalcTest {
     @Test
     @DisplayName("Should return time after Unix epoch")
     void shouldReturnTimeAfterUnixEpoch() {
-        Date result = timeCalc.evaluate(evaluator);
-
-        // Should be after Unix epoch (January 1, 1970)
-        assertThat(result.getTime()).isPositive();
+        LocalDateTime result = timeCalc.evaluate(evaluator);
 
         // Should be after year 2000 (reasonable for current system)
-        Date year2000 = Date.from(Instant.parse("2000-01-01T00:00:00Z"));
+        LocalDateTime year2000 = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
         assertThat(result).isAfter(year2000);
     }
 
@@ -135,7 +128,7 @@ class TimeCalcTest {
 
         // Perform multiple evaluations
         for (int i = 0; i < 100; i++) {
-            Date result = timeCalc.evaluate(evaluator);
+            LocalDateTime result = timeCalc.evaluate(evaluator);
             assertThat(result).isNotNull();
         }
 
@@ -149,7 +142,7 @@ class TimeCalcTest {
     @Test
     @DisplayName("Should return time that can be formatted")
     void shouldReturnTimeThatCanBeFormatted() {
-        Date result = timeCalc.evaluate(evaluator);
+        LocalDateTime result = timeCalc.evaluate(evaluator);
 
         // Should be able to format the date
         String formatted = result.toString();
@@ -161,13 +154,11 @@ class TimeCalcTest {
     @DisplayName("Should verify Time function behavior matches VBA")
     void shouldVerifyTimeFunctionBehaviorMatchesVBA() {
         // In VBA, Time function returns the current system time
-        // This should be equivalent to Java's new Date()
-
-        Date vbaTimeEquivalent = new Date();
-        Date result = timeCalc.evaluate(evaluator);
+        LocalDateTime vbaTimeEquivalent = LocalDateTime.now();
+        LocalDateTime result = timeCalc.evaluate(evaluator);
 
         // Both should be very close to each other
-        long timeDifference = Math.abs(result.getTime() - vbaTimeEquivalent.getTime());
+        long timeDifference = Math.abs(ChronoUnit.MILLIS.between(result, vbaTimeEquivalent));
         assertThat(timeDifference).isLessThan(1000L); // Within 1 second
     }
 }

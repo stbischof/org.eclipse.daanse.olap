@@ -17,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -47,7 +46,7 @@ class MonthCalcTest {
     @ParameterizedTest(name = "{0}: month({1}) = {2}")
     @MethodSource("arguments")
     @DisplayName("Should extract month from date correctly")
-    void shouldExtractMonth(String testName, Date inputDate, Integer expected) {
+    void shouldExtractMonth(String testName, LocalDateTime inputDate, Integer expected) {
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(inputDate);
 
         Integer result = monthCalc.evaluate(evaluator);
@@ -56,35 +55,13 @@ class MonthCalcTest {
     }
 
     static Stream<Arguments> arguments() {
-        Calendar cal = Calendar.getInstance();
-
-        // January 15, 2023
-        cal.set(2023, Calendar.JANUARY, 15, 10, 30, 0);
-        Date january = cal.getTime();
-
-        // February 28, 2023
-        cal.set(2023, Calendar.FEBRUARY, 28, 0, 0, 0);
-        Date february = cal.getTime();
-
-        // March 1, 2024
-        cal.set(2024, Calendar.MARCH, 1, 12, 0, 0);
-        Date march = cal.getTime();
-
-        // June 15, 2023
-        cal.set(2023, Calendar.JUNE, 15, 18, 45, 30);
-        Date june = cal.getTime();
-
-        // September 30, 2023
-        cal.set(2023, Calendar.SEPTEMBER, 30, 23, 59, 59);
-        Date september = cal.getTime();
-
-        // December 31, 2025
-        cal.set(2025, Calendar.DECEMBER, 31, 6, 0, 0);
-        Date december = cal.getTime();
-
-        return Stream.of(Arguments.of("January", january, 1), Arguments.of("February", february, 2),
-                Arguments.of("March", march, 3), Arguments.of("June", june, 6), Arguments.of("September", september, 9),
-                Arguments.of("December", december, 12));
+        return Stream.of(
+                Arguments.of("January", LocalDateTime.of(2023, 1, 15, 10, 30, 0), 1),
+                Arguments.of("February", LocalDateTime.of(2023, 2, 28, 0, 0, 0), 2),
+                Arguments.of("March", LocalDateTime.of(2024, 3, 1, 12, 0, 0), 3),
+                Arguments.of("June", LocalDateTime.of(2023, 6, 15, 18, 45, 30), 6),
+                Arguments.of("September", LocalDateTime.of(2023, 9, 30, 23, 59, 59), 9),
+                Arguments.of("December", LocalDateTime.of(2025, 12, 31, 6, 0, 0), 12));
     }
 
     @Test

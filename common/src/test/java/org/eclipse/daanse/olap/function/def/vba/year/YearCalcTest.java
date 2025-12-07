@@ -17,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -47,7 +46,7 @@ class YearCalcTest {
     @ParameterizedTest(name = "{0}: year({1}) = {2}")
     @MethodSource("arguments")
     @DisplayName("Should extract year from date correctly")
-    void shouldExtractYear(String testName, Date inputDate, Integer expected) {
+    void shouldExtractYear(String testName, LocalDateTime inputDate, Integer expected) {
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(inputDate);
 
         Integer result = yearCalc.evaluate(evaluator);
@@ -56,35 +55,13 @@ class YearCalcTest {
     }
 
     static Stream<Arguments> arguments() {
-        Calendar cal = Calendar.getInstance();
-
-        // Year 2000 (leap year, Y2K)
-        cal.set(2000, Calendar.JANUARY, 1, 0, 0, 0);
-        Date year2000 = cal.getTime();
-
-        // Year 2023 (recent year)
-        cal.set(2023, Calendar.JULY, 15, 12, 30, 45);
-        Date year2023 = cal.getTime();
-
-        // Year 2024 (leap year)
-        cal.set(2024, Calendar.FEBRUARY, 29, 6, 15, 30);
-        Date year2024 = cal.getTime();
-
-        // Year 1999 (pre-Y2K)
-        cal.set(1999, Calendar.DECEMBER, 31, 23, 59, 59);
-        Date year1999 = cal.getTime();
-
-        // Year 1970 (Unix epoch)
-        cal.set(1970, Calendar.JANUARY, 1, 0, 0, 0);
-        Date year1970 = cal.getTime();
-
-        // Year 2025 (future)
-        cal.set(2025, Calendar.JUNE, 10, 18, 0, 0);
-        Date year2025 = cal.getTime();
-
-        return Stream.of(Arguments.of("Y2K year", year2000, 2000), Arguments.of("recent year", year2023, 2023),
-                Arguments.of("leap year 2024", year2024, 2024), Arguments.of("pre-Y2K year", year1999, 1999),
-                Arguments.of("Unix epoch year", year1970, 1970), Arguments.of("future year", year2025, 2025));
+        return Stream.of(
+                Arguments.of("Y2K year", LocalDateTime.of(2000, 1, 1, 0, 0, 0), 2000),
+                Arguments.of("recent year", LocalDateTime.of(2023, 7, 15, 12, 30, 45), 2023),
+                Arguments.of("leap year 2024", LocalDateTime.of(2024, 2, 29, 6, 15, 30), 2024),
+                Arguments.of("pre-Y2K year", LocalDateTime.of(1999, 12, 31, 23, 59, 59), 1999),
+                Arguments.of("Unix epoch year", LocalDateTime.of(1970, 1, 1, 0, 0, 0), 1970),
+                Arguments.of("future year", LocalDateTime.of(2025, 6, 10, 18, 0, 0), 2025));
     }
 
     @Test

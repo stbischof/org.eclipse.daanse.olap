@@ -13,6 +13,8 @@
  */
 package org.eclipse.daanse.olap.function.def.udf.currentdatemember;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -79,9 +81,11 @@ public class CurrentDateMemberCalc extends AbstractProfilingNestedCalc<Object> {
     
     /*
      * Package private function created for proper testing.
+     * Returns Date for Format compatibility.
      */
     Date getDate(Evaluator evaluator) {
-        return evaluator.getQueryStartTime();
+        LocalDateTime ldt = evaluator.getQueryStartTime();
+        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
     }
 
 }

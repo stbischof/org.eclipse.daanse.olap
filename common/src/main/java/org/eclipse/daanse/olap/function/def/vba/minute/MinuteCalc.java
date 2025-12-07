@@ -13,8 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.minute;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -29,10 +28,8 @@ public class MinuteCalc extends AbstractProfilingNestedIntegerCalc {
 
     @Override
     public Integer evaluateInternal(Evaluator evaluator) {
-        Date time = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        return calendar.get(Calendar.MINUTE);
+        LocalDateTime dateTime = getChildCalc(0, DateTimeCalc.class).evaluate(evaluator);
+        return dateTime.getMinute();
     }
 
 }

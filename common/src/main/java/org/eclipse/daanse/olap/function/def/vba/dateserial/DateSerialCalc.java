@@ -13,8 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.dateserial;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
@@ -28,14 +27,11 @@ public class DateSerialCalc extends AbstractProfilingNestedDateTimeCalc {
     }
 
     @Override
-    public Date evaluateInternal(Evaluator evaluator) {
+    public LocalDateTime evaluateInternal(Evaluator evaluator) {
         Integer year = getChildCalc(0, IntegerCalc.class).evaluate(evaluator);
         Integer month = getChildCalc(1, IntegerCalc.class).evaluate(evaluator);
         Integer day = getChildCalc(2, IntegerCalc.class).evaluate(evaluator);
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(year, month - 1, day);
-        return calendar.getTime();
+        return LocalDateTime.of(year, month, day, 0, 0);
     }
 
 }

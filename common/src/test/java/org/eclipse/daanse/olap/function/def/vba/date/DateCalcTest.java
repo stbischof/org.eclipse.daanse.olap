@@ -17,9 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.type.DateTimeType;
@@ -42,28 +40,23 @@ class DateCalcTest {
     @Test
     @DisplayName("Should return current date with time set to midnight")
     void shouldReturnCurrentDateAtMidnight() {
-        Date result = dateCalc.evaluate(evaluator);
+        LocalDateTime result = dateCalc.evaluate(evaluator);
 
         assertThat(result).isNotNull();
-
-        // Convert to calendar to check time components
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(result);
-
-        assertThat(calendar.get(Calendar.HOUR_OF_DAY)).isEqualTo(0);
-        assertThat(calendar.get(Calendar.MINUTE)).isEqualTo(0);
-        assertThat(calendar.get(Calendar.SECOND)).isEqualTo(0);
-        assertThat(calendar.get(Calendar.MILLISECOND)).isEqualTo(0);
+        assertThat(result.getHour()).isEqualTo(0);
+        assertThat(result.getMinute()).isEqualTo(0);
+        assertThat(result.getSecond()).isEqualTo(0);
+        assertThat(result.getNano()).isEqualTo(0);
     }
 
     @Test
     @DisplayName("Should return today's date")
     @Disabled
     void shouldReturnTodaysDate() {
-        Date result = dateCalc.evaluate(evaluator);
+        LocalDateTime result = dateCalc.evaluate(evaluator);
 
         LocalDate today = LocalDate.now();
-        LocalDate resultDate = result.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate resultDate = result.toLocalDate();
 
         assertThat(resultDate).isEqualTo(today);
     }
@@ -77,19 +70,14 @@ class DateCalcTest {
     @Test
     @DisplayName("Should be consistent across multiple calls")
     void shouldBeConsistentAcrossMultipleCalls() {
-        Date first = dateCalc.evaluate(evaluator);
-        Date second = dateCalc.evaluate(evaluator);
+        LocalDateTime first = dateCalc.evaluate(evaluator);
+        LocalDateTime second = dateCalc.evaluate(evaluator);
 
-        // Both should represent the same day (ignoring millisecond differences)
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(first);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(second);
-
-        assertThat(cal1.get(Calendar.YEAR)).isEqualTo(cal2.get(Calendar.YEAR));
-        assertThat(cal1.get(Calendar.MONTH)).isEqualTo(cal2.get(Calendar.MONTH));
-        assertThat(cal1.get(Calendar.DAY_OF_MONTH)).isEqualTo(cal2.get(Calendar.DAY_OF_MONTH));
-        assertThat(cal1.get(Calendar.HOUR_OF_DAY)).isEqualTo(0);
-        assertThat(cal2.get(Calendar.HOUR_OF_DAY)).isEqualTo(0);
+        // Both should represent the same day
+        assertThat(first.getYear()).isEqualTo(second.getYear());
+        assertThat(first.getMonth()).isEqualTo(second.getMonth());
+        assertThat(first.getDayOfMonth()).isEqualTo(second.getDayOfMonth());
+        assertThat(first.getHour()).isEqualTo(0);
+        assertThat(second.getHour()).isEqualTo(0);
     }
 }

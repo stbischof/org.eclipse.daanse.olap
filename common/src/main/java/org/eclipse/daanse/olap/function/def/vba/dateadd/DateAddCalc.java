@@ -13,8 +13,10 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.dateadd;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.eclipse.daanse.olap.api.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
@@ -26,31 +28,35 @@ import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDateTimeC
 public class DateAddCalc extends AbstractProfilingNestedDateTimeCalc {
 
     public static final long MILLIS_IN_A_DAY = 24L * 60 * 60 * 1000;
-    
+
     protected DateAddCalc(Type type, StringCalc stringCalc, DoubleCalc doubleCalc, DateTimeCalc dateTimeCalc ) {
         super(type, stringCalc, doubleCalc, dateTimeCalc);
     }
 
     @Override
-    public Date evaluateInternal(Evaluator evaluator) {
+    public LocalDateTime evaluateInternal(Evaluator evaluator) {
         String intervalName = getChildCalc(0, StringCalc.class).evaluate(evaluator);
         Double number = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
-        Date date = getChildCalc(2, DateTimeCalc.class).evaluate(evaluator);
-        
+        LocalDateTime dateTime = getChildCalc(2, DateTimeCalc.class).evaluate(evaluator);
+
         Interval interval = Interval.valueOf(intervalName);
         final double floor = Math.floor(number);
+
+        // Convert LocalDateTime to Calendar for Interval processing
+        ZoneId zone = ZoneId.systemDefault();
+        long millis = dateTime.atZone(zone).toInstant().toEpochMilli();
 
         // We use the local calendar here. This method will therefore return
         // different results in different locales: it depends whether the
         // initial date and the final date are in DST.
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTimeInMillis(millis);
         if (floor != number) {
             final double ceil = Math.ceil(number);
             interval.add(calendar, (int) ceil);
             final long ceilMillis = calendar.getTimeInMillis();
 
-            calendar.setTime(date);
+            calendar.setTimeInMillis(millis);
             interval.add(calendar, (int) floor);
             final long floorMillis = calendar.getTimeInMillis();
 
@@ -66,7 +72,8 @@ public class DateAddCalc extends AbstractProfilingNestedDateTimeCalc {
         } else {
             interval.add(calendar, (int) floor);
         }
-        return calendar.getTime();
+        // Convert Calendar back to LocalDateTime
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(calendar.getTimeInMillis()), zone);
     }
 
 }

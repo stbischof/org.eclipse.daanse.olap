@@ -17,8 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -39,7 +38,7 @@ class FormatDateTimeCalcTest {
     private DateTimeCalc dateCalc;
     private IntegerCalc namedFormatCalc;
     private Evaluator evaluator;
-    private Date testDate;
+    private LocalDateTime testDate;
 
     @BeforeEach
     void setUp() {
@@ -49,10 +48,7 @@ class FormatDateTimeCalcTest {
         formatDateTimeCalc = new FormatDateTimeCalc(StringType.INSTANCE, dateCalc, namedFormatCalc);
 
         // Create a test date: June 15, 2023, 14:30:45
-        Calendar cal = Calendar.getInstance();
-        cal.set(2023, Calendar.JUNE, 15, 14, 30, 45);
-        cal.set(Calendar.MILLISECOND, 0);
-        testDate = cal.getTime();
+        testDate = LocalDateTime.of(2023, 6, 15, 14, 30, 45);
     }
 
     @ParameterizedTest(name = "{0}: formatDateTime(date, {1})")
@@ -137,12 +133,12 @@ class FormatDateTimeCalcTest {
     @DisplayName("Should handle edge dates")
     void shouldHandleEdgeDates() {
         // Test with epoch date
-        Date epochDate = new Date(0);
+        LocalDateTime epochDate = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
         String result = FormatDateTimeCalc.formatDateTime(epochDate, 0);
         assertThat(result).isNotNull();
 
         // Test with current date
-        Date currentDate = new Date();
+        LocalDateTime currentDate = LocalDateTime.now();
         result = FormatDateTimeCalc.formatDateTime(currentDate, 0);
         assertThat(result).isNotNull();
     }

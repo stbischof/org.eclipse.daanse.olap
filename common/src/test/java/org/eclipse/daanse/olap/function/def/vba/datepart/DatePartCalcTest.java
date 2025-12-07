@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.olap.api.Evaluator;
@@ -41,7 +41,7 @@ class DatePartCalcTest {
     private IntegerCalc firstDayOfWeekCalc;
     private IntegerCalc firstWeekOfYearCalc;
     private Evaluator evaluator;
-    private Date testDate;
+    private LocalDateTime testDate;
 
     @BeforeEach
     void setUp() {
@@ -54,10 +54,7 @@ class DatePartCalcTest {
                 firstDayOfWeekCalc, firstWeekOfYearCalc);
 
         // Set up test date: March 15, 2024 14:30:45 (Friday)
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(2024, Calendar.MARCH, 15, 14, 30, 45);
-        testDate = cal.getTime();
+        testDate = LocalDateTime.of(2024, 3, 15, 14, 30, 45);
     }
 
     @ParameterizedTest(name = "{0}: DatePart({1}, Mar 15 2024 14:30:45) = {2}")
@@ -134,10 +131,7 @@ class DatePartCalcTest {
     @DisplayName("Should handle leap year day of year correctly")
     void shouldHandleLeapYearDayOfYearCorrectly() {
         // Test with Feb 29 in leap year 2024
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(2024, Calendar.FEBRUARY, 29);
-        Date leapDate = cal.getTime();
+        LocalDateTime leapDate = LocalDateTime.of(2024, 2, 29, 0, 0, 0);
 
         when(stringCalc.evaluate(evaluator)).thenReturn("y");
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(leapDate);
@@ -153,10 +147,7 @@ class DatePartCalcTest {
     @DisplayName("Should handle non-leap year correctly")
     void shouldHandleNonLeapYearCorrectly() {
         // Test with March 1 in non-leap year 2023
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(2023, Calendar.MARCH, 1);
-        Date nonLeapDate = cal.getTime();
+        LocalDateTime nonLeapDate = LocalDateTime.of(2023, 3, 1, 0, 0, 0);
 
         when(stringCalc.evaluate(evaluator)).thenReturn("y");
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(nonLeapDate);
@@ -171,13 +162,8 @@ class DatePartCalcTest {
     @Test
     @DisplayName("Should handle quarter boundaries correctly")
     void shouldHandleQuarterBoundariesCorrectly() {
-        // Test different months and their quarters
-        Calendar cal = Calendar.getInstance();
-
         // Test June (Q2)
-        cal.clear();
-        cal.set(2024, Calendar.JUNE, 15);
-        Date juneDate = cal.getTime();
+        LocalDateTime juneDate = LocalDateTime.of(2024, 6, 15, 0, 0, 0);
 
         when(stringCalc.evaluate(evaluator)).thenReturn("q");
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(juneDate);
@@ -198,10 +184,7 @@ class DatePartCalcTest {
     @Test
     @DisplayName("Should handle midnight time correctly")
     void shouldHandleMidnightTimeCorrectly() {
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(2024, Calendar.MARCH, 15, 0, 0, 0);
-        Date midnightDate = cal.getTime();
+        LocalDateTime midnightDate = LocalDateTime.of(2024, 3, 15, 0, 0, 0);
 
         when(stringCalc.evaluate(evaluator)).thenReturn("h");
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(midnightDate);
@@ -216,10 +199,7 @@ class DatePartCalcTest {
     @Test
     @DisplayName("Should handle end of year date correctly")
     void shouldHandleEndOfYearDateCorrectly() {
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(2024, Calendar.DECEMBER, 31, 23, 59, 59);
-        Date endOfYearDate = cal.getTime();
+        LocalDateTime endOfYearDate = LocalDateTime.of(2024, 12, 31, 23, 59, 59);
 
         when(stringCalc.evaluate(evaluator)).thenReturn("y");
         when(dateTimeCalc.evaluate(evaluator)).thenReturn(endOfYearDate);
