@@ -36,6 +36,7 @@
 package org.eclipse.daanse.olap.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.daanse.olap.api.CatalogReader;
@@ -192,7 +193,8 @@ public class IdentifierParser extends org.eclipse.daanse.olap.impl.IdentifierPar
         public MemberListBuilder(
             CatalogReader schemaReader, Cube cube, Hierarchy hierarchy)
         {
-            super(schemaReader, cube, List.of(hierarchy));
+            // hierarchy may be null
+            super(schemaReader, cube, Collections.singletonList(hierarchy));
         }
 
         @Override
