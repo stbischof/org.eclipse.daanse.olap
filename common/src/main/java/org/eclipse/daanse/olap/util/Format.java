@@ -44,6 +44,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -317,6 +320,14 @@ public class Format {
          */
         boolean isApplicableTo(long n) {
             return true;
+        }
+
+        public void format(LocalDateTime localDateTime, StringBuilder buf) {
+            Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+            Date date = Date.from(instant);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            format(calendar, buf);
         }
     }
 
@@ -2955,6 +2966,8 @@ public class Format {
                 formatValue.format((String) o, buf);
             } else if (o instanceof java.util.Date date) {
                 // includes java.sql.Date, java.sql.Time and java.sql.Timestamp
+                formatValue.format(date, buf);
+            } else if (o instanceof LocalDateTime date) {
                 formatValue.format(date, buf);
             } else if (o instanceof Calendar calendar) {
                 formatValue.format(calendar, buf);
