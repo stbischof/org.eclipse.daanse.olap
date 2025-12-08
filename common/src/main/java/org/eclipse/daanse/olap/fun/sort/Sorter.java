@@ -30,6 +30,8 @@ package org.eclipse.daanse.olap.fun.sort;
 import static org.eclipse.daanse.olap.common.Util.DOUBLE_NULL;
 import static org.eclipse.daanse.olap.common.Util.newInternal;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -642,6 +644,8 @@ public class Sorter {
         ( (Number) value1 ).doubleValue() );
     } else if ( value0 instanceof Date ) {
       return ( (Date) value0 ).compareTo( (Date) value1 );
+    } else if ( value0 instanceof LocalDateTime ) {
+        return ( (LocalDateTime) value0 ).compareTo( (LocalDateTime) value1 );
     } else if ( value0 instanceof OrderKey ) {
       return ( (OrderKey) value0 ).compareTo( value1 );
     } else {
