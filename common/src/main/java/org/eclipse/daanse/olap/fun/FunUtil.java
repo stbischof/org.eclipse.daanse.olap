@@ -75,6 +75,7 @@ import org.eclipse.daanse.olap.api.type.MemberType;
 import org.eclipse.daanse.olap.api.type.ScalarType;
 import org.eclipse.daanse.olap.api.type.TupleType;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.CompensatedSum;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.common.Util;
@@ -625,17 +626,17 @@ public class FunUtil extends Util {
     } else if ( sw.v.isEmpty() ) {
       return Util.nullValue;
     } else {
-      double stdev = 0.0;
+      CompensatedSum squaredDeviations = new CompensatedSum();
       double avg = FunUtil.avg( sw );
       for ( int i = 0; i < sw.v.size(); i++ ) {
-        stdev +=
-          Math.pow( ( ( (Number) sw.v.get( i ) ).doubleValue() - avg ), 2 );
+        double diff = ( (Number) sw.v.get( i ) ).doubleValue() - avg;
+        squaredDeviations.add( diff * diff );
       }
       int n = sw.v.size();
       if ( !biased ) {
         n--;
       }
-      return Double.valueOf( stdev / n );
+      return Double.valueOf( squaredDeviations.value() / n );
     }
   }
 
@@ -690,19 +691,19 @@ public class FunUtil extends Util {
     }
     double avg1 = FunUtil.avg( sw1 );
     double avg2 = FunUtil.avg( sw2 );
-    double covar = 0.0;
+    CompensatedSum covar = new CompensatedSum();
     for ( int i = 0; i < sw1.v.size(); i++ ) {
       // all of this casting seems inefficient - can we make SetWrapper
       // contain an array of double instead?
       double diff1 = ( ( (Number) sw1.v.get( i ) ).doubleValue() - avg1 );
       double diff2 = ( ( (Number) sw2.v.get( i ) ).doubleValue() - avg2 );
-      covar += ( diff1 * diff2 );
+      covar.add( diff1 * diff2 );
     }
     int n = sw1.v.size();
     if ( !biased ) {
       n--;
     }
-    return Double.valueOf( covar / n );
+    return Double.valueOf( covar.value() / n );
   }
 
   public static Object stdev(
@@ -733,12 +734,12 @@ public class FunUtil extends Util {
   // TODO: parameterize inclusion of nulls; also, maybe make _avg a method of
   // setwrapper, so we can cache the result (i.e. for correl)
   private static double avg(SetWrapper sw ) {
-    double sum = 0.0;
+    CompensatedSum sum = new CompensatedSum();
     for ( int i = 0; i < sw.v.size(); i++ ) {
-      sum += ( (Number) sw.v.get( i ) ).doubleValue();
+      sum.add( ( (Number) sw.v.get( i ) ).doubleValue() );
     }
     // TODO: should look at context and optionally include nulls
-    return sum / sw.v.size();
+    return sum.value() / sw.v.size();
   }
 
   public static Object sum(
@@ -766,11 +767,11 @@ public class FunUtil extends Util {
     } else if ( sw.v.isEmpty() ) {
       return null;
     } else {
-      double sum = 0.0;
+      CompensatedSum sum = new CompensatedSum();
       for ( int i = 0; i < sw.v.size(); i++ ) {
-        sum += ( (Number) sw.v.get( i ) ).doubleValue();
+        sum.add( ( (Number) sw.v.get( i ) ).doubleValue() );
       }
-      return sum;
+      return sum.value();
     }
   }
 
@@ -789,11 +790,11 @@ public class FunUtil extends Util {
     } else if ( sw.v.isEmpty() ) {
       return null;
     } else {
-      double sum = 0.0;
+      CompensatedSum sum = new CompensatedSum();
       for ( int i = 0; i < sw.v.size(); i++ ) {
-        sum += ( (Number) sw.v.get( i ) ).doubleValue();
+        sum.add( ( (Number) sw.v.get( i ) ).doubleValue() );
       }
-      return sum;
+      return sum.value();
     }
   }
 
