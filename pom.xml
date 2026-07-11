@@ -75,15 +75,4 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <!-- JMH micro-benchmarks; not part of the default build.
-         Usage: mvn -Pbenchmarks -pl benchmarks ... -->
-    <profile>
-      <id>benchmarks</id>
-      <modules>
-        <module>benchmarks</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>

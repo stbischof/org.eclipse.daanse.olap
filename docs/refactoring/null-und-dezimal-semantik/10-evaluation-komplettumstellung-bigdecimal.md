@@ -82,10 +82,12 @@ Komplettumstellung.
 
 ## 4. Performance und Speicher (JMH, gemessen)
 
-Modul `benchmarks/` (Profil `-Pbenchmarks`), JDK 25 (Temurin-Basis,
-Fedora 43), JMH 1.37, avgt, 3 Forks × 3×500 ms nach 3×500 ms Warmup.
-Rohdaten: `scratchpad/jmh-results.json`, reproduzierbar via
-`mvn -Pbenchmarks -pl benchmarks …` + `org.openjdk.jmh.Main`.
+JMH 1.37 auf JDK 25 (Fedora 43), avgt, 3 Forks × 3×500 ms nach
+3×500 ms Warmup. Rohdaten:
+[`10-anhang-jmh-rohdaten.json`](10-anhang-jmh-rohdaten.json).
+Das JMH-Modul war ein Einweg-Messinstrument und wurde nach der
+Evaluation wieder entfernt (Quellen bei Bedarf im Commit `bb3bdaa`
+dieser Branch-Historie).
 
 ### 4.1 Aggregations-Hot-Loop (Summe, 10⁶ Werte gemischter Größenordnung)
 
