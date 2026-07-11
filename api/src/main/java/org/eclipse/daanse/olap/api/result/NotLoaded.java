@@ -30,7 +30,7 @@ package org.eclipse.daanse.olap.api.result;
  * Planned to become part of the sealed {@code CellValue} state type at the
  * cell/cache boundary.
  */
-public record NotLoaded() {
+public record NotLoaded() implements CellValue {
 
     public static final NotLoaded INSTANCE = new NotLoaded();
 

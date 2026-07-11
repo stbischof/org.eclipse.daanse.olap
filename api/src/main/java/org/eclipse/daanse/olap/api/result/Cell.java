@@ -48,28 +48,32 @@ public interface Cell {
      * Returns the coordinates of this Cell in its Result.
      *
      * @return Coordinates of this Cell
-     */
+ */
     List<Integer> getCoordinateList();
 
     /**
      * Returns the cell's raw value. This is useful for sending to further data
      * processing, such as plotting a chart.
      *
-     * The value is never null. It may have various types: if the cell is null, the
-     * value is Util#nullValue; if the cell contains an error, the value is an
-     * instance of Throwable; otherwise, the type of this value depends upon the
-     * type of measure: possible types include java.math.BigDecimal, Double, Integer
-     * and String.
+     * <p>
+     * If the cell is NULL, the value is Java {@code null} (contract change in
+     * the null-semantics migration — historically the in-band sentinel
+     * {@code Util.nullValue} was documented here, although Java {@code null}
+     * was already returned in practice; see
+     * the null-semantics notes in the olap repo). If the
+     * cell contains an error, {@link #isError()} is true and this method
+     * returns the underlying {@link Throwable}. Otherwise the type of this value
+     * depends upon the type of measure: possible types include
+     * java.math.BigDecimal, Double, Integer and String.
      *
-     *
-     * return != null (return instanceof Throwable) == isError() (return instanceof
-     * Util.NullCellValue) == isNull()
-     */
+     * <p>
+     * {@code (return == null) == isNull()}
+ */
     Object getValue();
 
     /**
      * Return the cached formatted string, that survives an aggregate cache clear.
-     */
+ */
     String getCachedFormatString();
 
     /**
@@ -77,17 +81,17 @@ public interface Cell {
      * and locale-specific settings such as currency symbol. The current format
      * string may itself be derived via an expression. For more information about
      * format strings, see mondrian.util.Format.
-     */
+ */
     String getFormattedValue();
 
     /**
      * Returns whether the cell's value is null.
-     */
+ */
     boolean isNull();
 
     /**
      * Returns whether the cell's calculation returned an error.
-     */
+ */
     boolean isError();
 
     /**
@@ -102,7 +106,7 @@ public interface Cell {
      * levels (coulmns) of non-constraining members.
      *
      * The result is null if the cell is based upon a calculated member.
-     */
+ */
     String getDrillThroughSQL(boolean extendedContext);
 
     /**
@@ -110,12 +114,12 @@ public interface Cell {
      * Cell is based on a calculated measure.
      *
      * @return Whether can drill through on this cell
-     */
+ */
     boolean canDrillThrough();
 
     /**
      * Returns the number of fact table rows which contributed to this Cell.
-     */
+ */
     int getDrillThroughCount();
 
     /**
@@ -123,7 +127,7 @@ public interface Cell {
      *
      * @param propertyName Case-sensitive property name
      * @return Value of property
-     */
+ */
     Object getPropertyValue(String propertyName);
 
     /**
@@ -142,7 +146,7 @@ public interface Cell {
      *
      * @param hierarchy Hierarchy
      * @return current member of given hierarchy
-     */
+ */
     Member getContextMember(Hierarchy hierarchy);
 
     /**
@@ -152,7 +156,7 @@ public interface Cell {
      * @param newValue         New value
      * @param allocationPolicy Allocation policy
      * @param allocationArgs   Arguments for allocation policy
-     */
+ */
     void setValue(Scenario scenario, Object newValue, AllocationPolicy allocationPolicy, Object... allocationArgs);
 
     SqlStatementI drillThroughInternal(int maxRowCount, int firstRowOrdinal, List<OlapElement> fields,

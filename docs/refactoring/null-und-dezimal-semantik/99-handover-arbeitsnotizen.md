@@ -186,13 +186,14 @@ Abweichungen gegenüber den Annahmen in Doc 01/02 festgestellt:
 
 ## Entscheidungen, die bei Umsetzung noch zu treffen sind
 
-| # | Entscheidung | Kontext | Vorschlag aus den Docs |
-|---|---|---|---|
-| E1 | Name/Ort der `NullSemantics`-Klasse | Phase 1 | Paket `fun` oder `calc.base`; exportiert? (bnd.bnd prüfen — `calc*` ist exportiert, `fun` nicht) |
-| E2 | Property-Name für Divisions-Politik der Decimal-Lane | Phase 5b | analog bestehendem `nullDenominatorProducesNull`-Flag (DivideCalc) |
-| E3 | Integer-Marker-Design | Phase 5b Vorarbeit | `IntegerType extends NumericType` (neuer Typ, API-Zuwachs) vs. `NumericType.INTEGER_INSTANCE` (kein neuer Typ) — Doc 09 §3 lässt beides zu |
-| E4 | Dreiwertige Boolesche Logik einführen? | nach Phase 3 | Eigenständige Entscheidung, MSAS-Referenz; Doc 09 §4 |
-| E5 | `@Deprecated`-Fenster (wie viele Releases bis Phase 6 löscht) | Phase 3→6 | mind. ein Minor-Release |
+| # | Entscheidung | Kontext | Vorschlag aus den Docs | **Getroffen (2026-07-11)** |
+|---|---|---|---|---|
+| E1 | Name/Ort der `NullSemantics`-Klasse | Phase 1 | Paket `fun` oder `calc.base`; exportiert? | **`org.eclipse.daanse.olap.calc.base`** (exportiert; rolap braucht Zugriff) |
+| E2 | Property-Name für Divisions-Politik der Decimal-Lane | Phase 5b | analog `nullDenominatorProducesNull` | offen (bei 5b) |
+| E3 | Integer-Marker-Design | Phase 5b Vorarbeit | `IntegerType` vs. `NumericType.INTEGER_INSTANCE` | offen (bei 5b) |
+| E4 | Dreiwertige Boolesche Logik einführen? | nach Phase 3 | Eigenständige Entscheidung | **Nein.** `case null -> BOOLEAN_NULL` im Compiler bleibt: null→false ist Verhaltens-Semantik, keine Sentinel-Kodierung. Abweichung von Doc 06 §Phase 3 („dito :361") ist beabsichtigt. |
+| E5 | `@Deprecated`-Fenster | Phase 3→6 | mind. ein Minor-Release | **Übernommen.** `DOUBLE_NULL`, `EmptyValue`, `DOUBLE_EMPTY`, `valueNotReadyException`, `isSentinelOnly` deprecated(forRemoval); Löschung Phase 6. `nullValue` wird erst in Phase 4 deprecated (Cell-Schicht nutzt es bis dahin legitim). |
+| — | `NotLoaded`-Ort | Phase 2 | rolap, später api | **Direkt `olap.api.result`** (erspart Phase-4-Umzug; olap-Komparator kennt den Marker ohnehin) |
 
 ## Stil-/Prozesskonventionen dieser Doc-Serie
 

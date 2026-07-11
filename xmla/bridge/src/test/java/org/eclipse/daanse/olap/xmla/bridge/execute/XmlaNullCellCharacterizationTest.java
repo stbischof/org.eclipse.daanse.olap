@@ -240,6 +240,39 @@ class XmlaNullCellCharacterizationTest {
     }
 
     /**
+     * Error cells (reference 4): today the evaluation
+     * error is stored as the cell VALUE (a Throwable) and the formatted value
+     * carries the "#ERR:" text. The converter has no error-specific branch:
+     * the Throwable falls through ValueInfo's default case and is serialized
+     * as its toString() with type xsd:string. The rolap-side ErrorValue
+     * rework must keep Cell.getValue()/getPropertyValue returning the
+     * Throwable so this serialization stays stable.
+ */
+    @Test
+    @DisplayName("Error cell serializes the Throwable's toString as xsd:string, FmtValue carries #ERR:")
+    void errorCellSerializesThrowableAsString() {
+        mockAxisPositions(1);
+        RuntimeException failure = new RuntimeException("boom");
+        Cell errorCell = mock(Cell.class);
+        lenient().when(errorCell.isNull()).thenReturn(false);
+        lenient().when(errorCell.getValue()).thenReturn(failure);
+        lenient().when(errorCell.getPropertyValue("VALUE")).thenReturn(failure);
+        lenient().when(errorCell.getPropertyValue("FORMATTED_VALUE")).thenReturn("#ERR: " + failure);
+        mockCells(errorCell);
+
+        List<org.eclipse.daanse.xmla.api.mddataset.CellType> cells = convert();
+
+        assertThat(cells).hasSize(1);
+        CellTypeR cell = (CellTypeR) cells.get(0);
+        assertThat(cell.value()).isNotNull();
+        assertThat(cell.value().value()).contains("boom");
+        assertThat(cell.any()).anySatisfy(item -> {
+            assertThat(item.tagName()).isEqualTo("FmtValue");
+            assertThat(item.name()).startsWith("#ERR:");
+        });
+    }
+
+    /**
      * The DOUBLE_NULL sentinel is an ordinary double for the converter: a cell
      * that carries the sentinel VALUE but reports isNull() == false (e.g. a
      * computed value colliding with the sentinel that slipped through) is
