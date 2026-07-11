@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.rank;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.calc.TupleCalc;
@@ -99,7 +100,7 @@ public class RankFunDef extends AbstractFunctionDefinition {
     }
 
     static boolean valueNotReady( Object value ) {
-      return value == Util.valueNotReadyException || value == Double.valueOf( Double.NaN );
+      return value == NotLoaded.INSTANCE || value == Double.valueOf( Double.NaN );
     }
 
   }

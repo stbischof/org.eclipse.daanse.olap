@@ -186,8 +186,16 @@ public class Util {
 
     /**
      * Special cell value indicates that the value is not in cache yet.
+     *
+     * @deprecated Use {@link org.eclipse.daanse.olap.api.result.NotLoaded#INSTANCE}
+     *             directly. Historically this was {@code Double.valueOf(0)} — a
+     *             real number that flowed through arithmetic during the dirty
+     *             evaluation pass. The alias is retained for identity
+     *             comparisons in external consumers until the null-semantics migration,
+     *.
  */
-    public static final Object valueNotReadyException = Double.valueOf(0);
+    @Deprecated(forRemoval = true)
+    public static final Object valueNotReadyException = org.eclipse.daanse.olap.api.result.NotLoaded.INSTANCE;
 
     /**
      * Placeholder which indicates an EMPTY value.

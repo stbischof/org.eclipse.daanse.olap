@@ -13,6 +13,7 @@
 */
 package org.eclipse.daanse.olap.calc.base.type.booleanx;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
@@ -30,6 +31,10 @@ public class UnknownToBooleanCalc extends AbstractProfilingNestedBooleanCalc {
 		Object v0 = getFirstChildCalc().evaluate(evaluator);
 		if (v0 == null) {
 			return FunUtil.BOOLEAN_NULL;
+		}
+		if (v0 == NotLoaded.INSTANCE) {
+			// dirty pass, results discarded; dummy matches the old Double(0) marker
+			return false;
 		}
 		if (v0 instanceof Boolean b) {
 			return b;

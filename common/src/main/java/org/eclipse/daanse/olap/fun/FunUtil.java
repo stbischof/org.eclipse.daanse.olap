@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.daanse.mdx.model.api.expression.operation.OperationAtom;
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.DataType;
 import org.eclipse.daanse.olap.api.access.AccessMember;
 import org.eclipse.daanse.olap.api.agg.Segment;
@@ -838,7 +839,7 @@ public class FunUtil extends Util {
       Object o = calc.evaluate( evaluator );
       if ( NullSemantics.isNull( o ) ) {
         retval.nullCount++;
-      } else if ( o == Util.valueNotReadyException ) {
+      } else if ( o == NotLoaded.INSTANCE ) {
         // Carry on summing, so that if we are running in a
         // BatchingCellReader, we find out all the dependent cells we
         // need

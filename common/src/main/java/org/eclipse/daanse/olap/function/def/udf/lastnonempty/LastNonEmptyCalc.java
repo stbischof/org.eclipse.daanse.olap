@@ -15,6 +15,7 @@ package org.eclipse.daanse.olap.function.def.udf.lastnonempty;
 
 import java.util.List;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
@@ -67,7 +68,7 @@ public class LastNonEmptyCalc extends AbstractProfilingNestedMemberCalc {
                     continue;
                 }
             }
-            if (o == Util.valueNotReadyException) {
+            if (o == NotLoaded.INSTANCE) {
                 // Value is not in the cache yet, so we don't know whether
                 // it will be empty. Carry on...
                 continue;

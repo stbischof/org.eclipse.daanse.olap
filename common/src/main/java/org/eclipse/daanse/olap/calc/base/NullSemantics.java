@@ -16,6 +16,7 @@ package org.eclipse.daanse.olap.calc.base;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.sort.OrderKey;
 
@@ -173,10 +174,10 @@ public final class NullSemantics {
             return 1;
         }
 
-        if (value0 == Util.valueNotReadyException) {
+        if (value0 == NotLoaded.INSTANCE) {
             // the left value is not in cache; continue as best as we can
             return -1;
-        } else if (value1 == Util.valueNotReadyException) {
+        } else if (value1 == NotLoaded.INSTANCE) {
             // the right value is not in cache; continue as best as we can
             return 1;
         } else if (isNullValue(value0)) {
