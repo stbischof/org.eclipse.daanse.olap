@@ -54,6 +54,23 @@ Diese Initiative beantwortet fünf Fragen:
 | 4 | Reicht `double`, oder sollte immer mit `BigDecimal` gerechnet werden — was ist der beste Weg, korrekt mit Kommazahlen zu rechnen? |
 | 5 | In welcher Reihenfolge lässt sich das risikoarm umbauen? |
 
+## Umsetzungsstand
+
+> Umsetzung auf Branch `refactor/null-dezimal-semantik` (olap + rolap),
+> ein Commit pro Phase. Getroffene Entscheidungen: eigener CSV-/EMF-Testkatalog
+> statt School; „erwartet-heute-falsch"-Tests als `@Disabled` mit Verweis.
+
+| Phase | Inhalt | Stand |
+|---|---|---|
+| 0 | Charakterisierungstests | **fertig** (2026-07-11): olap 115 Calc-Unit-Tests (`common/.../nullsemantics/`) + 5 XMLA-Konverter-Tests (xmla/bridge); rolap 18 MDX-Tests (`testkit/core/.../nullsemantics/`, 2 davon `@Disabled` bis Phase 3/5b); Befunde in Doc 99 |
+| 1 | `NullSemantics` zentralisieren | offen |
+| 2 | `NotLoaded` statt Double(0) | offen |
+| 3 | Sentinel → Java-`null` | offen |
+| 4 | `CellValue` Cell-/Cache-Grenze | offen |
+| 5a | Kahan-Summation | offen |
+| 5b | Decimal-Lane | offen |
+| 6 | Politur / Sentinel-Löschung | offen |
+
 ## Dokumentenübersicht
 
 | Doc | Inhalt |

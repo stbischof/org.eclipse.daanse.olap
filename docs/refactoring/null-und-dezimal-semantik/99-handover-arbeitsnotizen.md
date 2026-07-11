@@ -110,6 +110,48 @@ zusammengefasst; hier vollständig für die Phasen-Arbeitslisten.
   Format: `util.format/…/internal/BasicFormat.java:76` (und `AlternateFormat`
   überschreibt `format(BigDecimal)` NICHT → erbt die Verengung)
 
+## Befunde aus Phase 0 (Charakterisierung, 2026-07-11)
+
+Die Phase-0-Suite (`olap common/src/test/.../nullsemantics/`, 115 Tests) hat
+Abweichungen gegenüber den Annahmen in Doc 01/02 festgestellt:
+
+1. **Objekt-Overloads invertieren die NULL-Ordnung:** Die dokumentierte
+   Totalordnung `−∞ < NULL < Werte < NaN < +∞` gilt nur für die
+   `(double,double)`-Overloads. `FunUtil.compareValues(Object,Object)` und
+   `Sorter.compareValues(Object,Object)` sortieren `Util.nullValue` unter
+   **alles, auch −Infinity**. Für die Komparator-Zusammenführung (Phase 1)
+   heißt das: beide Semantiken getrennt erhalten, nicht blind vereinigen.
+2. **Identitäts- vs. Wert-Vergleich ist gemischt:** Operatoren-/Excel-Calcs
+   prüfen das Sentinel per Boxed-`==` (Referenz!) — ein zur Laufzeit
+   berechnetes wertgleiches `Double` gilt dort als echter Wert. Wertbasiert
+   (und damit kollisionsanfällig) sind: `ExpCalc` (`equals`),
+   `UnknownToDoubleCalc` (`Objects.equals`), die entboxenden
+   `compareValues(double,double)` und `FunUtil.sum` (primitiver Re-Check).
+3. **`NULL <> x` liefert `false`:** `BOOLEAN_NULL == false` macht NULL in
+   allen sechs Vergleichs-Calcs von FALSE ununterscheidbar.
+4. **Java-`null`-Operanden werfen heute NPE** in den sechs Vergleichs-Calcs,
+   `DoubleToBooleanCalc`, `AcosCalc`, `Log10Calc`, `SqrtPiCalc`, `ExpCalc`
+   (Unboxing vor Guard); Arithmetik-Operatoren und `AsinhCalc` tolerieren
+   `null`. Für Phase 3 (R1-Sweep) ist das die präzise Ausgangslage.
+5. **MDX-/Cell-Ebene (rolap `testkit/core/.../nullsemantics/`, 18 Tests):**
+   `Cell.getValue()` liefert für NULL-Zellen bereits heute Java-`null`
+   (widerspricht dem „nie null"-Javadoc — Phase 4 passt nur noch die Doku
+   an, nicht das Verhalten). Die Kollisions-Zelle (`0.000000012345`) meldet
+   `isNull() == true`, `getValue()` gibt aber zugleich das rohe Sentinel
+   zurück — inkonsistentes Doppelgesicht, eingefroren im Companion-Test.
+   `1/NULL` rendert als String `"Infinity"`. Sortierung: BASC stellt NULLs
+   nach vorn, TopCount überspringt NULL-Member vollständig. `Avg` teilt
+   durch die Anzahl der Nicht-NULL-Zeilen. DECIMAL(19,4): exakte Summe
+   112345678901234.5682 kommt als double 1.1234567890123456E14 an
+   (.0082-Rest weg). Merker fürs Testkit: `Column.setIsNullable(…)` nötig,
+   sonst NOT-NULL-DDL; `Position.getMembers()` liefert dort null —
+   Position direkt als `List<Member>` verwenden.
+6. XMLA-Konverter (`XmlaNullCellCharacterizationTest`, xmla/bridge):
+   NULL-Unterdrückung läuft ausschließlich über `Cell.isNull()`; NULL-Zelle
+   mit nicht-null FORMATTED_VALUE wird **mit** Zelleintrag, aber **ohne**
+   `<Value>`-Element serialisiert; alle-Properties-null → Zelle entfällt
+   (außer Ordinal 0); `+Infinity` → `"INF"`.
+
 ## Offene Recherchelücken (vor Umsetzung der jeweiligen Phase klären)
 
 1. **Measure-Typisierung (für Doc 09 Regel 2 / Phase 5b):** Die Stelle, an
