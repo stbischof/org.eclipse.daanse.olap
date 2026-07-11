@@ -24,6 +24,7 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.common.Util;
@@ -72,7 +73,7 @@ public class TopBottomPercentSumCalc extends AbstractProfilingNestedTupleListCal
             }
             final List<Member> key = list.get(i);
             final Object o = mapMemberToValue.get(key);
-            if (o == Util.nullValue) {
+            if (NullSemantics.isNullValue(o)) {
                 nullCount++;
             } else if (o instanceof Number n) {
                 runningTotal += n.doubleValue();

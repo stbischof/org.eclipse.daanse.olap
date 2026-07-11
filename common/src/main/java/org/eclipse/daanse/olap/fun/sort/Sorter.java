@@ -27,7 +27,6 @@
 
 package org.eclipse.daanse.olap.fun.sort;
 
-import static org.eclipse.daanse.olap.common.Util.DOUBLE_NULL;
 import static org.eclipse.daanse.olap.common.Util.newInternal;
 
 import java.time.LocalDateTime;
@@ -53,6 +52,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.execution.Execution;
 import org.eclipse.daanse.olap.api.type.ScalarType;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.DelegatingTupleList;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.common.SystemWideProperties;
@@ -82,7 +82,7 @@ public class Sorter {
    * @param memberList List to be populated with members, or null
    * @param parentsToo If true, evaluate the expression for all ancestors of the members as well exp != null
    *                   exp.getType() instanceof ScalarType
-   */
+ */
   static Map<Member, Object> evaluateMembers(
     Evaluator evaluator,
     Calc exp,
@@ -128,7 +128,7 @@ public class Sorter {
    * @param evaluator Evaluation context
    * @param exp       Expression to evaluate
    * @param tuples    List of tuples exp != null exp.getType() instanceof ScalarType
-   */
+ */
   public static Map<List<Member>, Object> evaluateTuples(
     Evaluator evaluator,
     Calc exp,
@@ -172,7 +172,7 @@ public class Sorter {
    * @param desc       Whether to sort descending
    * @param brk        Whether to break
    * @return sorted list (never null)
-   */
+ */
   public static List<Member> sortMembers(
     Evaluator evaluator,
     Iterable<Member> memberIter,
@@ -237,7 +237,7 @@ public class Sorter {
    * OrderSet function.
    *
    * NOTE: Does not preserve the contents of the validator.
-   */
+ */
   public static List<Member> sortMembers(
     Evaluator evaluator,
     Iterable<Member> memberIter,
@@ -299,7 +299,7 @@ public class Sorter {
    * @param brk           Whether to break
    * @param arity         Number of members in each tuple
    * @return sorted list (never null)
-   */
+ */
   public static TupleList sortTuples(
     Evaluator evaluator,
     TupleIterable tupleIterable,
@@ -377,7 +377,7 @@ public class Sorter {
    * @param limit     maximum count of members to return.
    * @param desc      true to sort descending (and find TopCount), false to sort ascending (and find BottomCount).
    * @return the top or bottom members, as a new list.
-   */
+ */
   public static List<Member> partiallySortMembers(
     Evaluator evaluator,
     List<Member> list,
@@ -413,7 +413,7 @@ public class Sorter {
    * Helper function to sort a list of tuples according to a list of expressions and a list of sorting flags.
    *
    * NOTE: This function does not preserve the contents of the validator.
-   */
+ */
   public static TupleList sortTuples(
     Evaluator evaluator,
     TupleIterable tupleIter,
@@ -438,7 +438,7 @@ public class Sorter {
 
   /*
    * ONLY VisibleForTesting
-   */
+ */
   static Comparator<List<Member>> applySortSpecToComparator( Evaluator evaluator, int arity, Comparator<List<Member>> chain,
                                          SortKeySpec key ) {
     boolean brk = key.getDirection().brk;
@@ -494,7 +494,7 @@ public class Sorter {
    * @param limit     maximum count of tuples to return.
    * @param desc      true to sort descending (and find TopCount), false to sort ascending (and find BottomCount).
    * @return the top or bottom tuples, as a new list.
-   */
+ */
   public static List<List<Member>> partiallySortTuples(
     Evaluator evaluator,
     TupleList list,
@@ -517,7 +517,7 @@ public class Sorter {
    * @param memberList List of members
    * @param post       Whether to sort in post order; if false, sorts in pre order
    * @see #hierarchizeTupleList(org.eclipse.daanse.olap.api.calc.tuple.TupleList, boolean)
-   */
+ */
   public static void hierarchizeMemberList(
     List<Member> memberList,
     boolean post ) {
@@ -535,7 +535,7 @@ public class Sorter {
    * @param tupleList List of tuples
    * @param post      Whether to sort in post order; if false, sorts in pre order
    * @see #hierarchizeMemberList(java.util.List, boolean)
-   */
+ */
   public static TupleList hierarchizeTupleList(
     TupleList tupleList,
     boolean post ) {
@@ -565,42 +565,11 @@ public class Sorter {
    * -inf &lt; NULL &lt; ... &lt; -1 &lt; ... &lt; 0 &lt; ... &lt; NaN &lt; +inf
    *
    * but this is different than Java semantics, specifically with regard to {@link Double#NaN}.
-   */
+ */
   public static int compareValues( double d1, double d2 ) {
-    if ( Double.isNaN( d1 ) ) {
-      if ( d2 == Double.POSITIVE_INFINITY ) {
-        return -1;
-      } else if ( Double.isNaN( d2 ) ) {
-        return 0;
-      } else {
-        return 1;
-      }
-    } else if ( Double.isNaN( d2 ) ) {
-      if ( d1 == Double.POSITIVE_INFINITY ) {
-        return 1;
-      } else {
-        return -1;
-      }
-    } else if ( d1 == d2 ) {
-      return 0;
-    } else if ( d1 == DOUBLE_NULL) {
-      if ( d2 == Double.NEGATIVE_INFINITY ) {
-        return 1;
-      } else {
-        return -1;
-      }
-    } else if ( d2 == DOUBLE_NULL) {
-      if ( d1 == Double.NEGATIVE_INFINITY ) {
-        return -1;
-      } else {
-        return 1;
-      }
-    } else if ( d1 < d2 ) {
-      return -1;
-    } else {
-      return 1;
-    }
+    return NullSemantics.compare( d1, d2 );
   }
+
 
   /**
    * Compares two cell values.
@@ -611,52 +580,18 @@ public class Sorter {
    * @param value0 First cell value
    * @param value1 Second cell value
    * @return -1, 0, or 1, depending upon whether first cell value is less than, equal to, or greater than the second
-   */
+ */
   public static int compareValues( Object value0, Object value1 ) {
-    if ( value0 == value1 ) {
-      return 0;
-    }
-    // null is less than anything else
-    if ( value0 == null ) {
-      return -1;
-    }
-    if ( value1 == null ) {
-      return 1;
-    }
-
-    if ( value0 == Util.valueNotReadyException ) {
-      // the left value is not in cache; continue as best as we can
-      return -1;
-    } else if ( value1 == Util.valueNotReadyException ) {
-      // the right value is not in cache; continue as best as we can
-      return 1;
-    } else if ( value0 == Util.nullValue ) {
-      return -1; // null == -infinity
-    } else if ( value1 == Util.nullValue ) {
-      return 1; // null == -infinity
-    } else if ( value0 instanceof String ) {
-      return ( (String) value0 ).compareToIgnoreCase( (String) value1 );
-    } else if ( value0 instanceof Number ) {
-      return Sorter.compareValues(
-        ( (Number) value0 ).doubleValue(),
-        ( (Number) value1 ).doubleValue() );
-    } else if ( value0 instanceof Date ) {
-      return ( (Date) value0 ).compareTo( (Date) value1 );
-    } else if ( value0 instanceof LocalDateTime ) {
-        return ( (LocalDateTime) value0 ).compareTo( (LocalDateTime) value1 );
-    } else if ( value0 instanceof OrderKey orderKey0 && value1 instanceof OrderKey orderKey1 ) {
-      return orderKey0.compareTo( orderKey1);
-    } else {
-      throw newInternal( "cannot compare " + value0 );
-    }
+    return NullSemantics.compareCellValues( value0, value1 );
   }
+
 
 
   /**
    * Converts a double (primitive) value to a Double. DoubleNull becomes null.
-   */
+ */
   public static Double box( double d ) {
-    return d == DOUBLE_NULL
+    return NullSemantics.isNull( d )
       ? null
       : d;
   }
@@ -672,7 +607,7 @@ public class Sorter {
    * @param post Whether to sortMembers in postfix order. If true, a parent will sortMembers immediately after its last
    *             child. If false, a parent will sortMembers immediately before its first child.
    * @return -1 if m1 collates before m2, 0 if m1 equals m2, 1 if m1 collates after m2
-   */
+ */
   public static int compareHierarchically(
     Member m1,
     Member m2,
@@ -744,7 +679,7 @@ public class Sorter {
    * @param m1 First member
    * @param m2 Second member
    * @return -1 if m1 collates less than m2, 1 if m1 collates after m2, 0 if m1 == m2.
-   */
+ */
   public static int compareSiblingMembers( Member m1, Member m2 ) {
     // calculated members collate after non-calculated
     final boolean calculated1 = m1.isCalculatedInQuery();
@@ -791,7 +726,7 @@ public class Sorter {
    *
    * @param items will be partially-sorted in place
    * @param comp  a Comparator; null means use natural comparison
-   */
+ */
   static <T> void partialSort( T[] items, Comparator<T> comp, int limit ) {
     if ( comp == null ) {
       //noinspection unchecked
@@ -803,7 +738,7 @@ public class Sorter {
 
   /**
    * Stable partial sort of a list. Returns the desired head of the list.
-   */
+ */
   public static <T> List<T> stablePartialSort(
     final List<T> list, final Comparator<T> comp, int limit ) {
     return stablePartialSort( list, comp, limit, 0 );
@@ -811,7 +746,7 @@ public class Sorter {
 
   /**
    * Stable partial sort of a list, using a specified algorithm.
-   */
+ */
   public static <T> List<T> stablePartialSort(
     final List<T> list, final Comparator<T> comp, int limit, int algorithm ) {
     assert limit <= list.size();
@@ -843,7 +778,7 @@ public class Sorter {
   /**
    * Partial sort an array by sorting it and returning the first {@code limit} elements. Fastest approach if limit is a
    * significant fraction of the list.
-   */
+ */
   public static <T> List<T> stablePartialSortArray(
     final List<T> list, final Comparator<T> comp, int limit ) {
     ArrayList<T> list2 = new ArrayList<>( list );
@@ -853,7 +788,7 @@ public class Sorter {
 
   /**
    * Marc's original algorithm for stable partial sort of a list. Now superseded by {@link #stablePartialSortJulian}.
-   */
+ */
   public static <T> List<T> stablePartialSortMarc(
     final List<T> list, final Comparator<T> comp, int limit ) {
     assert limit >= 0;
@@ -910,7 +845,7 @@ public class Sorter {
    * @param limit Maximum number of items to return
    * @param <T>   Element type
    * @return Sorted list, containing at most limit items
-   */
+ */
   public static <T> List<T> stablePartialSortJulian(
     final List<T> list, final Comparator<T> comp, int limit ) {
     final Comparator<ObjIntPair<T>> comp2 =
@@ -953,7 +888,7 @@ public class Sorter {
 
   /**
    * Enumeration of the flags allowed to the {@code ORDER} MDX function.
-   */
+ */
   public enum SorterFlag {
     ASC( false, false ),
     DESC( true, false ),
@@ -980,7 +915,7 @@ public class Sorter {
    *
    * Similar to {@link org.eclipse.daanse.olap.util.Pair}, but saves boxing overhead of converting
    * {@code int} to {@link Integer}.
-   */
+ */
   public static class ObjIntPair<T> {
     final T t;
     final int i;

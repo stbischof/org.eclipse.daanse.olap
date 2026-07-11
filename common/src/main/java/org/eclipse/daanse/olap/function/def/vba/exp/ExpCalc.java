@@ -16,8 +16,8 @@ package org.eclipse.daanse.olap.function.def.vba.exp;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.common.Util;
 
 public class ExpCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -28,7 +28,7 @@ public class ExpCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double number = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
-        if (Util.DOUBLE_NULL.equals(number)) {
+        if (NullSemantics.isSentinelOnly(number)) {
             return null;
         }
         return Math.exp(number);

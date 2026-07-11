@@ -16,6 +16,7 @@ package org.eclipse.daanse.olap.function.def.operators.plus;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
@@ -30,14 +31,14 @@ public class PlusCalc extends AbstractProfilingNestedDoubleCalc {
         final Double v0 = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
         final Double v1 = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
 
-        if (v0 == FunUtil.DOUBLE_NULL || v0 == null) {
-            if (v1 == FunUtil.DOUBLE_NULL || v1 == null) {
+        if (NullSemantics.isNull(v0)) {
+            if (NullSemantics.isNull(v1)) {
                 return FunUtil.DOUBLE_NULL;
             } else {
                 return v1;
             }
         } else {
-            if (v1 == FunUtil.DOUBLE_NULL || v1 == null) {
+            if (NullSemantics.isNull(v1)) {
                 return v0;
             } else {
                 return v0 + v1;

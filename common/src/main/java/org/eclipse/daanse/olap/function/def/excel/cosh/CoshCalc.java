@@ -16,8 +16,8 @@ package org.eclipse.daanse.olap.function.def.excel.cosh;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class CoshCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -28,7 +28,7 @@ public class CoshCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double number = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
-        if (number == FunUtil.DOUBLE_NULL) {
+        if (NullSemantics.isSentinelOnly(number)) {
             return null;
         }
         return Math.cosh(number);

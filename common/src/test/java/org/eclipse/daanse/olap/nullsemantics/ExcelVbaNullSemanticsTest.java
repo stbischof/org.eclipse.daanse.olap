@@ -45,9 +45,10 @@ import org.junit.jupiter.api.Test;
  *   SqrtPiCalc): identity-based, NPE on Java null input.
  * - {@code x == FunUtil.DOUBLE_NULL || x == null} (AsinhCalc): identity-based,
  *   Java null handled.
- * - {@code Util.DOUBLE_NULL.equals(number)} (vba ExpCalc): VALUE-based — a
- *   runtime-computed 0.000000012345 COLLIDES and is treated as NULL, unlike
- *   in DivideCalc/AcosCalc where the identity check lets it pass as a value.
+ * - vba ExpCalc: since (idiom normalized to
+ *   {@code NullSemantics.isSentinelOnly}, see the design notes
+ *   AcosCalc — a runtime-computed 0.000000012345 no longer collides and is
+ *   treated as an ordinary value.
  */
 class ExcelVbaNullSemanticsTest {
 
@@ -126,7 +127,7 @@ class ExcelVbaNullSemanticsTest {
         @DisplayName("computed 0.000000012345 passes the identity check and is computed as a value")
         void computedSentinelValueIsTreatedAsValue() {
             // Identity-based check misses the value-equal distinct instance.
-            // flips once the sentinel encoding is gone.
+            // Will be inverted in , see the null-semantics notes
             stubArgument(distinctSentinelValue());
             assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
                     .isEqualTo(Math.acos(SENTINEL_VALUE));
@@ -223,7 +224,7 @@ class ExcelVbaNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("ExpCalc (vba): VALUE-based equals check")
+    @DisplayName("ExpCalc (vba): identity-based sentinel check (since )")
     class ExpCalcCharacterization {
 
         @Test
@@ -241,19 +242,22 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("COLLISION: computed 0.000000012345 is also treated as NULL (value-based equals)")
+        @DisplayName("computed 0.000000012345 passes the identity check and is computed as a value")
         void computedSentinelValueCollides() {
-            // Unlike AcosCalc/DivideCalc (identity '=='), ExpCalc uses
-            // Util.DOUBLE_NULL.equals(number): a genuine value of
-            // 0.000000012345 from ANY source is swallowed as NULL. This is
-            // the value-collision bug; the assertion will be inverted in
-            //
+            // Historically ExpCalc used Util.DOUBLE_NULL.equals(number) and
+            // swallowed a genuine 0.000000012345 as NULL (value collision).
+            // The idiom was normalized to the identity-based
+            // NullSemantics.isSentinelOnly in (sanctioned hardening,
+            //.
+            // 06-migrationsplan-phasen.md), so a value-equal distinct Double
+            // is now an ordinary value, in line with AcosCalc/DivideCalc.
             stubArgument(distinctSentinelValue());
-            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
+            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
+                    .isEqualTo(Math.exp(SENTINEL_VALUE));
         }
 
         @Test
-        @DisplayName("Java null input throws NullPointerException (equals(null) is false, then Math.exp unboxes)")
+        @DisplayName("Java null input throws NullPointerException (sentinel check is false, then Math.exp unboxes)")
         void javaNullThrows() {
             stubArgument(null);
             assertThatThrownBy(() -> new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))

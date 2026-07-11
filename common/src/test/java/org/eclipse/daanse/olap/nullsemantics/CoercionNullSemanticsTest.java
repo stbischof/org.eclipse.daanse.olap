@@ -43,8 +43,9 @@ import org.junit.jupiter.api.Test;
  * Frozen characteristics:
  * - DoubleToBooleanCalc: sentinel (identity) and NaN map to BOOLEAN_NULL,
  *   which is the primitive false; Java null input throws NPE.
- * - UnknownToDoubleCalc: uses Objects.equals — VALUE-based, so any incoming
- *   0.000000012345 collides and becomes NULL.
+ * - UnknownToDoubleCalc: since (idiom normalized to
+ *   {@code NullSemantics.isNullValue}, see the design notes
+ *   incoming value-equal 0.000000012345 no longer collides.
  * - IntegerToDoubleCalc: Java null input PRODUCES the DOUBLE_NULL singleton.
  */
 class CoercionNullSemanticsTest {
@@ -109,7 +110,7 @@ class CoercionNullSemanticsTest {
         void computedSentinelValueIsTreatedAsValue() {
             // The '== FunUtil.DOUBLE_NULL' check is reference-based; a
             // value-equal distinct instance is treated as an ordinary non-zero
-            // number. flips once the sentinel encoding is gone.
+            // number. Will be inverted in , see the null-semantics notes
             when(doubleCalc.evaluate(evaluator)).thenReturn(distinctSentinelValue());
             assertThat(calc.evaluate(evaluator)).isTrue();
         }
@@ -123,7 +124,7 @@ class CoercionNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("UnknownToDoubleCalc: VALUE-based sentinel check (Objects.equals)")
+    @DisplayName("UnknownToDoubleCalc: identity-based sentinel check (since )")
     class UnknownToDoubleCharacterization {
 
         private Calc<Object> childCalc;
@@ -151,17 +152,19 @@ class CoercionNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("COLLISION: any incoming 0.000000012345 is normalized to the DOUBLE_NULL singleton")
+        @DisplayName("incoming value-equal 0.000000012345 passes the identity check and is passed through")
         void computedSentinelValueCollides() {
-            // Objects.equals(o, FunUtil.DOUBLE_NULL) compares BY VALUE: a
-            // genuine 0.000000012345 from ANY source is swallowed as NULL
-            // here — unlike the identity-checking operator calcs. This is the
-            // value-collision bug; the assertion flips once the sentinel encoding is gone.
+            // Historically this calc used Objects.equals(o, FunUtil.DOUBLE_NULL)
+            // and normalized a genuine 0.000000012345 from ANY source to the
+            // NULL singleton (value collision). The idiom was normalized to
+            // the identity-based NullSemantics.isNullValue in // (sanctioned hardening, see the null-semantics notes so a
+            // value-equal distinct Double is now passed through as an
+            // ordinary value, in line with the identity-checking operator calcs.
             Double genuineTinyValue = distinctSentinelValue();
             assertThat(genuineTinyValue).isNotSameAs(FunUtil.DOUBLE_NULL);
             when(childCalc.evaluate(evaluator)).thenReturn(genuineTinyValue);
 
-            assertThat(calc.evaluate(evaluator)).isSameAs(FunUtil.DOUBLE_NULL);
+            assertThat(calc.evaluate(evaluator)).isSameAs(genuineTinyValue);
         }
 
         @Test

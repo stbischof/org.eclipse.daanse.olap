@@ -16,8 +16,8 @@ package org.eclipse.daanse.olap.function.def.excel.asin;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class AsinCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -28,7 +28,7 @@ public class AsinCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double x = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
-        if (x == FunUtil.DOUBLE_NULL) {
+        if (NullSemantics.isSentinelOnly(x)) {
             return null;
         }
         return Math.asin(x);

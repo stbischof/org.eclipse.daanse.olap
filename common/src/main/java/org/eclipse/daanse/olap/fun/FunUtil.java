@@ -74,6 +74,7 @@ import org.eclipse.daanse.olap.api.type.MemberType;
 import org.eclipse.daanse.olap.api.type.ScalarType;
 import org.eclipse.daanse.olap.api.type.TupleType;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.element.PropertyBase;
@@ -110,18 +111,22 @@ public class FunUtil extends Util {
   /**
    * Special value which indicates that a {@code double} computation has returned the MDX EMPTY value. See {@link
    * DoubleCalc}.
-   */
+   *
+   * @deprecated Dead sentinel, unused outside one test; removal in migration
+   *             .
+ */
+  @Deprecated(forRemoval = true)
   public static final double DOUBLE_EMPTY = -0.000000012345;
 
 //  /**
 //   * Special value which indicates that an {@code int} computation has returned the MDX null value. See {@link
 //   * org.eclipse.daanse.olap.calc.api.IntegerCalc}.
-//   */
+// */
 //  public static final int INTEGER_NULL = Integer.MIN_VALUE + 1;
 
   /**
    * Null value in three-valued boolean logic. Actually, a placeholder until we actually implement 3VL.
-   */
+ */
   public static final boolean BOOLEAN_NULL = false;
     private final static String memberNotInLevelHierarchy = "The member ''{0}'' is not in the same hierarchy as the level ''{1}''.";
 
@@ -131,7 +136,7 @@ public class FunUtil extends Util {
    * @param functionMetaData  Function meta data
    * @param message Explanatory message
    * @return Exception that can be used as a cell result
-   */
+ */
   public static RuntimeException newEvalException(
 		  FunctionMetaData functionMetaData ,
     String message ) {
@@ -143,7 +148,7 @@ public class FunUtil extends Util {
    *
    * @param throwable Exception
    * @return Exception that can be used as a cell result
-   */
+ */
   public static RuntimeException newEvalException( Throwable throwable ) {
     return new DaanseEvaluationException(
       new StringBuilder(throwable.getClass().getName()).append(": ").append(throwable.getMessage()).toString() );
@@ -155,7 +160,7 @@ public class FunUtil extends Util {
    * @param message   Explanatory message
    * @param throwable Exception
    * @return Exception that can be used as a cell result
-   */
+ */
   public static RuntimeException newEvalException(
     String message,
     Throwable throwable ) {
@@ -188,7 +193,7 @@ public class FunUtil extends Util {
 
   /**
    * Returns an argument whose value is a literal.
-   */
+ */
 
   public static String getLiteralArg(
     ResolvedFunCall call,
@@ -232,7 +237,7 @@ public class FunUtil extends Util {
   /**
    * Returns the ordinal of a literal argument. If the argument does not belong to the supplied enumeration, returns
    * -1.
-   */
+ */
   public static <E extends Enum<E>> E getLiteralArg(
     ResolvedFunCall call,
     int i,
@@ -277,7 +282,7 @@ public class FunUtil extends Util {
    * Throws an error if the expressions don't have the same hierarchy.
    *
    * @throws DaanseEvaluationException if expressions don't have the same hierarchy
-   */
+ */
   public static void checkCompatible( Expression left, Expression right, FunctionDefinition funDef ) {
     final Type leftType = TypeUtil.stripSetType( left.getType() );
     final Type rightType = TypeUtil.stripSetType( right.getType() );
@@ -289,7 +294,7 @@ public class FunUtil extends Util {
 
   /**
    * Adds every element of {@code right} which is not in {@code set} to both {@code set} and {@code left}.
-   */
+ */
   public static void addUnique(
     TupleList left,
     TupleList right,
@@ -339,7 +344,7 @@ public class FunUtil extends Util {
    *
    * @param memberList Member list
    * @return List of non-calculated members
-   */
+ */
   static List<Member> removeCalculatedMembers( List<Member> memberList ) {
     List<Member> clone = new ArrayList<>();
     for ( Member member : memberList ) {
@@ -357,7 +362,7 @@ public class FunUtil extends Util {
    *
    * @param memberList Member list
    * @return List of non-calculated members
-   */
+ */
   public static TupleList removeCalculatedMembers( TupleList memberList ) {
     if ( memberList.getArity() == 1 ) {
       return new UnaryTupleList(
@@ -383,7 +388,7 @@ public class FunUtil extends Util {
    * Returns whether {@code m0} is an ancestor of {@code m1}.
    *
    * @param strict if true, a member is not an ancestor of itself
-   */
+ */
   public static boolean isAncestorOf( Member m0, Member m1, boolean strict ) {
     if ( strict ) {
       if ( m1 == null ) {
@@ -408,41 +413,9 @@ public class FunUtil extends Util {
    * -inf &lt; NULL &lt; ... &lt; -1 &lt; ... &lt; 0 &lt; ... &lt; NaN &lt; +inf
    *
    * but this is different than Java semantics, specifically with regard to {@link Double#NaN}.
-   */
+ */
   public static int compareValues( double d1, double d2 ) {
-    if ( Double.isNaN( d1 ) ) {
-      if ( d2 == Double.POSITIVE_INFINITY ) {
-        return -1;
-      } else if ( Double.isNaN( d2 ) ) {
-        return 0;
-      } else {
-        return 1;
-      }
-    } else if ( Double.isNaN( d2 ) ) {
-      if ( d1 == Double.POSITIVE_INFINITY ) {
-        return 1;
-      } else {
-        return -1;
-      }
-    } else if ( d1 == d2 ) {
-      return 0;
-    } else if ( d1 == FunUtil.DOUBLE_NULL) {
-      if ( d2 == Double.NEGATIVE_INFINITY ) {
-        return 1;
-      } else {
-        return -1;
-      }
-    } else if ( d2 == FunUtil.DOUBLE_NULL) {
-      if ( d1 == Double.NEGATIVE_INFINITY ) {
-        return -1;
-      } else {
-        return 1;
-      }
-    } else if ( d1 < d2 ) {
-      return -1;
-    } else {
-      return 1;
-    }
+    return NullSemantics.compare( d1, d2 );
   }
 
   /**
@@ -454,48 +427,15 @@ public class FunUtil extends Util {
    * @param value0 First cell value
    * @param value1 Second cell value
    * @return -1, 0, or 1, depending upon whether first cell value is less than, equal to, or greater than the second
-   */
+ */
   public static int compareValues( Object value0, Object value1 ) {
-    if ( value0 == value1 ) {
-      return 0;
-    }
-    // null is less than anything else
-    if ( value0 == null ) {
-      return -1;
-    }
-    if ( value1 == null ) {
-      return 1;
-    }
-
-    if ( value0 == Util.valueNotReadyException ) {
-      // the left value is not in cache; continue as best as we can
-      return -1;
-    } else if ( value1 == Util.valueNotReadyException ) {
-      // the right value is not in cache; continue as best as we can
-      return 1;
-    } else if ( value0 == Util.nullValue ) {
-      return -1; // null == -infinity
-    } else if ( value1 == Util.nullValue ) {
-      return 1; // null == -infinity
-    } else if ( value0 instanceof String str) {
-      return str.compareToIgnoreCase( (String) value1 );
-    } else if ( value0 instanceof Number numberValue0) {
-      return FunUtil.compareValues(
-          numberValue0.doubleValue(),
-        ( (Number) value1 ).doubleValue() );
-    } else if ( value0 instanceof Date date) {
-      return date.compareTo( (Date) value1 );
-    } else if ( value0 instanceof OrderKey orderKey && value1 instanceof OrderKey orderKeyOther) {
-      return orderKey.compareTo( orderKeyOther);
-    } else {
-      throw Util.newInternal( "cannot compare " + value0 );
-    }
+    return NullSemantics.compareCellValues( value0, value1 );
   }
 
   /**
    * Turns the mapped values into relative values (percentages) for easy use by the general topOrBottom function. This
    * might also be a useful function in itself.
-   */
+ */
   public static void toPercent(
     TupleList members,
     Map<List<Member>, Object> mapMemberToValue ) {
@@ -587,7 +527,7 @@ public class FunUtil extends Util {
    * @param exp       Expression to rank members
    * @param range     Quartile (1, 2 or 3)
    *  range more or equals 1 and range less or equals 3
-   */
+ */
   public static double quartile(
     Evaluator evaluator,
     TupleList members,
@@ -800,7 +740,7 @@ public class FunUtil extends Util {
     TupleList members,
     Calc exp ) {
     double d = FunUtil.sumDouble( evaluator, members, exp );
-    return d == FunUtil.DOUBLE_NULL ? Util.nullValue : Double.valueOf( d );
+    return NullSemantics.isNull( d ) ? Util.nullValue : Double.valueOf( d );
   }
 
   public static double sumDouble(
@@ -876,7 +816,7 @@ public class FunUtil extends Util {
    * values.
    *
    *  exp != null
-   */
+ */
   static SetWrapper evaluateSet(
     Evaluator evaluator,
     TupleIterable members,
@@ -896,7 +836,7 @@ public class FunUtil extends Util {
         currentIteration++, execution );
       cursor.setContext( evaluator );
       Object o = calc.evaluate( evaluator );
-      if ( o == null || o == Util.nullValue ) {
+      if ( NullSemantics.isNull( o ) ) {
         retval.nullCount++;
       } else if ( o == Util.valueNotReadyException ) {
         // Carry on summing, so that if we are running in a
@@ -920,7 +860,7 @@ public class FunUtil extends Util {
    * might be null) - this allows higher level code to determine how to handle the lack of data rather than having a
    * non-equal number (if one is plotting x,y values it helps to have the same number and know where a potential gap is
    * the data is.
-   */
+ */
   public static SetWrapper[] evaluateSet(
     Evaluator evaluator,
     TupleList list,
@@ -947,7 +887,7 @@ public class FunUtil extends Util {
         if (o == null) {
           LOGGER.debug("Calc evaluated to null: {}", calc);
         }
-        if ( o == FunUtil.DOUBLE_NULL) {
+        if ( NullSemantics.isSentinelOnly( o )) {
           retval.nullCount++;
           retval.v.add( null );
         } else {
@@ -1019,7 +959,7 @@ public class FunUtil extends Util {
    * @param ancestorMember The cousin's ancestor.
    * @return The child of {@code ancestorMember} in the same position under {@code ancestorMember} as {@code member} is
    * under its parent.
-   */
+ */
   public static Member cousin(
     CatalogReader schemaReader,
     Member member,
@@ -1079,7 +1019,7 @@ public class FunUtil extends Util {
    * @param targetLevel The desired targetLevel of the ancestor. If {@code null}, then the distance completely
    *                    determines the desired ancestor.
    * @return The ancestor member, or {@code null} if no such ancestor exists.
-   */
+ */
   public static Member ancestor(
     Evaluator evaluator,
     Member member,
@@ -1160,7 +1100,7 @@ public class FunUtil extends Util {
    * @param m1 First member
    * @param m2 Second member
    * @return -1 if m1 collates less than m2, 1 if m1 collates after m2, 0 if m1 == m2.
-   */
+ */
   public static int compareSiblingMembers( Member m1, Member m2 ) {
     // calculated members collate after non-calculated
     final boolean calculated1 = m1.isCalculatedInQuery();
@@ -1191,7 +1131,7 @@ public class FunUtil extends Util {
 
   /**
    * Returns whether one of the members in a tuple is null.
-   */
+ */
   public static boolean tupleContainsNullMember( Member[] tuple ) {
     for ( Member member : tuple ) {
       if ( member.isNull() ) {
@@ -1203,7 +1143,7 @@ public class FunUtil extends Util {
 
   /**
    * Returns whether one of the members in a tuple is null.
-   */
+ */
   public static boolean tupleContainsNullMember( List<Member> tuple ) {
     for ( Member member : tuple ) {
       if ( member.isNull() ) {
@@ -1240,7 +1180,7 @@ public class FunUtil extends Util {
    * @param newArgs   Output parameter for the resolved arguments
    * @param operationAtom      Operation Atom
    * @return resolved function definition
-   */
+ */
   public static FunctionDefinition resolveFunArgs(
     Validator validator,
     FunctionDefinition funDef,
@@ -1264,7 +1204,7 @@ public class FunUtil extends Util {
    * @param validator Validator used to validate function arguments and resolve the function
    * @param funDef    Function definition, or null to deduce definition from name, syntax and argument types
    * @param args      Arguments to the function
-   */
+ */
   private static void checkNativeCompatible(
     Validator validator,
     FunctionDefinition funDef,
@@ -1336,7 +1276,7 @@ public class FunUtil extends Util {
    * The members are allowed to be in different positions. For example,
    * ([Gender].[M], [Store].[USA]) IS ([Store].[USA],
    * [Gender].[M]) returns {@code true}.
-   */
+ */
   public static boolean equalTuple( Member[] members0, Member[] members1 ) {
     final int count = members0.length;
     if ( count != members1.length ) {
@@ -1394,7 +1334,7 @@ public class FunUtil extends Util {
    * @param evaluator          Evaluator, determines non-empty criteria
    * @param level              Level
    * @param includeCalcMembers Whether to include calculated members
-   */
+ */
   static List<Member> getNonEmptyLevelMembers(
     final Evaluator evaluator,
     final Level level,
@@ -1484,7 +1424,7 @@ public class FunUtil extends Util {
    * @param members     Output array of members
    * @param hierarchies Hierarchies of the members
    * @return Position where parsing ended in string
-   */
+ */
   private static int parseTuple(
     final Evaluator evaluator,
     String string,
@@ -1512,7 +1452,7 @@ public class FunUtil extends Util {
    * @param string      String to parse
    * @param hierarchies Hierarchies of the members
    * @return Tuple represented as array of members
-   */
+ */
   public static Member[] parseTuple(
     Evaluator evaluator,
     String string,
@@ -1575,7 +1515,7 @@ public class FunUtil extends Util {
    *
    * @param exp Expression
    * @return Whether worth caching
-   */
+ */
   public static boolean worthCaching( Expression exp ) {
     // Literal is not worth caching.
     if ( exp instanceof Literal ) {
@@ -1611,7 +1551,7 @@ public class FunUtil extends Util {
    * @return true if each member from leftTuple is somewhere in the hierarchy chain of the corresponding member from
    * rightTuple, false otherwise. If there is no explicit corresponding member from either right or left, then the
    * default member is used.
-   */
+ */
   public static boolean existsInTuple(
     final List<Member> leftTuple, final List<Member> rightTuple,
     final List<Hierarchy> leftHierarchies,
@@ -1657,7 +1597,7 @@ public class FunUtil extends Util {
    * @param tuple            tuple containing the target member
    * @param tupleHierarchies list of the hierarchies explicitly contained in the tuple, in the same order.
    * @return target member
-   */
+ */
   private static Member getCorrespondingMember(
     final Member member, final List<Member> tuple,
     final List<Hierarchy> tupleHierarchies,
@@ -1703,11 +1643,11 @@ public class FunUtil extends Util {
    *
    * Nulls compare last, exceptions (including the
    * object which indicates the the cell is not in the cache yet) next, then numbers and strings are compared by value.
-   */
+ */
   public static class DescendingValueComparator implements Comparator<Object> {
     /**
      * The singleton.
-     */
+ */
     public static final DescendingValueComparator instance =
       new DescendingValueComparator();
 
@@ -1719,7 +1659,7 @@ public class FunUtil extends Util {
 
   /**
    * Null member of unknown hierarchy.
-   */
+ */
   private static class NullMember implements Member {
     @Override
 	public Member getParentMember() {

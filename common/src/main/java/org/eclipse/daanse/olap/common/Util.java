@@ -126,6 +126,7 @@ import org.eclipse.daanse.olap.api.query.component.QueryAxis;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
 import org.eclipse.daanse.olap.api.result.CellSet;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.profile.SimpleCalculationProfileWriter;
 import org.eclipse.daanse.olap.exceptions.MdxCantFindMemberException;
 import org.eclipse.daanse.olap.exceptions.MdxChildObjectNotFoundException;
@@ -175,34 +176,38 @@ public class Util {
     /**
      * Special value which indicates that a {@code double} computation has returned the MDX null value. See {@link
      * DoubleCalc}.
-     */
+ */
     public static final Double DOUBLE_NULL = Double.valueOf(0.000000012345);
 
     /**
      * Placeholder which indicates a value NULL.
-     */
+ */
     public static final Object nullValue = DOUBLE_NULL;
 
     /**
      * Special cell value indicates that the value is not in cache yet.
-     */
+ */
     public static final Object valueNotReadyException = Double.valueOf(0);
 
     /**
      * Placeholder which indicates an EMPTY value.
-     */
+     *
+     * @deprecated Dead sentinel, unused outside one test; removal in migration
+     *             .
+ */
+    @Deprecated(forRemoval = true)
     public static final Object EmptyValue = Double.valueOf(DOUBLE_EMPTY);
 
     /**
      * Special value represents a null key.
-     */
+ */
     public static final Comparable<?> sqlNullValue =
         Util.UtilComparable.INSTANCE;
 
     /**
      * A comparator singleton instance which can handle the presence of
      * RolapUtilComparable instances in a collection.
-     */
+ */
     public static final Comparator OLAP_COMPARATOR =
         new UtilComparator();
 
@@ -223,7 +228,7 @@ public class Util {
     } 
     
     public static boolean isNull(Object o) {
-        return o == null || o == nullValue;
+        return NullSemantics.isNull(o);
     }
 
     /**
@@ -231,7 +236,7 @@ public class Util {
      *
      * @param value The source string to parse.
      * @return A checksum of the source string.
-     */
+ */
     public static byte[] digestSha256(String value) {
         final MessageDigest algorithm;
         try {
@@ -247,7 +252,7 @@ public class Util {
      *
      * @param value String to create one way hash upon.
      * @return SHA-512 hash.
-     */
+ */
     public static byte[] digestSHA(final String value) {
         final MessageDigest algorithm;
         try {
@@ -270,7 +275,7 @@ public class Util {
      * @param name The name of the threads.
      * @param rejectionPolicy The rejection policy to enforce.
      * @return An executor service preconfigured.
-     */
+ */
     public static ExecutorService getExecutorService(
         int maximumPoolSize,
         int corePoolSize,
@@ -330,7 +335,7 @@ public class Util {
      * threads.
      * @param name The name of the threads.
      * @return An scheduled executor service preconfigured.
-     */
+ */
     public static ScheduledExecutorService getScheduledExecutorService(
         final int maxNbThreads,
         final String name)
@@ -353,7 +358,7 @@ public class Util {
 
     /**
      * Converts a string into a double-quoted string.
-     */
+ */
     public static String quoteForMdx(String val) {
         StringBuilder buf = new StringBuilder(val.length() + 20);
         quoteForMdx(buf, val);
@@ -362,7 +367,7 @@ public class Util {
 
     /**
      * Appends a double-quoted string to a string builder.
-     */
+ */
     public static StringBuilder quoteForMdx(StringBuilder buf, String val) {
         buf.append("\"");
         String s0 = val.replace("\"", "\"\"");
@@ -375,7 +380,7 @@ public class Util {
      * Return string quoted in [...].  For example, "San Francisco" becomes
      * "[San Francisco]"; "a [bracketed] string" becomes
      * "[a [bracketed]] string]".
-     */
+ */
     public static String quoteMdxIdentifier(String id) {
     	if (id != null) {
     		StringBuilder buf = new StringBuilder(id.length() + 20);
@@ -394,7 +399,7 @@ public class Util {
     /**
      * Return identifiers quoted in [...].[...].  For example, {"Store", "USA",
      * "California"} becomes "[Store].[USA].[California]".
-     */
+ */
     public static String quoteMdxIdentifier(List<Segment> ids) {
         StringBuilder sb = new StringBuilder(64);
         quoteMdxIdentifier(ids, sb);
@@ -418,7 +423,7 @@ public class Util {
      *
      * @param s Unquoted literal
      * @return Quoted string literal
-     */
+ */
     @SuppressWarnings("java:S5361") // need use replaceAll
     public static String quoteJavaString(String s) {
         return s == null
@@ -434,7 +439,7 @@ public class Util {
      * Takes into account the
      * {@link SystemWideProperties#CaseSensitive case sensitive option}.
      * Names may be null.
-     */
+ */
     public static boolean equalName(String s, String t) {
         if (s == null) {
             return t == null;
@@ -451,7 +456,7 @@ public class Util {
      * @param t Second string
      * @param matchCase Whether to perform case-sensitive match
      * @return Whether strings are equal
-     */
+ */
     public static boolean equalWithMatchCaseOption(String s, String t, boolean matchCase) {
         if (s == null) {
             return t == null;
@@ -465,7 +470,7 @@ public class Util {
      * Takes into account the {@link SystemWideProperties#CaseSensitive case
      * sensitive option}.
      * Names must not be null.
-     */
+ */
     public static int caseSensitiveCompareName(String s, String t) {
         boolean caseSensitive =
             SystemWideProperties.instance().CaseSensitive;
@@ -485,7 +490,7 @@ public class Util {
      * Takes into account the {@link SystemWideProperties#CaseSensitive case
      * sensitive option}.
      * Names must not be null.
-     */
+ */
     public static int compareName(String s, String t) {
         boolean caseSensitive =
             SystemWideProperties.instance().CaseSensitive;
@@ -497,7 +502,7 @@ public class Util {
      * Returns the upper case name if
      * {@link SystemWideProperties#CaseSensitive} is true, the name unchanged
      * otherwise.
-     */
+ */
     public static String normalizeName(String s) {
         return SystemWideProperties.instance().CaseSensitive
             ? s
@@ -508,7 +513,7 @@ public class Util {
      * Returns the result of ((Comparable) k1).compareTo(k2), with
      *
      * @see Comparable#compareTo
-     */
+ */
     public static int compareKey(Object k1, Object k2) {
         return ((Comparable) k1).compareTo(k2);
     }
@@ -519,7 +524,7 @@ public class Util {
      *
      * @param s MDX identifier
      * @return List of segments
-     */
+ */
     public static List<Segment> parseIdentifier(String s)  {
         return convert(
             IdentifierParser.parseIdentifier(s));
@@ -528,7 +533,7 @@ public class Util {
     /**
      * Converts an array of name parts {"part1", "part2"} into a single string
      * "[part1].[part2]". If the names contain "]" they are escaped as "]]".
-     */
+ */
     public static String implode(List<Segment> names) {
         StringBuilder sb = new StringBuilder(64);
         for (int i = 0; i < names.size(); i++) {
@@ -605,7 +610,7 @@ public class Util {
      * !(failIfNotFound and return == null)
      *
      * @see #parseIdentifier(String)
-     */
+ */
     public static OlapElement lookupCompound(
         CatalogReader catalogReader,
         OlapElement parent,
@@ -807,7 +812,7 @@ public class Util {
      * @param nameParts Parts of the identifier
      * @param allowProp Whether to allow property references
      * @return OLAP object or property reference
-     */
+ */
     public static Expression lookup(
         Query q,
         List<Segment> nameParts,
@@ -831,7 +836,7 @@ public class Util {
      * @param segments Parts of the identifier
      * @param allowProp Whether to allow property references
      * @return OLAP object or property reference
-     */
+ */
     public static Expression lookup(
         Query q,
         CatalogReader catalogReader,
@@ -930,7 +935,7 @@ public class Util {
      * @param cubeName Cube name
      * @param fail Whether to fail if not found.
      * @return Cube, or null if not found
-     */
+ */
     public static Cube lookupCube(
         CatalogReader schemaReader,
         String cubeName,
@@ -950,7 +955,7 @@ public class Util {
     /**
      * Converts an olap element (dimension, hierarchy, level or member) into
      * an expression representing a usage of that element in an MDX statement.
-     */
+ */
     public static Expression createExpr(OlapElement element)
     {
         if (element instanceof Member member) {
@@ -976,7 +981,7 @@ public class Util {
      * @param hierarchy Hierarchy
      * @param memberName Name of root member
      * @return Member, or null if not found
-     */
+ */
     public static Member lookupHierarchyRootMember(
         CatalogReader reader,
         Hierarchy hierarchy,
@@ -1064,7 +1069,7 @@ public class Util {
     /**
      * Finds a named level in this hierarchy. Returns null if there is no
      * such level.
-     */
+ */
     public static Level lookupHierarchyLevel(Hierarchy hierarchy, String s) {
         final List<? extends Level> levels = hierarchy.getLevels();
         for (Level level : levels) {
@@ -1079,7 +1084,7 @@ public class Util {
 
     /**
      * Finds the zero based ordinal of a Member among its siblings.
-     */
+ */
     public static int getMemberOrdinalInParent(
         CatalogReader reader,
         Member member)
@@ -1103,7 +1108,7 @@ public class Util {
      * returns the first descendant on the level underneath parent.
      * If parent = [Time].[1997] and level = [Time].[Month], then
      * the member [Time].[1997].[Q1].[1] will be returned
-     */
+ */
     public static Member getFirstDescendantOnLevel(
         CatalogReader reader,
         Member parent,
@@ -1119,7 +1124,7 @@ public class Util {
 
     /**
      * Returns whether a string is null or empty.
-     */
+ */
     public static boolean isEmpty(String s) {
         return (s == null) || (s.isEmpty());
     }
@@ -1128,7 +1133,7 @@ public class Util {
      * Encloses a value in single-quotes, to make a SQL string value. Examples:
      * singleQuoteForSql(null) yields NULL;
      * singleQuoteForSql("don't") yields 'don''t'.
-     */
+ */
     public static String singleQuoteString(String val) {
         StringBuilder buf = new StringBuilder(64);
         singleQuoteString(val, buf);
@@ -1139,7 +1144,7 @@ public class Util {
      * Encloses a value in single-quotes, to make a SQL string value. Examples:
      * singleQuoteForSql(null) yields NULL;
      * singleQuoteForSql("don't") yields 'don''t'.
-     */
+ */
     public static void singleQuoteString(String val, StringBuilder buf) {
         buf.append('\'');
 
@@ -1159,7 +1164,7 @@ public class Util {
      * @param propertyName Property name
      * @param level Level
      * @return Whether property is valid
-     */
+ */
     public static boolean isValidProperty(
         String propertyName,
         Level level)
@@ -1170,7 +1175,7 @@ public class Util {
     /**
      * Finds a member property called propertyName at, or above,
      * level.
-     */
+ */
     public static Property lookupProperty(
         Level level,
         String propertyName)
@@ -1223,7 +1228,7 @@ public class Util {
     /**
      * Returns an exception which indicates that a particular piece of
      * functionality should work, but a developer has not implemented it yet.
-     */
+ */
     public static RuntimeException needToImplement(Object o) {
         throw new UnsupportedOperationException("need to implement " + o);
     }
@@ -1231,7 +1236,7 @@ public class Util {
     /**
      * Returns an exception indicating that we didn't expect to find this value
      * here.
-     */
+ */
     public static <T extends Enum<T>> RuntimeException badValue(
         Enum<T> anEnum)
     {
@@ -1248,7 +1253,7 @@ public class Util {
      * If errors are encountered while canceling a statement,
      * the message is logged in {@link Util}.
      * @param stmt The statement to cancel.
-     */
+ */
     public static void cancelStatement(Statement stmt) {
         try {
             // A call to statement.isClosed() would be great here, but in
@@ -1289,7 +1294,7 @@ public class Util {
      * @param s Prefix
      * @param list List
      * @return String representation of string
-     */
+ */
     public static <T> String commaList(
         String s,
         List<T> list)
@@ -1311,7 +1316,7 @@ public class Util {
      *
      * @param collection Collection
      * @return boolean true if all values are same
-     */
+ */
     public static <T> boolean areOccurencesEqual(
         Collection<T> collection)
     {
@@ -1338,7 +1343,7 @@ public class Util {
      *
      * @param localeString Locale string, e.g. "en" or "en_US"
      * @return Java locale object
-     */
+ */
     public static Locale parseLocale(String localeString) {
         String[] strings = localeString.split("_");
         switch (strings.length) {
@@ -1360,7 +1365,7 @@ public class Util {
      *
      * @param olap4jSegmentList List of olap4j segments
      * @return List of mondrian segments
-     */
+ */
     public static List<Segment> convert(
         List<IdentifierSegment> olap4jSegmentList)
     {
@@ -1372,7 +1377,7 @@ public class Util {
      *
      * @param olap4jSegment olap4j segment
      * @return mondrian segment
-     */
+ */
     public static Segment convert(IdentifierSegment olap4jSegment) {
         if (olap4jSegment instanceof NameIdentifierSegment nameSegment) {
             return convertNS(nameSegment);
@@ -1525,7 +1530,7 @@ public class Util {
      * @param message Message to qualify wrapped exception
      * @param <T> Result type
      * @return Result
-     */
+ */
     public static <T> T safeGet(Future<T> future, String message) {
         try {
             return future.get();
@@ -1548,7 +1553,7 @@ public class Util {
     /**
      * As Arrays#binarySearch(Object[], int, int, Object), but
      * available pre-JDK 1.6.
-     */
+ */
     public static <T extends Comparable<T>> int binarySearch(
         T[] ts, int start, int end, T t)
     {
@@ -1565,7 +1570,7 @@ public class Util {
      * @param set1 First set
      * @param set2 Second set
      * @return Intersection of the sets
-     */
+ */
     public static <E extends Comparable> SortedSet<E> intersect(
         SortedSet<E> set1,
         SortedSet<E> set2)
@@ -1622,7 +1627,7 @@ public class Util {
      * @param <T> Element type
      * @return Last item in the list
      * @throws IndexOutOfBoundsException if list is empty
-     */
+ */
     public static <T> T last(List<T> list) {
         return list.get(list.size() - 1);
     }
@@ -1638,7 +1643,7 @@ public class Util {
      * @param resultSet Result set
      * @param statement Statement
      * @param connection Connection
-     */
+ */
     public static SQLException close(
         ResultSet resultSet,
         Statement statement,
@@ -1726,7 +1731,7 @@ public class Util {
      * @param fromIndex Index of the first bit to be set.
      * @param toIndex   Index after the last bit to be set.
      * @return Bit set
-     */
+ */
     public static BitSet bitSetBetween(int fromIndex, int toIndex) {
         final BitSet bitSet = new BitSet();
         if (toIndex > fromIndex) {
@@ -1746,7 +1751,7 @@ public class Util {
     /**
      * Throws an internal error if condition is not true. It would be called
      * assert, but that is a keyword as of JDK 1.4.
-     */
+ */
     public static void assertTrue(boolean b) {
         if (!b) {
             throw newInternal("assert failed");
@@ -1757,7 +1762,7 @@ public class Util {
      * Throws an internal error with the given messagee if condition is not
      * true. It would be called assert, but that is a keyword as
      * of JDK 1.4.
-     */
+ */
     public static void assertTrue(boolean b, String message) {
         if (!b) {
             throw newInternal("assert failed: " + message);
@@ -1766,14 +1771,14 @@ public class Util {
 
     /**
      * Creates an internal error with a given message.
-     */
+ */
     public static RuntimeException newInternal(String message) {
         return new OlapRuntimeException(MessageFormat.format("Internal error: {0}", message));
     }
 
     /**
      * Creates an internal error with a given message and cause.
-     */
+ */
     public static RuntimeException newInternal(Throwable e, String message) {
         return new OlapRuntimeException(MessageFormat.format("Internal error: {0}", message), e);
     }
@@ -1781,7 +1786,7 @@ public class Util {
     /**
      * Creates a non-internal error. Currently implemented in terms of
      * internal errors, but later we will create resourced messages.
-     */
+ */
     public static RuntimeException newError(String message) {
         return newInternal(message);
     }
@@ -1789,7 +1794,7 @@ public class Util {
     /**
      * Creates a non-internal error. Currently implemented in terms of
      * internal errors, but later we will create resourced messages.
-     */
+ */
     public static RuntimeException newError(Throwable e, String message) {
         return newInternal(e, message);
     }
@@ -1799,7 +1804,7 @@ public class Util {
      * here.
      *
      * @param value Value
-     */
+ */
     public static RuntimeException unexpected(Enum value) {
         return Util.newInternal(
             new StringBuilder("Was not expecting value '").append(value)
@@ -1812,7 +1817,7 @@ public class Util {
      * tag) is satisfied.
      *
      * @param b The value of executing the condition
-     */
+ */
     public static void assertPrecondition(boolean b) {
         assertTrue(b);
     }
@@ -1828,7 +1833,7 @@ public class Util {
      *
      * @param b The value of executing the condition
      * @param condition The text of the condition
-     */
+ */
     public static void assertPrecondition(boolean b, String condition) {
         assertTrue(b, condition);
     }
@@ -1840,7 +1845,7 @@ public class Util {
      * tag) is satisfied.
      *
      * @param b The value of executing the condition
-     */
+ */
     public static void assertPostcondition(boolean b, String condition) {
         assertTrue(b, condition);
     }
@@ -1851,7 +1856,7 @@ public class Util {
      * {@link #getErrorMessage(Throwable,boolean)}, but does not print the
      * class name if the exception is derived from {@link java.sql.SQLException}
      * or is exactly a {@link java.lang.Exception}.
-     */
+ */
     public static String getErrorMessage(Throwable err) {
         boolean prependClassName =
             !(err instanceof java.sql.SQLException
@@ -1868,7 +1873,7 @@ public class Util {
      *   class name of the Java exception?  defaults to false, unless the error
      *   is derived from {@link java.sql.SQLException} or is exactly a {@link
      *   java.lang.Exception}
-     */
+ */
     public static String getErrorMessage(
         Throwable err,
         boolean prependClassName)
@@ -1894,7 +1899,7 @@ public class Util {
      * @param clazz Desired class
      * @param <T> Class
      * @return Cause of given class, or null
-     */
+ */
     public static <T extends Throwable>
     T getMatchingCause(Throwable e, Class<T> clazz) {
         for (;;) {
@@ -1911,7 +1916,7 @@ public class Util {
 
     /**
      * Converts an expression to a string.
-     */
+ */
     public static String unparse(Expression exp) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -1921,7 +1926,7 @@ public class Util {
 
     /**
      * Converts an query to a string.
-     */
+ */
     public static String unparse(Query query) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new QueryPrintWriter(sw);
@@ -1931,7 +1936,7 @@ public class Util {
 
     /**
      * Creates a file-protocol URL for the given file.
-     */
+ */
     public static URL toURL(File file) throws MalformedURLException {
         String path = file.getAbsolutePath();
         // This is a bunch of weird code that is required to
@@ -1953,7 +1958,7 @@ public class Util {
 
     /**
      * Combines two integers into a hash code.
-     */
+ */
     public static int hash(int i, int j) {
         return (i << 4) ^ j;
     }
@@ -1961,7 +1966,7 @@ public class Util {
     /**
      * Computes a hash code from an existing hash code and an object (which
      * may be null).
-     */
+ */
     public static int hash(int h, Object o) {
         int k = (o == null) ? 0 : o.hashCode();
         return ((h << 4) | h) ^ k;
@@ -1970,7 +1975,7 @@ public class Util {
     /**
      * Computes a hash code from an existing hash code and an array of objects
      * (which may be null).
-     */
+ */
     public static int hashArray(int h, Object [] a) {
         // The hashcode for a null array and an empty array should be different
         // than h, so use magic numbers.
@@ -1995,7 +2000,7 @@ public class Util {
      * @param a0 First array
      * @param as Zero or more subsequent arrays
      * @return Array containing all elements
-     */
+ */
     public static <T> T[] appendArrays(
         T[] a0,
         T[]... as)
@@ -2022,7 +2027,7 @@ public class Util {
      * @return New array containing original array plus element
      *
      * @see #appendArrays
-     */
+ */
     public static <T> T[] append(T[] a, T o) {
         T[] a2 = Arrays.copyOf(a, a.length + 1);
         a2[a.length] = o;
@@ -2037,7 +2042,7 @@ public class Util {
      * @param newLength the length of the copy to be returned
      * @return a copy of the original array, truncated or padded with zeros
      *     to obtain the specified length
-     */
+ */
     public static double[] copyOf(double[] original, int newLength) {
         double[] copy = new double[newLength];
         System.arraycopy(
@@ -2053,7 +2058,7 @@ public class Util {
      * @param newLength the length of the copy to be returned
      * @return a copy of the original array, truncated or padded with zeros
      *     to obtain the specified length
-     */
+ */
     public static int[] copyOf(int[] original, int newLength) {
         int[] copy = new int[newLength];
         System.arraycopy(
@@ -2069,7 +2074,7 @@ public class Util {
      * @param newLength the length of the copy to be returned
      * @return a copy of the original array, truncated or padded with zeros
      *     to obtain the specified length
-     */
+ */
     public static long[] copyOf(long[] original, int newLength) {
         long[] copy = new long[newLength];
         System.arraycopy(
@@ -2080,7 +2085,7 @@ public class Util {
     /**
      * Creates a very simple implementation of {@link Validator}. (Only
      * useful for resolving trivial expressions.)
-     */
+ */
     public static Validator createSimpleValidator(final FunctionService functionService) {
         return new Validator() {
             @Override
@@ -2177,7 +2182,7 @@ public class Util {
      * @param bufferSize size of buffer to allocate for reading.
      * @return content of Reader as String
      * @throws IOException on I/O error
-     */
+ */
     public static String readFully(final Reader rdr, final int bufferSize)
         throws IOException
     {
@@ -2204,7 +2209,7 @@ public class Util {
      * @param bufferSize size of buffer to allocate for reading.
      * @return content of stream as an array of bytes
      * @throws IOException on I/O error
-     */
+ */
     public static byte[] readFully(final InputStream in, final int bufferSize)
         throws IOException
     {
@@ -2237,7 +2242,7 @@ public class Util {
      * @param map Key/value map
      * @return Contents of URL with tokens substituted
      * @throws IOException on I/O error
-     */
+ */
     public static String readURL(final String urlStr, Map<String, String> map)
         throws IOException
     {
@@ -2265,7 +2270,7 @@ public class Util {
      * @param map Key/value map
      * @return Contents of URL with tokens substituted
      * @throws IOException on I/O error
-     */
+ */
     public static String readURL(
         final URL url,
         Map<String, String> map)
@@ -2287,7 +2292,7 @@ public class Util {
      * @param text Source string
      * @param env Map of key-value pairs
      * @return String with tokens substituted
-     */
+ */
     public static String replaceProperties(
         String text,
         Map<String, String> env)
@@ -2350,7 +2355,7 @@ public class Util {
      *
      * @param set Set
      * @return Set of desired type
-     */
+ */
     @SuppressWarnings({"unchecked"})
     public static <T> Set<T> cast(Set<?> set) {
         return (Set<T>) set;
@@ -2361,7 +2366,7 @@ public class Util {
      *
      * @param list List
      * @return List of desired type
-     */
+ */
     @SuppressWarnings({"unchecked"})
     public static <T> List<T> cast(List<?> list) {
         return (List<T>) list;
@@ -2376,7 +2381,7 @@ public class Util {
      * @param <T> Element type
      * @return Whether all not-null elements of the collection are instances of
      *   element type
-     */
+ */
     public static <T> boolean canCast(
         Collection<?> collection,
         Class<T> clazz)
@@ -2396,7 +2401,7 @@ public class Util {
      *
      * @param clazz Enumerated type
      * @param name Name of constant
-     */
+ */
     public static <E extends Enum<E>> E lookup(Class<E> clazz, String name) {
         return lookup(clazz, name, null);
     }
@@ -2409,7 +2414,7 @@ public class Util {
      * @param name Name of constant
      * @param defaultValue Default value if constant is not found
      * @return Value, or null if name is null or value does not exist
-     */
+ */
     public static <E extends Enum<E>> E lookup(
         Class<E> clazz, String name, E defaultValue)
     {
@@ -2434,7 +2439,7 @@ public class Util {
      *
      * @param resultSize Result limit
      * @throws ResourceLimitExceededException
-     */
+ */
     public static void checkCJResultLimit(long resultSize) {
         int resultLimit = SystemWideProperties.instance().ResultLimit;
 
@@ -2459,7 +2464,7 @@ public class Util {
      * the collection.
      *
      * @param <T> Element type
-     */
+ */
     public static class GcIterator<T> implements Iterator<T> {
         private final Iterator<? extends Reference<T>> iterator;
         private boolean hasNext;
@@ -2477,7 +2482,7 @@ public class Util {
          * @param referenceIterable Collection of references
          * @param <T2> element type
          * @return iterable over collection
-         */
+ */
         public static <T2> Iterable<T2> over(
             final Iterable<? extends Reference<T2>> referenceIterable)
         {
@@ -2525,7 +2530,7 @@ public class Util {
     /**
      * This class implements the Knuth-Morris-Pratt algorithm
      * to search within a byte array for a token byte array.
-     */
+ */
     public static class ByteMatcher {
         private final int[] matcher;
         public final byte[] key;
@@ -2539,7 +2544,7 @@ public class Util {
          * within the array.
          * @param a An array of bytes to search for.
          * @return -1 if not found, or the index (0 based) of the match.
-         */
+ */
         public int match(byte[] a) {
             int j = 0;
             for (int i = 0; i < a.length; i++) {
@@ -2585,7 +2590,7 @@ public class Util {
      * The returned map is to be considered immutable. It will
      * throw an {@link UnsupportedOperationException} if attempts to
      * modify it are made.
-     */
+ */
     public static <K, V> Map<K, V> toNullValuesMap(List<K> list) {
         return new NullValuesMap<>(list);
     }
@@ -2707,7 +2712,7 @@ public class Util {
    * @param title
    * @param calc
    * @param timing
-   */
+ */
   public static void explain( ProfileHandler handler, String title, Calc<?> calc, QueryTiming timing ) {
     if ( handler == null ) {
       return;
@@ -2743,7 +2748,7 @@ public class Util {
    * @param connection Connection providing execution context
    * @param schemaReader CatalogReader to wrap
    * @return Wrapped CatalogReader with automatic execution context management
-   */
+ */
   public static CatalogReader executionCatalogReader(
       org.eclipse.daanse.olap.api.connection.Connection connection,
       final CatalogReader schemaReader)
@@ -2757,7 +2762,7 @@ public class Util {
     /**
      * Comparable value, equal only to itself. Used to represent the NULL value,
      * as returned from a SQL query.
-     */
+ */
     private static final class UtilComparable
         implements Comparable, Serializable
     {

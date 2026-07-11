@@ -17,6 +17,7 @@ package org.eclipse.daanse.olap.function.def.operators.divide;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
@@ -43,9 +44,9 @@ public class DivideCalc extends AbstractProfilingNestedDoubleCalc {
         // Null. This is only used by certain applications and does not
         // conform to MSAS behavior.
         if (!nullDenominatorProducesNull) {
-            if (v0 == FunUtil.DOUBLE_NULL || v0 == null) {
+            if (NullSemantics.isNull(v0)) {
                 return FunUtil.DOUBLE_NULL;
-            } else if (v1 == FunUtil.DOUBLE_NULL || v1 == null) {
+            } else if (NullSemantics.isNull(v1)) {
                 // Null only in denominator returns Infinity.
                 return Double.POSITIVE_INFINITY;
             } else {
@@ -54,7 +55,7 @@ public class DivideCalc extends AbstractProfilingNestedDoubleCalc {
         } else {
             // Null in numerator or denominator returns
             // DoubleNull.
-            if (v0 == FunUtil.DOUBLE_NULL || v1 == FunUtil.DOUBLE_NULL || v0 == null || v1 == null) {
+            if (NullSemantics.isNull(v0) || NullSemantics.isNull(v1)) {
                 return FunUtil.DOUBLE_NULL;
             } else {
                 return v0 / v1;

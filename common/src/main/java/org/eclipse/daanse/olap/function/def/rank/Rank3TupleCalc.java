@@ -22,8 +22,8 @@ import org.eclipse.daanse.olap.api.calc.TupleCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
-import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class Rank3TupleCalc extends AbstractProfilingNestedIntegerCalc {
@@ -86,7 +86,7 @@ public class Rank3TupleCalc extends AbstractProfilingNestedIntegerCalc {
         }
 
         // If value is null, it won't be in the values array.
-        if ( value == Util.nullValue || value == null ) {
+        if ( NullSemantics.isNull(value) ) {
           return sortResult.values.length + 1;
         }
 

@@ -34,7 +34,7 @@ import java.util.Objects;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.common.Util;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 
 class HierarchicalTupleKeyComparator extends TupleExpMemoComparator {
 
@@ -51,10 +51,10 @@ class HierarchicalTupleKeyComparator extends TupleExpMemoComparator {
   private int compareMemberOrderKeysHierarchically(
     OrderKey k1, OrderKey k2 ) {
     // null is less than anything else
-    if ( k1 == Util.nullValue ) {
+    if ( NullSemantics.isNullValue(k1) ) {
       return -1;
     }
-    if ( k2 == Util.nullValue ) {
+    if ( NullSemantics.isNullValue(k2) ) {
       return 1;
     }
     Member m1 = k1.member;

@@ -13,11 +13,11 @@
 */
 package org.eclipse.daanse.olap.calc.base.type.doublex;
 
-import java.util.Objects;
 
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
@@ -35,7 +35,7 @@ public class UnknownToDoubleCalc extends AbstractProfilingNestedDoubleCalc {
 			return FunUtil.DOUBLE_NULL;
 			// null;
 			// TODO: !!! JUST REFACTORING 0 must be null
-		} else if (Objects.equals(o, FunUtil.DOUBLE_NULL)) {
+		} else if (NullSemantics.isNullValue(o)) {
 			return FunUtil.DOUBLE_NULL;
 		} else if (o instanceof Double d) {
 			return d;

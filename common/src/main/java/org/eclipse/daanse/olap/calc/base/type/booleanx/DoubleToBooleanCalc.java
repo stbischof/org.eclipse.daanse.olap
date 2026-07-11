@@ -16,6 +16,7 @@ package org.eclipse.daanse.olap.calc.base.type.booleanx;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
+import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
@@ -29,7 +30,7 @@ public class DoubleToBooleanCalc extends AbstractProfilingNestedBooleanCalc {
 	public Boolean evaluateInternal(Evaluator evaluator) {
 		Double v0 = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
 
-		if (Double.isNaN(v0) || v0 == FunUtil.DOUBLE_NULL) {
+		if (Double.isNaN(v0) || NullSemantics.isSentinelOnly(v0)) {
 			return FunUtil.BOOLEAN_NULL;
 		}
 
