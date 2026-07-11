@@ -67,12 +67,13 @@ class IntCalcTest {
 
     @Test
     @DisplayName("Should throw InvalidArgumentException for null input")
-    void shouldThrowExceptionForNullInput() {
+    void shouldCoerceNullInputToZero() {
+        // MDX NULL is Java null since the null-semantics migration; Int
+        // coerces it to 0, matching the legacy sentinel's observable
+        // behavior (.
         when(numberCalc.evaluate(evaluator)).thenReturn(null);
 
-        assertThatThrownBy(() -> intCalc.evaluate(evaluator)).isInstanceOf(InvalidArgumentException.class)
-                .hasMessageContaining("Invalid parameter")
-                .hasMessageContaining("number parameter null of Int function must be of type number");
+        assertThat(intCalc.evaluate(evaluator)).isEqualTo(0);
     }
 
     static Stream<Arguments> arguments() {
