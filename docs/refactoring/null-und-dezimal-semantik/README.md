@@ -71,6 +71,25 @@ Diese Initiative beantwortet fünf Fragen:
 | 5b | Decimal-Lane | **verworfen** (User-Entscheidung 2026-07-11): Nach der Komplettumstellungs-Evaluation (Doc 10 — JMH-Messungen, Rohdaten im Anhang; Wegwerf-Modul entfernt, Quellen in Commit `bb3bdaa`) wurde nicht nur die Komplettumstellung abgelehnt, sondern auf das Decimal-Lane-Feature insgesamt verzichtet. Die begonnene Implementierung wurde verworfen (nie committet); der fertige Implementierungsplan bleibt als Handover erhalten, falls das Feature später doch gewünscht wird. Bekannter, akzeptierter Rest: `DECIMAL(p,s)`-Werte verlieren in double Präzision (dokumentiert im rolap-Testkit `DecimalPrecisionRoundtripTest`, dauerhaft `@Disabled`). 5a-Gate aus Doc 07 §1.4 nachträglich bestanden |
 | 6 | Politur | **fertig** (2026-07-11, reduzierter Scope nach 5b-Verzicht): Covariance/Correlation paarweise ausgerichtet (P5 geheilt, `PairedStatisticsAlignmentTest`); `FunUtil.sum` liefert Java-`null` (letzter Calc-Layer-`nullValue`-Produzent weg); Ergebnis-/Nutzerdoku Doc 11. **Sentinel-Löschung bewusst verschoben:** per E5-Fenster frühestens ein Minor-Release nach dieser Migration (Symbolliste in Doc 11 §5); `Util.nullValue` bleibt undeprecated (Storage-Placeholder, Begründung Doc 11 §5). BigDecimal-Dataset entfällt mit 5b |
 
+## TCK-Validierung (2026-07-11)
+
+Der komplette mondrian-TCK (legacy.xmla, 2281 Tests) wurde gegen die
+Initiative-Stände gefahren (rolap auf Integrations-Branch
+`tck/nulldez-plus-querymap` = Initiative + `wip/sqlquery-querymap` +
+`origin/main`-Fixes): **DuckDB 0 Fails; Postgres = Baseline-Niveau**
+(2 vorbestehende postgres-only-Fälle `testLevelKeyAsSqlExpWithAgg`/
+`ConcurrentMdxTest`-Deadlock + 1 dokumentierter `dont_test`-Flaky).
+Dabei gefundene und behobene Initiative-Lücken (vom testkit nicht
+erreichbar): NotLoaded-Toleranz im Dirty-Pass von `SortedListCalc`,
+`TopBottomPercentSumCalc`, `ScenarioImpl`, `CInt`/`Int`/`CDbl`
+(olap `9c59bf7`, rolap-Fix-Commit); Cache-**Probe**-API
+(`getCellFromCache`) behält die Legacy-Objekt-Konvention, die
+`CellValue`-Grenze beginnt an den `CellReader`-Nähten
+(`RolapAggregationManager.toCellValue`). Zwei TCK-Erwartungen wurden
+dokumentiert neu gepinnt (legacy.xmla `d5e76d073`):
+`IsEmpty(NullValue())` → `true` (MSAS-konform, Sentinel-Artefakt) und
+die ExpCache-Zähler-Fingerprints.
+
 ## Dokumentenübersicht
 
 | Doc | Inhalt |
