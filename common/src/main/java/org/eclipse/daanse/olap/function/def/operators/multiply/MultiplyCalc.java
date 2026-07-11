@@ -19,7 +19,6 @@ import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class MultiplyCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -34,7 +33,7 @@ public class MultiplyCalc extends AbstractProfilingNestedDoubleCalc {
         // Multiply and divide return null if EITHER arg is
         // null.
         if (NullSemantics.isNull(v0) || NullSemantics.isNull(v1)) {
-            return FunUtil.DOUBLE_NULL;
+            return null;
         } else {
             return v0 * v1;
         }

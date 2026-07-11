@@ -37,28 +37,26 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * characterization tests for the arithmetic operator calcs and their
- * treatment of the {@code FunUtil.DOUBLE_NULL} sentinel
- * ({@code Double.valueOf(0.000000012345)}).
+ * regression tests for the arithmetic operator calcs and the MDX NULL
+ * semantics of the calc layer.
  *
- * These tests freeze TODAY's behavior as a safety net for the NULL-semantics
- * refactoring (. They assert
- * what the code actually does, including known collision bugs.
- *
- * Key characteristic: the operator calcs compare boxed Doubles with
- * {@code v0 == FunUtil.DOUBLE_NULL}, which is a REFERENCE comparison. Only the
- * sentinel singleton instance is recognized as NULL; a value-equal but
- * distinct {@code Double} instance is treated as an ordinary number.
+ * Since (. MDX NULL is
+ * represented as Java {@code null}; the former {@code FunUtil.DOUBLE_NULL}
+ * sentinel ({@code Double.valueOf(0.000000012345)}) is an ordinary value
+ * EVERYWHERE. These tests keep the MSAS behavior matrix (null + x = x,
+ * null * x = null, ...) and act as regression tests of the collision healing
+ * .
  */
 class OperatorNullSemanticsTest {
 
-    /** The NULL sentinel singleton. */
+    /**
+     * The former sentinel singleton — now an ORDINARY value, kept in
+     * the matrices as a regression test of the healing.
+ */
+    @SuppressWarnings("deprecation")
     private static final Double SENTINEL = FunUtil.DOUBLE_NULL;
 
-    /**
-     * The sentinel's primitive value, computed at runtime so that boxing it
-     * yields a Double instance distinct from the {@code DOUBLE_NULL} singleton.
- */
+    /** The former sentinel's primitive value. */
     private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
 
     private Evaluator evaluator;
@@ -117,7 +115,7 @@ class OperatorNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("Guard: runtime-computed 0.000000012345 is value-equal but not identical to DOUBLE_NULL")
+    @DisplayName("Guard: runtime-computed 0.000000012345 is value-equal but not identical to the former sentinel")
     void computedSentinelValueIsDistinctInstance() {
         Double computed = distinctSentinelValue();
         assertThat(computed).isEqualTo(SENTINEL);
@@ -128,7 +126,7 @@ class OperatorNullSemanticsTest {
 
     @ParameterizedTest(name = "{0}: {1} + {2} = {3}")
     @MethodSource("plusArguments")
-    @DisplayName("PlusCalc treats sentinel/null operands as neutral element")
+    @DisplayName("PlusCalc treats Java-null operands as neutral element")
     void plusCharacterization(String testName, Double v0, Double v1, Double expected) {
         Double result = evaluateBinary(v0, v1, (c0, c1) -> new TestablePlusCalc(NumericType.INSTANCE, c0, c1));
         assertThat(result).isEqualTo(expected);
@@ -137,31 +135,29 @@ class OperatorNullSemanticsTest {
     static Stream<Arguments> plusArguments() {
         return Stream.of(
                 Arguments.of("both real values", 2.0, 3.0, 5.0),
-                Arguments.of("sentinel left is ignored (null + 3 = 3)", SENTINEL, 3.0, 3.0),
-                Arguments.of("sentinel right is ignored (2 + null = 2)", 2.0, SENTINEL, 2.0),
-                Arguments.of("both sentinel -> sentinel", SENTINEL, SENTINEL, SENTINEL),
-                Arguments.of("Java null left is ignored", null, 3.0, 3.0),
-                Arguments.of("Java null right is ignored", 2.0, null, 2.0),
-                Arguments.of("both Java null -> sentinel", null, null, SENTINEL),
-                // Reference check misses a value-equal distinct instance: it is
-                // treated as an ordinary tiny number. Will be inverted in
-                //
+                Arguments.of("Java null left is ignored (null + 3 = 3)", null, 3.0, 3.0),
+                Arguments.of("Java null right is ignored (2 + null = 2)", 2.0, null, 2.0),
+                Arguments.of("both Java null -> null", null, null, null),
+                // Regression of the healed sentinel collision: the former sentinel — whether the old singleton
+                // or a computed instance — is an ordinary tiny number.
+                Arguments.of("former sentinel singleton is added as a real value",
+                        SENTINEL, 3.0, SENTINEL_VALUE + 3.0),
                 Arguments.of("computed 0.000000012345 is treated as a real value",
                         distinctSentinelValue(), 3.0, SENTINEL_VALUE + 3.0));
     }
 
     @Test
-    @DisplayName("PlusCalc returns the DOUBLE_NULL singleton itself for null + null")
-    void plusReturnsSentinelSingleton() {
+    @DisplayName("PlusCalc returns Java null for null + null")
+    void plusReturnsNullForBothNull() {
         Double result = evaluateBinary(null, null, (c0, c1) -> new TestablePlusCalc(NumericType.INSTANCE, c0, c1));
-        assertThat(result).isSameAs(FunUtil.DOUBLE_NULL);
+        assertThat(result).isNull();
     }
 
     // --- MinusCalc ------------------------------------------------------
 
     @ParameterizedTest(name = "{0}: {1} - {2} = {3}")
     @MethodSource("minusArguments")
-    @DisplayName("MinusCalc treats sentinel/null operands as neutral element")
+    @DisplayName("MinusCalc treats Java-null operands as neutral element")
     void minusCharacterization(String testName, Double v0, Double v1, Double expected) {
         Double result = evaluateBinary(v0, v1, (c0, c1) -> new TestableMinusCalc(NumericType.INSTANCE, c0, c1));
         assertThat(result).isEqualTo(expected);
@@ -170,12 +166,13 @@ class OperatorNullSemanticsTest {
     static Stream<Arguments> minusArguments() {
         return Stream.of(
                 Arguments.of("both real values", 5.0, 3.0, 2.0),
-                Arguments.of("sentinel left negates the right operand (null - 3 = -3)", SENTINEL, 3.0, -3.0),
-                Arguments.of("sentinel right is ignored (5 - null = 5)", 5.0, SENTINEL, 5.0),
-                Arguments.of("both sentinel -> sentinel", SENTINEL, SENTINEL, SENTINEL),
-                Arguments.of("Java null left negates the right operand", null, 3.0, -3.0),
-                Arguments.of("Java null right is ignored", 5.0, null, 5.0),
-                // Identity check misses the distinct instance; see the note above.
+                Arguments.of("Java null left negates the right operand (null - 3 = -3)", null, 3.0, -3.0),
+                Arguments.of("Java null right is ignored (5 - null = 5)", 5.0, null, 5.0),
+                Arguments.of("both Java null -> null", null, null, null),
+                // Collision healing : former
+                // sentinel is an ordinary value in both positions.
+                Arguments.of("former sentinel singleton is subtracted as a real value",
+                        5.0, SENTINEL, 5.0 - SENTINEL_VALUE),
                 Arguments.of("computed 0.000000012345 is treated as a real value",
                         5.0, distinctSentinelValue(), 5.0 - SENTINEL_VALUE));
     }
@@ -184,7 +181,7 @@ class OperatorNullSemanticsTest {
 
     @ParameterizedTest(name = "{0}: -({1}) = {2}")
     @MethodSource("minusPrefixArguments")
-    @DisplayName("MinusPrefixCalc maps sentinel/null to sentinel")
+    @DisplayName("MinusPrefixCalc maps Java null to Java null")
     void minusPrefixCharacterization(String testName, Double v, Double expected) {
         when(calc0.evaluate(evaluator)).thenReturn(v);
         Double result = new TestableMinusPrefixCalc(NumericType.INSTANCE, calc0).evaluate(evaluator);
@@ -194,9 +191,10 @@ class OperatorNullSemanticsTest {
     static Stream<Arguments> minusPrefixArguments() {
         return Stream.of(
                 Arguments.of("real value", 3.0, -3.0),
-                Arguments.of("sentinel -> sentinel", SENTINEL, SENTINEL),
-                Arguments.of("Java null -> sentinel", null, SENTINEL),
-                // Identity check misses the distinct instance; negated as an ordinary value.
+                Arguments.of("Java null -> null", null, null),
+                // The former sentinel value is an ordinary number.
+                Arguments.of("former sentinel singleton is negated as a real value",
+                        SENTINEL, -SENTINEL_VALUE),
                 Arguments.of("computed 0.000000012345 is negated as a real value",
                         distinctSentinelValue(), -SENTINEL_VALUE));
     }
@@ -205,7 +203,7 @@ class OperatorNullSemanticsTest {
 
     @ParameterizedTest(name = "{0}: {1} * {2} = {3}")
     @MethodSource("multiplyArguments")
-    @DisplayName("MultiplyCalc returns sentinel if either operand is sentinel/null")
+    @DisplayName("MultiplyCalc returns Java null if either operand is null")
     void multiplyCharacterization(String testName, Double v0, Double v1, Double expected) {
         Double result = evaluateBinary(v0, v1, (c0, c1) -> new TestableMultiplyCalc(NumericType.INSTANCE, c0, c1));
         assertThat(result).isEqualTo(expected);
@@ -214,11 +212,11 @@ class OperatorNullSemanticsTest {
     static Stream<Arguments> multiplyArguments() {
         return Stream.of(
                 Arguments.of("both real values", 2.0, 3.0, 6.0),
-                Arguments.of("sentinel left -> sentinel (null * x = null)", SENTINEL, 3.0, SENTINEL),
-                Arguments.of("sentinel right -> sentinel (x * null = null)", 3.0, SENTINEL, SENTINEL),
-                Arguments.of("Java null left -> sentinel", null, 3.0, SENTINEL),
-                Arguments.of("Java null right -> sentinel", 3.0, null, SENTINEL),
-                // Identity check misses the distinct instance; multiplied as an ordinary value.
+                Arguments.of("Java null left -> null (null * x = null)", null, 3.0, null),
+                Arguments.of("Java null right -> null (x * null = null)", 3.0, null, null),
+                // The former sentinel value is an ordinary number.
+                Arguments.of("former sentinel singleton is multiplied as a real value",
+                        SENTINEL, 3.0, SENTINEL_VALUE * 3.0),
                 Arguments.of("computed 0.000000012345 is multiplied as a real value",
                         distinctSentinelValue(), 3.0, SENTINEL_VALUE * 3.0));
     }
@@ -227,7 +225,7 @@ class OperatorNullSemanticsTest {
 
     @ParameterizedTest(name = "{0}: {1} / {2} = {3}")
     @MethodSource("divideDefaultArguments")
-    @DisplayName("DivideCalc (default flag): null denominator produces +Infinity")
+    @DisplayName("DivideCalc (default flag): Java-null denominator produces +Infinity")
     void divideDefaultCharacterization(String testName, Double v0, Double v1, Double expected) {
         Double result = evaluateBinary(v0, v1,
                 (c0, c1) -> new TestableDivideCalc(NumericType.INSTANCE, c0, c1, false));
@@ -237,15 +235,16 @@ class OperatorNullSemanticsTest {
     static Stream<Arguments> divideDefaultArguments() {
         return Stream.of(
                 Arguments.of("both real values", 6.0, 3.0, 2.0),
-                Arguments.of("sentinel numerator -> sentinel (null / x = null)", SENTINEL, 3.0, SENTINEL),
-                Arguments.of("Java null numerator -> sentinel", null, 3.0, SENTINEL),
-                Arguments.of("sentinel denominator -> +Infinity (x / null = +Inf)",
-                        6.0, SENTINEL, Double.POSITIVE_INFINITY),
-                Arguments.of("Java null denominator -> +Infinity", 6.0, null, Double.POSITIVE_INFINITY),
-                Arguments.of("sentinel over sentinel -> sentinel (numerator wins)", SENTINEL, SENTINEL, SENTINEL),
-                // Identity check misses the distinct instance in BOTH positions:
-                // it divides as an ordinary tiny number instead of producing
-                // sentinel/+Infinity. flips once the sentinel encoding is gone.
+                Arguments.of("Java null numerator -> null (null / x = null)", null, 3.0, null),
+                Arguments.of("Java null denominator -> +Infinity (x / null = +Inf)",
+                        6.0, null, Double.POSITIVE_INFINITY),
+                Arguments.of("Java null over Java null -> null (numerator wins)", null, null, null),
+                // Collision healing : the former
+                // sentinel divides as an ordinary tiny number in BOTH positions.
+                Arguments.of("former sentinel numerator is divided as a real value",
+                        SENTINEL, 2.0, SENTINEL_VALUE / 2.0),
+                Arguments.of("former sentinel denominator is divided as a real value",
+                        6.0, SENTINEL, 6.0 / SENTINEL_VALUE),
                 Arguments.of("computed 0.000000012345 numerator is divided as a real value",
                         distinctSentinelValue(), 2.0, SENTINEL_VALUE / 2.0),
                 Arguments.of("computed 0.000000012345 denominator is divided as a real value",
@@ -256,7 +255,7 @@ class OperatorNullSemanticsTest {
 
     @ParameterizedTest(name = "{0}: {1} / {2} = {3}")
     @MethodSource("divideNullFlagArguments")
-    @DisplayName("DivideCalc (nullDenominatorProducesNull=true): null anywhere produces sentinel")
+    @DisplayName("DivideCalc (nullDenominatorProducesNull=true): Java null anywhere produces null")
     void divideNullFlagCharacterization(String testName, Double v0, Double v1, Double expected) {
         Double result = evaluateBinary(v0, v1,
                 (c0, c1) -> new TestableDivideCalc(NumericType.INSTANCE, c0, c1, true));
@@ -266,11 +265,11 @@ class OperatorNullSemanticsTest {
     static Stream<Arguments> divideNullFlagArguments() {
         return Stream.of(
                 Arguments.of("both real values", 6.0, 3.0, 2.0),
-                Arguments.of("sentinel numerator -> sentinel", SENTINEL, 3.0, SENTINEL),
-                Arguments.of("sentinel denominator -> sentinel", 6.0, SENTINEL, SENTINEL),
-                Arguments.of("Java null numerator -> sentinel", null, 3.0, SENTINEL),
-                Arguments.of("Java null denominator -> sentinel", 6.0, null, SENTINEL),
-                // Identity check misses the distinct instance; see the note above.
+                Arguments.of("Java null numerator -> null", null, 3.0, null),
+                Arguments.of("Java null denominator -> null", 6.0, null, null),
+                // The former sentinel value is an ordinary number.
+                Arguments.of("former sentinel denominator is divided as a real value",
+                        6.0, SENTINEL, 6.0 / SENTINEL_VALUE),
                 Arguments.of("computed 0.000000012345 denominator is divided as a real value",
                         6.0, distinctSentinelValue(), 6.0 / SENTINEL_VALUE));
     }

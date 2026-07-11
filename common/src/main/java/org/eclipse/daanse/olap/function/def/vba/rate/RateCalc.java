@@ -36,6 +36,11 @@ public class RateCalc extends AbstractProfilingNestedDoubleCalc {
         Boolean type = getChildCalc(4, BooleanCalc.class).evaluate(evaluator);
         Double guess = getChildCalc(5, DoubleCalc.class).evaluate(evaluator);
 
+        if (nPer == null || pmt == null || pv == null || fv == null || guess == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         return rate(nPer, pmt, pv, fv, type, guess);
     }
 

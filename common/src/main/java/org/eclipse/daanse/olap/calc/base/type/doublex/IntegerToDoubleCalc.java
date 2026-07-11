@@ -17,7 +17,6 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class IntegerToDoubleCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -30,9 +29,7 @@ public class IntegerToDoubleCalc extends AbstractProfilingNestedDoubleCalc {
 
 		Integer i = getChildCalc(0, IntegerCalc.class).evaluate(evaluator);
 		if (i == null) {
-			return FunUtil.DOUBLE_NULL;
-			// null;
-			// TODO: !!! JUST REFACTORING 0 must be null
+			return null;
 		}
 		return i.doubleValue();
 	}

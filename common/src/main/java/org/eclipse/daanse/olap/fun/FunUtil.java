@@ -411,9 +411,12 @@ public class FunUtil extends Util {
    *
    * MDX requires a total order:
    *
-   * -inf &lt; NULL &lt; ... &lt; -1 &lt; ... &lt; 0 &lt; ... &lt; NaN &lt; +inf
+   * -inf &lt; ... &lt; -1 &lt; ... &lt; 0 &lt; ... &lt; NaN &lt; +inf
    *
-   * but this is different than Java semantics, specifically with regard to {@link Double#NaN}.
+   * which differs from Java semantics with regard to {@link Double#NaN}.
+   * A primitive {@code double} cannot carry MDX NULL; NULL
+   * ordering exists only at the boxed/object level
+   * ({@link #compareValues(Object, Object)}).
  */
   public static int compareValues( double d1, double d2 ) {
     return NullSemantics.compare( d1, d2 );
@@ -461,7 +464,7 @@ public class FunUtil extends Util {
     }
   }
 
-  public static double percentile(
+  public static Double percentile(
     Evaluator evaluator,
     TupleList members,
     Calc exp,
@@ -470,7 +473,8 @@ public class FunUtil extends Util {
     if ( sw.errorCount > 0 ) {
       return Double.NaN;
     } else if ( sw.v.isEmpty() ) {
-      return FunUtil.DOUBLE_NULL;
+      // Percentile({}) is NULL — Java null.
+      return null;
     }
     double[] asArray = new double[ sw.v.size() ];
     for ( int i = 0; i < asArray.length; i++ ) {
@@ -529,7 +533,7 @@ public class FunUtil extends Util {
    * @param range     Quartile (1, 2 or 3)
    *  range more or equals 1 and range less or equals 3
  */
-  public static double quartile(
+  public static Double quartile(
     Evaluator evaluator,
     TupleList members,
     Calc exp,
@@ -540,7 +544,8 @@ public class FunUtil extends Util {
     if ( sw.errorCount > 0 ) {
       return Double.NaN;
     } else if ( sw.v.isEmpty() ) {
-      return FunUtil.DOUBLE_NULL;
+      // Quartile({}) is NULL — Java null.
+      return null;
     }
 
     double[] asArray = new double[ sw.v.size() ];
@@ -740,11 +745,18 @@ public class FunUtil extends Util {
     Evaluator evaluator,
     TupleList members,
     Calc exp ) {
-    double d = FunUtil.sumDouble( evaluator, members, exp );
-    return NullSemantics.isNull( d ) ? Util.nullValue : Double.valueOf( d );
+    Double d = FunUtil.sumDouble( evaluator, members, exp );
+    // Object/cell layer still uses the Util.nullValue sentinel ;
+    // a genuine sum of 0.000000012345 is a real value since .
+    return d == null ? Util.nullValue : d;
   }
 
-  public static double sumDouble(
+  /**
+   * Sums {@code exp} over {@code members}. Returns Java {@code null} (MDX
+   * NULL) for an empty set — there is no primitive sentinel
+   * anymore.
+ */
+  public static Double sumDouble(
     Evaluator evaluator,
     TupleList members,
     Calc exp ) {
@@ -752,7 +764,7 @@ public class FunUtil extends Util {
     if ( sw.errorCount > 0 ) {
       return Double.NaN;
     } else if ( sw.v.isEmpty() ) {
-      return FunUtil.DOUBLE_NULL;
+      return null;
     } else {
       double sum = 0.0;
       for ( int i = 0; i < sw.v.size(); i++ ) {
@@ -762,7 +774,12 @@ public class FunUtil extends Util {
     }
   }
 
-  public static double sumDouble(
+  /**
+   * Sums {@code exp} over {@code iterable}. Returns Java {@code null} (MDX
+   * NULL) for an empty set — there is no primitive sentinel
+   * anymore.
+ */
+  public static Double sumDouble(
     Evaluator evaluator,
     TupleIterable iterable,
     Calc exp ) {
@@ -770,7 +787,7 @@ public class FunUtil extends Util {
     if ( sw.errorCount > 0 ) {
       return Double.NaN;
     } else if ( sw.v.isEmpty() ) {
-      return FunUtil.DOUBLE_NULL;
+      return null;
     } else {
       double sum = 0.0;
       for ( int i = 0; i < sw.v.size(); i++ ) {
@@ -885,10 +902,7 @@ public class FunUtil extends Util {
         DoubleCalc calc = calcs[ i ];
         SetWrapper retval = retvals[ i ];
         Double o = calc.evaluate( evaluator );
-        if (o == null) {
-          LOGGER.debug("Calc evaluated to null: {}", calc);
-        }
-        if ( NullSemantics.isSentinelOnly( o )) {
+        if ( NullSemantics.isNull( o ) ) {
           retval.nullCount++;
           retval.v.add( null );
         } else {

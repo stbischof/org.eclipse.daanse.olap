@@ -90,7 +90,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      * @param evaluator Evaluation context
      * @param tupleList List of members or tuples
      * @return Aggregated result
-     */
+ */
     public static Object aggregate(
         Calc<?> calc,
         Evaluator evaluator,
@@ -129,7 +129,8 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
         // All that follows is logic for distinct count. It's not like the
         // other aggregators.
         if (tupleList.isEmpty()) {
-            return FunUtil.DOUBLE_NULL;
+            // Aggregate({}) is NULL — Java null.
+            return null;
         }
 
         // Optimize the list
@@ -183,7 +184,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      * be safely optimized. If a member of the tuple list is on
      * a hierarchy for which a rollup policy of PARTIAL is set,
      * it is not safe to optimize that list.
-     */
+ */
     private static boolean canOptimize(
         Evaluator evaluator,
         TupleList tupleList)
@@ -247,7 +248,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      *  (Gender.[All Gender], [Product].[All Products])
      *
      * @param list List of tuples
-     */
+ */
     private static TupleList removeOverlappingTupleEntries(
         TupleList list)
     {
@@ -287,7 +288,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      * @param tuple1 First tuple
      * @param tuple2 Second tuple
      * @return boolean Whether tuple1 is a superset of tuple2
-     */
+ */
     public static boolean isSuperSet(Member[] tuple1, Member[] tuple2) {
         int parentLevelCount = 0;
         for (int i = 0; i < tuple1.length; i++) {
@@ -350,7 +351,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      * @param reader Schema reader
      * @param baseCubeForMeasure Cube
      * @return xxxx
-     */
+ */
     public static TupleList optimizeChildren(
         TupleList tuples,
         CatalogReader reader,
@@ -393,7 +394,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      *
      * @param tupleList List of tuples
      * @return Map of the number of occurrences of each member in a tuple
-     */
+ */
     public static Map<Member, Integer>[] membersVersusOccurencesInTuple(
         TupleList tupleList)
     {
@@ -489,7 +490,7 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
      * @param tuple1 First tuple
      * @param tuple2 Second tuple
      * @return whether tuples are equal
-     */
+ */
     private static boolean isEqual(Member[] tuple1, Member[] tuple2) {
         for (int i = 0; i < tuple1.length; i++) {
             if (!tuple1[i].getUniqueName().equals(

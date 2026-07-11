@@ -52,6 +52,10 @@ public class TopBottomPercentSumCalc extends AbstractProfilingNestedTupleListCal
         if (list.isEmpty()) {
             return list;
         }
+        if (target == null) {
+            // A NULL target behaves like 0 .
+            target = 0.0;
+        }
         Map<List<Member>, Object> mapMemberToValue = Sorter.evaluateTuples(evaluator, calc, list);
         final int savepoint = evaluator.savepoint();
         try {

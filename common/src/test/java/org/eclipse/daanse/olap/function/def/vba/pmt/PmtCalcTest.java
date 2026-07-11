@@ -129,7 +129,7 @@ class PmtCalcTest {
     }
 
     @Test
-    @DisplayName("Should handle null values")
+    @DisplayName("Should return null for null values")
     void shouldHandleNullValues() {
         when(rateCalc.evaluate(evaluator)).thenReturn(null);
         when(nPerCalc.evaluate(evaluator)).thenReturn(12.0);
@@ -137,7 +137,7 @@ class PmtCalcTest {
         when(fvCalc.evaluate(evaluator)).thenReturn(0.0);
         when(dueCalc.evaluate(evaluator)).thenReturn(false);
 
-        assertThatThrownBy(() -> pmtCalc.evaluate(evaluator)).isInstanceOf(NullPointerException.class);
+        assertThat(pmtCalc.evaluate(evaluator)).isNull();
     }
 
     @Test

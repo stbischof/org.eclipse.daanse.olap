@@ -30,6 +30,11 @@ public class SLNCalc extends AbstractProfilingNestedDoubleCalc {
         Double salvage = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
         Double life = getChildCalc(2, DoubleCalc.class).evaluate(evaluator);
 
+        if (cost == null || salvage == null || life == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         return (cost - salvage) / life;
     }
 

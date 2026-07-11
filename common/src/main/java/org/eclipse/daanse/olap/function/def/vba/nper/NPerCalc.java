@@ -32,6 +32,11 @@ public class NPerCalc extends AbstractProfilingNestedDoubleCalc {
         Double pv = getChildCalc(2, DoubleCalc.class).evaluate(evaluator);
         Double fv = getChildCalc(3, DoubleCalc.class).evaluate(evaluator);
         Boolean due = getChildCalc(3, BooleanCalc.class).evaluate(evaluator);
+
+        if (rate == null || pmt == null || pv == null || fv == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         
         if (rate == 0) {
             return -(fv + pv) / pmt;

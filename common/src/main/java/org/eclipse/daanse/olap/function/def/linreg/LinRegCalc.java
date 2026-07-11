@@ -51,7 +51,7 @@ public class LinRegCalc extends AbstractProfilingNestedDoubleCalc {
     public Double evaluateInternal(Evaluator evaluator) {
         Value value = process(evaluator, tupleListCalc, yCalc, xCalc);
         if (value == null) {
-            return FunUtil.DOUBLE_NULL;
+            return null;
         }
         switch (regType) {
         case LinRegFunDef.INTERCEPT:

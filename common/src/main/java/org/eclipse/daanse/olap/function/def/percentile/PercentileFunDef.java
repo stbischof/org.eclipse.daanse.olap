@@ -41,7 +41,12 @@ public class PercentileFunDef extends AbstractAggregateFunDef {
             @Override
             public Double evaluateInternal(Evaluator evaluator) {
                 TupleList list = AbstractAggregateFunDef.evaluateCurrentList(tupleListCalc, evaluator);
-                Double percent = percentCalc.evaluate(evaluator) * 0.01;
+                Double percentArg = percentCalc.evaluate(evaluator);
+                if (percentArg == null) {
+                    // A NULL percent argument yields NULL .
+                    return null;
+                }
+                Double percent = percentArg * 0.01;
                 final int savepoint = evaluator.savepoint();
                 try {
                     evaluator.setNonEmpty(false);

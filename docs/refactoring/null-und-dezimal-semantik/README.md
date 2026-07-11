@@ -63,9 +63,9 @@ Diese Initiative beantwortet fünf Fragen:
 | Phase | Inhalt | Stand |
 |---|---|---|
 | 0 | Charakterisierungstests | **fertig** (2026-07-11): olap 115 Calc-Unit-Tests (`common/.../nullsemantics/`) + 5 XMLA-Konverter-Tests (xmla/bridge); rolap 18 MDX-Tests (`testkit/core/.../nullsemantics/`, 2 davon `@Disabled` bis Phase 3/5b); Befunde in Doc 99 |
-| 1 | `NullSemantics` zentralisieren | offen |
-| 2 | `NotLoaded` statt Double(0) | offen |
-| 3 | Sentinel → Java-`null` | offen |
+| 1 | `NullSemantics` zentralisieren | **fertig** (2026-07-11): E1 = `calc.base` (exportiert); 49 olap- + 8 rolap-Stellen umgestellt, `Util.isNull` delegiert, Komparator-Duplikat zusammengeführt; sanktionierte Härtung ExpCalc/UnknownToDoubleCalc; `EmptyValue`/`DOUBLE_EMPTY` deprecated (Löschung Phase 6) |
+| 2 | `NotLoaded` statt Double(0) | **fertig** (2026-07-11): `NotLoaded`-Record in `api.result` (Vorgriff auf CellValue); `Util.valueNotReadyException` = deprecated Alias auf die Instanz; Koerzions-Calcs tolerieren Marker explizit; `SumAggregator` ohne MIN_VALUE-Marker; testkit-Suite 2183 Tests grün |
+| 3 | Sentinel → Java-`null` | **olap-Seite fertig** (2026-07-11): `NullSemantics.isNull(Double)` = `v == null`, primitive `isNull(double)` gelöscht, `compare(double,double)` ohne NULL-Slot; Compiler-Inversion (`case null -> null`, BOOLEAN bleibt per E4); alle Produzenten liefern `null` (Konverter, Operatoren, excel/vba, FunUtil percentile/quartile/sumDouble → `Double`); `Sorter.box` gelöscht; R1-Sweep: Null-Guards in ~30 Calcs; `Util.DOUBLE_NULL`/`isSentinelOnly` deprecated (Löschung Phase 6); Phase-0-Suite auf Heilungs-Regression geflippt (Doc 07 §1.1). **rolap-Seite offen** (`RolapEvaluator.evaluateCurrent`-No-op, Differenzläufe) |
 | 4 | `CellValue` Cell-/Cache-Grenze | offen |
 | 5a | Kahan-Summation | offen |
 | 5b | Decimal-Lane | offen |

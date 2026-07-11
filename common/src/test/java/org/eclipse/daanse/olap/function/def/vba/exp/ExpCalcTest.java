@@ -70,7 +70,7 @@ class ExpCalcTest {
     @Test
     @DisplayName("Should return null for null value")
     void shouldReturnNullForNullValue() {
-        when(doubleCalc.evaluate(evaluator)).thenReturn(Util.DOUBLE_NULL);
+        when(doubleCalc.evaluate(evaluator)).thenReturn((Double) null);
 
         Double result = expCalc.evaluate(evaluator);
 

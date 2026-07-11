@@ -31,6 +31,11 @@ public class SYDCalc extends AbstractProfilingNestedDoubleCalc {
         Double life = getChildCalc(2, DoubleCalc.class).evaluate(evaluator);
         Double period = getChildCalc(3, DoubleCalc.class).evaluate(evaluator);
 
+        if (cost == null || salvage == null || life == null || period == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         return (cost - salvage) * (life / (period * (period + 1) / 2));
     }
 

@@ -30,6 +30,11 @@ public class DDBCalc extends AbstractProfilingNestedDoubleCalc {
         Double life = getChildCalc(2, DoubleCalc.class).evaluate(evaluator);
         Double period = getChildCalc(3, DoubleCalc.class).evaluate(evaluator);
         Double factor = getChildCalc(4, DoubleCalc.class).evaluate(evaluator);
+
+        if (cost == null || salvage == null || life == null || period == null || factor == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         return (((cost - salvage) * factor) / life) * period;
     }
 

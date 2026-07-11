@@ -29,6 +29,11 @@ public class RoundCalc extends AbstractProfilingNestedDoubleCalc {
         Double number = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
         Integer numDigitsAfterDecimal = getChildCalc(1, IntegerCalc.class).evaluate(evaluator);
 
+        if (number == null || numDigitsAfterDecimal == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         if (numDigitsAfterDecimal == 0) {
             return (double) Math.round(number);
         }

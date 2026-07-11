@@ -562,9 +562,12 @@ public class Sorter {
    *
    * MDX requires a total order:
    *
-   * -inf &lt; NULL &lt; ... &lt; -1 &lt; ... &lt; 0 &lt; ... &lt; NaN &lt; +inf
+   * -inf &lt; ... &lt; -1 &lt; ... &lt; 0 &lt; ... &lt; NaN &lt; +inf
    *
-   * but this is different than Java semantics, specifically with regard to {@link Double#NaN}.
+   * which differs from Java semantics with regard to {@link Double#NaN}.
+   * A primitive {@code double} cannot carry MDX NULL; NULL
+   * ordering exists only at the boxed/object level
+   * ({@link #compareValues(Object, Object)}).
  */
   public static int compareValues( double d1, double d2 ) {
     return NullSemantics.compare( d1, d2 );
@@ -583,17 +586,6 @@ public class Sorter {
  */
   public static int compareValues( Object value0, Object value1 ) {
     return NullSemantics.compareCellValues( value0, value1 );
-  }
-
-
-
-  /**
-   * Converts a double (primitive) value to a Double. DoubleNull becomes null.
- */
-  public static Double box( double d ) {
-    return NullSemantics.isNull( d )
-      ? null
-      : d;
   }
 
 

@@ -34,7 +34,12 @@ public class PercentileCalc extends AbstractProfilingNestedDoubleCalc{
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         TupleList list = AbstractAggregateFunDef.evaluateCurrentList(getChildCalc(0, TupleListCalc.class), evaluator);
-        Double percent = getChildCalc(2, DoubleCalc.class).evaluate(evaluator) * 0.01;
+        Double percentArg = getChildCalc(2, DoubleCalc.class).evaluate(evaluator);
+        if (percentArg == null) {
+            // A NULL percent argument yields NULL .
+            return null;
+        }
+        Double percent = percentArg * 0.01;
         final int savepoint = evaluator.savepoint();
         try {
             evaluator.setNonEmpty(false);

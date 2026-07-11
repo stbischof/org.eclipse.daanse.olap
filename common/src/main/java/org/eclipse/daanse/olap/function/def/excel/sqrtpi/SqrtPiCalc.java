@@ -28,7 +28,7 @@ public class SqrtPiCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double number = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
-        if (NullSemantics.isSentinelOnly(number)) {
+        if (NullSemantics.isNull(number)) {
             return null;
         }
         return Math.sqrt(number * Math.PI);

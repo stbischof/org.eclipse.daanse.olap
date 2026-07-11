@@ -39,6 +39,11 @@ public class DateAddCalc extends AbstractProfilingNestedDateTimeCalc {
         Double number = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
         LocalDateTime dateTime = getChildCalc(2, DateTimeCalc.class).evaluate(evaluator);
 
+        if (intervalName == null || number == null || dateTime == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         Interval interval = Interval.valueOf(intervalName);
         final double floor = Math.floor(number);
 

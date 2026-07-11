@@ -174,14 +174,29 @@ public class Util {
             LoggerFactory.getLogger("daanse.profile");
 
     /**
-     * Special value which indicates that a {@code double} computation has returned the MDX null value. See {@link
-     * DoubleCalc}.
+     * Former in-band sentinel which encoded the MDX NULL value of a
+     * {@code double} computation. See {@link DoubleCalc}.
+     *
+     * @deprecated Since the null-semantics migration the calc layer represents MDX NULL
+     *             as Java {@code null}; a {@code Double} of this value is an
+     *             ordinary number. The constant is retained only for external
+     *             consumers of the exported {@code calc*} packages and will be
+     *             removed, see
+     *             the null-semantics notes
  */
+    @Deprecated(forRemoval = true)
     public static final Double DOUBLE_NULL = Double.valueOf(0.000000012345);
 
     /**
      * Placeholder which indicates a value NULL.
+     *
+     * <p>
+     * NOT deprecated yet: the cell/object layer ({@code CellReader},
+     * {@code RolapResult}, comparators) still uses this sentinel by identity.
+     * It is replaced by an explicit {@code CellValue} state in migration
+     * .
  */
+    @SuppressWarnings("deprecation")
     public static final Object nullValue = DOUBLE_NULL;
 
     /**

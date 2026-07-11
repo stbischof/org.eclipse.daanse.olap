@@ -35,6 +35,11 @@ public class IPmtCalc extends AbstractProfilingNestedDoubleCalc {
         Double fv = getChildCalc(4, DoubleCalc.class).evaluate(evaluator);
         Boolean due = getChildCalc(5, BooleanCalc.class).evaluate(evaluator);
 
+        if (rate == null || per == null || nPer == null || pv == null || fv == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         return iPmt(rate, per, nPer, pv, fv, due);
     }
 

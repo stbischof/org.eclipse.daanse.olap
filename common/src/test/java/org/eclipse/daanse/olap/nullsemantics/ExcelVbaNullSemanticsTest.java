@@ -14,7 +14,6 @@
 package org.eclipse.daanse.olap.nullsemantics;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,24 +33,19 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * characterization tests for a sample of Excel/VBA function calcs and
- * their treatment of the {@code FunUtil.DOUBLE_NULL} sentinel.
+ * regression tests for a sample of Excel/VBA function calcs and the
+ * MDX NULL semantics of the calc layer.
  *
- * These tests freeze TODAY's behavior as a safety net for the NULL-semantics
- * refactoring (.
- *
- * The sample deliberately covers all check variants found in excel/* and vba/*:
- * - {@code number == FunUtil.DOUBLE_NULL} only (AcosCalc, Log10Calc,
- *   SqrtPiCalc): identity-based, NPE on Java null input.
- * - {@code x == FunUtil.DOUBLE_NULL || x == null} (AsinhCalc): identity-based,
- *   Java null handled.
- * - vba ExpCalc: since (idiom normalized to
- *   {@code NullSemantics.isSentinelOnly}, see the design notes
- *   AcosCalc — a runtime-computed 0.000000012345 no longer collides and is
- *   treated as an ordinary value.
+ * Since (. MDX NULL is
+ * Java {@code null}: every sampled calc maps a Java-null argument to a
+ * Java-null result (the former NPEs are healed), and the former
+ * {@code FunUtil.DOUBLE_NULL} sentinel (0.000000012345) is an ordinary value
+ * that is computed like any other number (the sentinel collision is healed).
  */
 class ExcelVbaNullSemanticsTest {
 
+    /** The former sentinel — now an ordinary value. */
+    @SuppressWarnings("deprecation")
     private static final Double SENTINEL = FunUtil.DOUBLE_NULL;
     private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
 
@@ -105,7 +99,7 @@ class ExcelVbaNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("AcosCalc (excel): identity check, no Java-null guard")
+    @DisplayName("AcosCalc (excel): Java null maps to null, former sentinel is a value")
     class AcosCalcCharacterization {
 
         @Test
@@ -117,33 +111,29 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("sentinel singleton maps to Java null")
-        void sentinelMapsToJavaNull() {
-            stubArgument(SENTINEL);
+        @DisplayName("Java null input maps to Java null instead of throwing")
+        void javaNullMapsToJavaNull() {
+            stubArgument(null);
             assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
         }
 
         @Test
-        @DisplayName("computed 0.000000012345 passes the identity check and is computed as a value")
+        @DisplayName("0.000000012345 is computed as a value — the sentinel collision is healed")
         void computedSentinelValueIsTreatedAsValue() {
-            // Identity-based check misses the value-equal distinct instance.
-            // Will be inverted in , see the null-semantics notes
             stubArgument(distinctSentinelValue());
             assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
                     .isEqualTo(Math.acos(SENTINEL_VALUE));
-        }
 
-        @Test
-        @DisplayName("Java null input throws NullPointerException (unboxing in Math.acos)")
-        void javaNullThrows() {
-            stubArgument(null);
-            assertThatThrownBy(() -> new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isInstanceOf(NullPointerException.class);
+            // The former sentinel singleton itself is now an
+            // ordinary value as well.
+            stubArgument(SENTINEL);
+            assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
+                    .isEqualTo(Math.acos(SENTINEL_VALUE));
         }
     }
 
     @Nested
-    @DisplayName("AsinhCalc (excel): identity check WITH Java-null guard")
+    @DisplayName("AsinhCalc (excel): Java null maps to null, former sentinel is a value")
     class AsinhCalcCharacterization {
 
         @Test
@@ -154,14 +144,15 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("sentinel singleton maps to Java null")
-        void sentinelMapsToJavaNull() {
+        @DisplayName("former sentinel singleton is computed as a value")
+        void formerSentinelIsComputedAsValue() {
             stubArgument(SENTINEL);
-            assertThat(new TestableAsinhCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
+            assertThat(new TestableAsinhCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
+                    .isEqualTo(Math.log(SENTINEL_VALUE + Math.sqrt(1.0 + (SENTINEL_VALUE * SENTINEL_VALUE))));
         }
 
         @Test
-        @DisplayName("Java null input maps to Java null (explicit '|| x == null' variant)")
+        @DisplayName("Java null input maps to Java null")
         void javaNullMapsToJavaNull() {
             stubArgument(null);
             assertThat(new TestableAsinhCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
@@ -169,7 +160,7 @@ class ExcelVbaNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("Log10Calc (excel): identity check, no Java-null guard")
+    @DisplayName("Log10Calc (excel): Java null maps to null, former sentinel is a value")
     class Log10CalcCharacterization {
 
         @Test
@@ -180,23 +171,23 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("sentinel singleton maps to Java null")
-        void sentinelMapsToJavaNull() {
+        @DisplayName("former sentinel singleton is computed as a value")
+        void formerSentinelIsComputedAsValue() {
             stubArgument(SENTINEL);
-            assertThat(new TestableLog10Calc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
+            assertThat(new TestableLog10Calc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
+                    .isEqualTo(Math.log10(SENTINEL_VALUE));
         }
 
         @Test
-        @DisplayName("Java null input throws NullPointerException")
-        void javaNullThrows() {
+        @DisplayName("Java null input maps to Java null instead of throwing")
+        void javaNullMapsToJavaNull() {
             stubArgument(null);
-            assertThatThrownBy(() -> new TestableLog10Calc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isInstanceOf(NullPointerException.class);
+            assertThat(new TestableLog10Calc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
         }
     }
 
     @Nested
-    @DisplayName("SqrtPiCalc (excel): identity check, no Java-null guard")
+    @DisplayName("SqrtPiCalc (excel): Java null maps to null, former sentinel is a value")
     class SqrtPiCalcCharacterization {
 
         @Test
@@ -208,23 +199,23 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("sentinel singleton maps to Java null")
-        void sentinelMapsToJavaNull() {
+        @DisplayName("former sentinel singleton is computed as a value")
+        void formerSentinelIsComputedAsValue() {
             stubArgument(SENTINEL);
-            assertThat(new TestableSqrtPiCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
+            assertThat(new TestableSqrtPiCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
+                    .isEqualTo(Math.sqrt(SENTINEL_VALUE * Math.PI));
         }
 
         @Test
-        @DisplayName("Java null input throws NullPointerException")
-        void javaNullThrows() {
+        @DisplayName("Java null input maps to Java null instead of throwing")
+        void javaNullMapsToJavaNull() {
             stubArgument(null);
-            assertThatThrownBy(() -> new TestableSqrtPiCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isInstanceOf(NullPointerException.class);
+            assertThat(new TestableSqrtPiCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
         }
     }
 
     @Nested
-    @DisplayName("ExpCalc (vba): identity-based sentinel check (since )")
+    @DisplayName("ExpCalc (vba): Java null maps to null, former sentinel is a value")
     class ExpCalcCharacterization {
 
         @Test
@@ -235,33 +226,24 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("sentinel singleton maps to Java null")
-        void sentinelMapsToJavaNull() {
-            stubArgument(SENTINEL);
-            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
-        }
-
-        @Test
-        @DisplayName("computed 0.000000012345 passes the identity check and is computed as a value")
-        void computedSentinelValueCollides() {
-            // Historically ExpCalc used Util.DOUBLE_NULL.equals(number) and
-            // swallowed a genuine 0.000000012345 as NULL (value collision).
-            // The idiom was normalized to the identity-based
-            // NullSemantics.isSentinelOnly in (sanctioned hardening,
-            //.
-            // 06-migrationsplan-phasen.md), so a value-equal distinct Double
-            // is now an ordinary value, in line with AcosCalc/DivideCalc.
+        @DisplayName("0.000000012345 is computed as a value — the sentinel collision is healed")
+        void computedSentinelValueIsARealValue() {
             stubArgument(distinctSentinelValue());
+            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
+                    .isEqualTo(Math.exp(SENTINEL_VALUE));
+
+            // The former sentinel singleton itself is now an
+            // ordinary value as well.
+            stubArgument(SENTINEL);
             assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
                     .isEqualTo(Math.exp(SENTINEL_VALUE));
         }
 
         @Test
-        @DisplayName("Java null input throws NullPointerException (sentinel check is false, then Math.exp unboxes)")
-        void javaNullThrows() {
+        @DisplayName("Java null input maps to Java null instead of throwing")
+        void javaNullMapsToJavaNull() {
             stubArgument(null);
-            assertThatThrownBy(() -> new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isInstanceOf(NullPointerException.class);
+            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
         }
     }
 }

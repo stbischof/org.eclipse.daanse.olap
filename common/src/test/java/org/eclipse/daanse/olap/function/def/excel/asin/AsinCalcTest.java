@@ -88,7 +88,7 @@ class AsinCalcTest {
     @Test
     @DisplayName("Should return null for null input")
     void shouldReturnNullForNullInput() {
-        when(doubleCalc.evaluate(evaluator)).thenReturn(FunUtil.DOUBLE_NULL);
+        when(doubleCalc.evaluate(evaluator)).thenReturn((Double) null);
 
         Double result = asinCalc.evaluate(evaluator);
 

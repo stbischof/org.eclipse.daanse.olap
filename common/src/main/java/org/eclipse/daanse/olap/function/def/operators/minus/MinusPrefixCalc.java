@@ -19,7 +19,6 @@ import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class MinusPrefixCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -31,7 +30,7 @@ public class MinusPrefixCalc extends AbstractProfilingNestedDoubleCalc {
     public Double evaluateInternal(Evaluator evaluator) {
         final Double v = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
         if (NullSemantics.isNull(v)) {
-            return FunUtil.DOUBLE_NULL;
+            return null;
         } else {
             return - v;
         }

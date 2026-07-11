@@ -30,6 +30,11 @@ public class MIRRCalc extends AbstractProfilingNestedDoubleCalc {
         Double[] valueArray = (Double[]) getChildCalc(0).evaluate(evaluator);
         Double financeRate = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
         Double reinvestRate = getChildCalc(2, DoubleCalc.class).evaluate(evaluator);
+
+        if (valueArray == null || financeRate == null || reinvestRate == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         return mirr(valueArray, financeRate, reinvestRate);
     }
 

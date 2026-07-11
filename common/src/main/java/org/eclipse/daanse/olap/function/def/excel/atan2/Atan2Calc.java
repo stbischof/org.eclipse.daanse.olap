@@ -28,6 +28,11 @@ public class Atan2Calc extends AbstractProfilingNestedDoubleCalc {
     public Double evaluateInternal(Evaluator evaluator) {
         Double x = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
         Double y = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
+
+        if (x == null || y == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         return Math.atan2(y, x);
     }
 

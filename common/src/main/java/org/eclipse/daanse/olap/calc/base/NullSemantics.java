@@ -24,21 +24,20 @@ import org.eclipse.daanse.olap.fun.sort.OrderKey;
  * Central home of the MDX NULL semantics of the calculation layer.
  *
  * <p>
- * The engine historically encodes MDX NULL with the in-band sentinel
- * {@link Util#DOUBLE_NULL} / {@link Util#nullValue} and checks it with four
- * different idioms scattered over dozens of call sites (boxed identity
- * {@code ==}, unboxed value {@code ==}, {@code equals}, {@code Objects.equals}).
- * This class gives each idiom exactly one named helper so that the sentinel
- * representation can later be swapped for Java {@code null} in a single place
- *.
+ * The engine historically encoded MDX NULL with the in-band sentinel
+ * {@link Util#DOUBLE_NULL} / {@link Util#nullValue}. Migration (see
+ * the null-semantics notes)
+ * has been executed for the {@code Double} side of the calc layer: a
+ * {@code DoubleCalc} now represents MDX NULL as Java {@code null}, and
+ * {@link #isNull(Double)} is a plain {@code v == null} check. A computed
+ * {@code Double} of value {@code 0.000000012345} is an ordinary value
+ * everywhere (the historical collision is healed).
  *
  * <p>
- * <b>Transitional API.</b> Until the helpers reproduce today's
- * behavior bit for bit; the distinction between {@link #isNull(Double)},
- * {@link #isSentinelOnly(Double)} and {@link #isNull(double)} exists only
- * because the historical idioms differ in null tolerance and in identity- vs
- * value-comparison. Once the sentinel is gone the value-based variants
- * disappear and everything collapses to {@code v == null}.
+ * The object/cell side ({@link #isNullValue(Object)}, {@link #isNull(Object)},
+ * {@link #equalsNullValue(Object)}, {@link #compareCellValues(Object, Object)})
+ * still recognizes the {@link Util#nullValue} sentinel; it switches to a
+ * dedicated {@code CellValue} state in the null-semantics migration.
  */
 public final class NullSemantics {
 
@@ -47,36 +46,27 @@ public final class NullSemantics {
     }
 
     /**
-     * Boxed NULL check, tolerant of both representations. Mirrors the
-     * {@code v == FunUtil.DOUBLE_NULL || v == null} idiom of the arithmetic
-     * operator calcs: identity comparison against the sentinel singleton, plus
-     * Java {@code null}.
+     * Boxed NULL check: since , MDX NULL in the {@code Double} calc
+     * world IS Java {@code null}. The former {@link Util#DOUBLE_NULL} sentinel
+     * is an ordinary value.
  */
     public static boolean isNull(Double v) {
-        return v == null || isSentinelOnly(v);
+        return v == null;
     }
 
     /**
-     * Strict sentinel check without Java-{@code null} tolerance. Mirrors the
-     * bare {@code v == FunUtil.DOUBLE_NULL} idiom (comparison operators, most
-     * excel calcs, {@code DoubleToBooleanCalc}) whose call sites today throw
-     * NPE further down when handed a Java {@code null}. Folds into
-     * {@link #isNull(Double)}.
+     * Identical to {@link #isNull(Double)}.
+     *
+     * @deprecated The strict-sentinel idiom this helper mirrored was folded
+     *             into {@link #isNull(Double)} when replaced the
+     *             {@code DOUBLE_NULL} sentinel with Java {@code null}; the
+     *             method is retained for API stability and will be removed in
+     *             (see
+     *             the null-semantics notes).
  */
+    @Deprecated(forRemoval = true)
     public static boolean isSentinelOnly(Double v) {
-        // Deliberate reference comparison: only the sentinel singleton is
-        // NULL here; a runtime-computed Double of equal value is a real value.
-        return ((Object) v) == ((Object) Util.DOUBLE_NULL);
-    }
-
-    /**
-     * Unboxed NULL check. Mirrors the primitive {@code d == DOUBLE_NULL}
-     * idiom (comparators, {@code FunUtil.sum}): a value comparison, hence
-     * inherently collision-prone — any computation that yields exactly
-     * {@code 0.000000012345} is mistaken for NULL. Disappears.
- */
-    public static boolean isNull(double v) {
-        return v == Util.DOUBLE_NULL;
+        return v == null;
     }
 
     /**
@@ -109,9 +99,15 @@ public final class NullSemantics {
 
     /**
      * Compares two unboxed cell values forming the total order
-     * {@code -Inf < NULL < values < NaN < +Inf} (MSAS-compatible). Canonical
-     * implementation of the former duplicate in {@code FunUtil} and
+     * {@code -Inf < values < NaN < +Inf} (MSAS-compatible NaN placement).
+     * Canonical implementation of the former duplicate in {@code FunUtil} and
      * {@code Sorter}.
+     *
+     * <p>
+     * A primitive {@code double} cannot carry MDX NULL
+     * (NULL is Java {@code null} at the boxed level, handled by
+     * {@link #compareCellValues(Object, Object)}), so this order has no NULL
+     * slot anymore.
  */
     public static int compare(double d1, double d2) {
         if (Double.isNaN(d1)) {
@@ -130,18 +126,6 @@ public final class NullSemantics {
             }
         } else if (d1 == d2) {
             return 0;
-        } else if (isNull(d1)) {
-            if (d2 == Double.NEGATIVE_INFINITY) {
-                return 1;
-            } else {
-                return -1;
-            }
-        } else if (isNull(d2)) {
-            if (d1 == Double.NEGATIVE_INFINITY) {
-                return -1;
-            } else {
-                return 1;
-            }
         } else if (d1 < d2) {
             return -1;
         } else {

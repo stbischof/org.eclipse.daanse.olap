@@ -14,7 +14,6 @@
 package org.eclipse.daanse.olap.nullsemantics;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,19 +33,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * characterization tests for the type-coercion calcs and their
- * treatment of the {@code FunUtil.DOUBLE_NULL} sentinel.
+ * regression tests for the type-coercion calcs and the MDX NULL
+ * semantics of the calc layer (Java {@code null} since , see
+ * the null-semantics notes):
  *
- * These tests freeze TODAY's behavior as a safety net for the NULL-semantics
- * refactoring (.
- *
- * Frozen characteristics:
- * - DoubleToBooleanCalc: sentinel (identity) and NaN map to BOOLEAN_NULL,
- *   which is the primitive false; Java null input throws NPE.
- * - UnknownToDoubleCalc: since (idiom normalized to
- *   {@code NullSemantics.isNullValue}, see the design notes
- *   incoming value-equal 0.000000012345 no longer collides.
- * - IntegerToDoubleCalc: Java null input PRODUCES the DOUBLE_NULL singleton.
+ * - DoubleToBooleanCalc: Java null and NaN map to BOOLEAN_NULL, which is the
+ *   primitive false (no 3VL, ); the former sentinel is an ordinary
+ *   non-zero value and maps to true (the sentinel collision is healed).
+ * - UnknownToDoubleCalc: Java null and the object-level {@code Util.nullValue}
+ *   sentinel (cell layer) both map to Java null; a value-equal
+ *   computed 0.000000012345 stays a real value.
+ * - IntegerToDoubleCalc: Java null input produces Java null.
  */
 class CoercionNullSemanticsTest {
 
@@ -63,8 +60,14 @@ class CoercionNullSemanticsTest {
         return Double.valueOf(SENTINEL_VALUE);
     }
 
+    /** The former sentinel singleton — now an ordinary value. */
+    @SuppressWarnings("deprecation")
+    private static Double sentinelSingleton() {
+        return FunUtil.DOUBLE_NULL;
+    }
+
     @Nested
-    @DisplayName("DoubleToBooleanCalc: identity sentinel check")
+    @DisplayName("DoubleToBooleanCalc: Java-null NULL check ")
     class DoubleToBooleanCharacterization {
 
         private DoubleCalc doubleCalc;
@@ -77,11 +80,11 @@ class CoercionNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("sentinel singleton maps to BOOLEAN_NULL, which is false")
-        void sentinelMapsToBooleanNull() {
-            when(doubleCalc.evaluate(evaluator)).thenReturn(FunUtil.DOUBLE_NULL);
-            // FunUtil.BOOLEAN_NULL is the primitive false — a NULL boolean is
-            // indistinguishable from a genuine FALSE today.
+        @DisplayName("Java null maps to BOOLEAN_NULL, which is false")
+        void javaNullMapsToBooleanNull() {
+            when(doubleCalc.evaluate(evaluator)).thenReturn(null);
+            // FunUtil.BOOLEAN_NULL is the primitive false — no 3VL (decision
+            // E4): a NULL boolean is indistinguishable from a genuine FALSE.
             assertThat(calc.evaluate(evaluator)).isEqualTo(FunUtil.BOOLEAN_NULL).isFalse();
         }
 
@@ -106,25 +109,20 @@ class CoercionNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("computed 0.000000012345 passes the identity check and maps to true (non-zero)")
+        @DisplayName("0.000000012345 maps to true (non-zero real value) — the sentinel collision is healed")
         void computedSentinelValueIsTreatedAsValue() {
-            // The '== FunUtil.DOUBLE_NULL' check is reference-based; a
-            // value-equal distinct instance is treated as an ordinary non-zero
-            // number. Will be inverted in , see the null-semantics notes
             when(doubleCalc.evaluate(evaluator)).thenReturn(distinctSentinelValue());
             assertThat(calc.evaluate(evaluator)).isTrue();
-        }
 
-        @Test
-        @DisplayName("Java null input throws NullPointerException (Double.isNaN unboxes first)")
-        void javaNullThrows() {
-            when(doubleCalc.evaluate(evaluator)).thenReturn(null);
-            assertThatThrownBy(() -> calc.evaluate(evaluator)).isInstanceOf(NullPointerException.class);
+            // The former sentinel singleton itself is now an
+            // ordinary value as well.
+            when(doubleCalc.evaluate(evaluator)).thenReturn(sentinelSingleton());
+            assertThat(calc.evaluate(evaluator)).isTrue();
         }
     }
 
     @Nested
-    @DisplayName("UnknownToDoubleCalc: identity-based sentinel check (since )")
+    @DisplayName("UnknownToDoubleCalc: NULL inputs map to Java null ")
     class UnknownToDoubleCharacterization {
 
         private Calc<Object> childCalc;
@@ -138,30 +136,27 @@ class CoercionNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("Java null input produces the DOUBLE_NULL singleton")
-        void javaNullProducesSentinelSingleton() {
+        @DisplayName("Java null input produces Java null")
+        void javaNullProducesJavaNull() {
             when(childCalc.evaluate(evaluator)).thenReturn(null);
-            assertThat(calc.evaluate(evaluator)).isSameAs(FunUtil.DOUBLE_NULL);
+            assertThat(calc.evaluate(evaluator)).isNull();
         }
 
         @Test
-        @DisplayName("sentinel singleton input is passed through as the singleton")
-        void sentinelSingletonIsPassedThrough() {
-            when(childCalc.evaluate(evaluator)).thenReturn(FunUtil.DOUBLE_NULL);
-            assertThat(calc.evaluate(evaluator)).isSameAs(FunUtil.DOUBLE_NULL);
+        @DisplayName("the object-level Util.nullValue sentinel (cell layer) maps to Java null")
+        void nullValueSentinelMapsToJavaNull() {
+            when(childCalc.evaluate(evaluator)).thenReturn(org.eclipse.daanse.olap.common.Util.nullValue);
+            assertThat(calc.evaluate(evaluator)).isNull();
         }
 
         @Test
-        @DisplayName("incoming value-equal 0.000000012345 passes the identity check and is passed through")
-        void computedSentinelValueCollides() {
-            // Historically this calc used Objects.equals(o, FunUtil.DOUBLE_NULL)
-            // and normalized a genuine 0.000000012345 from ANY source to the
-            // NULL singleton (value collision). The idiom was normalized to
-            // the identity-based NullSemantics.isNullValue in // (sanctioned hardening, see the null-semantics notes so a
-            // value-equal distinct Double is now passed through as an
-            // ordinary value, in line with the identity-checking operator calcs.
+        @DisplayName("incoming value-equal 0.000000012345 is passed through as a real value")
+        void computedSentinelValueIsARealValue() {
+            // The object-level check is identity-based (Util.nullValue stays
+            // an in-band sentinel for external consumers), so a value-equal distinct
+            // Double is passed through as an ordinary value.
             Double genuineTinyValue = distinctSentinelValue();
-            assertThat(genuineTinyValue).isNotSameAs(FunUtil.DOUBLE_NULL);
+            assertThat(genuineTinyValue).isNotSameAs(org.eclipse.daanse.olap.common.Util.nullValue);
             when(childCalc.evaluate(evaluator)).thenReturn(genuineTinyValue);
 
             assertThat(calc.evaluate(evaluator)).isSameAs(genuineTinyValue);
@@ -179,7 +174,7 @@ class CoercionNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("IntegerToDoubleCalc: Java null produces the sentinel")
+    @DisplayName("IntegerToDoubleCalc: Java null produces Java null ")
     class IntegerToDoubleCharacterization {
 
         private IntegerCalc integerCalc;
@@ -192,10 +187,10 @@ class CoercionNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("Java null input produces the DOUBLE_NULL singleton")
-        void javaNullProducesSentinelSingleton() {
+        @DisplayName("Java null input produces Java null")
+        void javaNullProducesJavaNull() {
             when(integerCalc.evaluate(evaluator)).thenReturn(null);
-            assertThat(calc.evaluate(evaluator)).isSameAs(FunUtil.DOUBLE_NULL);
+            assertThat(calc.evaluate(evaluator)).isNull();
         }
 
         @Test

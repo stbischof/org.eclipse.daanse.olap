@@ -28,7 +28,7 @@ public class AcoshCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double x = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
-        if (NullSemantics.isSentinelOnly(x)) {
+        if (NullSemantics.isNull(x)) {
             return null;
         }
         return Math.log(x + Math.sqrt((x * x) - 1.0));

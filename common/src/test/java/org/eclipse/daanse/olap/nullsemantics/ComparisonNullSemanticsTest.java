@@ -14,7 +14,6 @@
 package org.eclipse.daanse.olap.nullsemantics;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,25 +39,23 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * characterization tests for the numeric comparison operator calcs and
- * their treatment of the {@code FunUtil.DOUBLE_NULL} sentinel.
+ * regression tests for the numeric comparison operator calcs and the
+ * MDX NULL semantics of the calc layer.
  *
- * These tests freeze TODAY's behavior as a safety net for the NULL-semantics
- * refactoring (.
- *
- * Characteristics frozen here:
- * - A sentinel (or NaN) operand makes every comparison return
- *   {@code FunUtil.BOOLEAN_NULL}, which is the primitive {@code false} — so a
- *   NULL comparison is indistinguishable from a genuine FALSE. Notably even
- *   {@code NULL <> x} yields false.
- * - The sentinel check on boxed Doubles ({@code v0 == FunUtil.DOUBLE_NULL}) is
- *   a REFERENCE comparison; a value-equal distinct instance compares as an
- *   ordinary number.
- * - A Java {@code null} operand causes a NullPointerException, because
- *   {@code Double.isNaN(v0)} auto-unboxes before any null check.
+ * Since (. MDX NULL is
+ * Java {@code null}:
+ * - A Java-null (or NaN) operand makes every comparison return
+ *   {@code FunUtil.BOOLEAN_NULL}, which is the primitive {@code false} — no
+ *   three-valued logic, so a NULL comparison stays
+ *   indistinguishable from a genuine FALSE; notably even {@code NULL <> x}
+ *   yields false. The former NPE on Java null is healed.
+ * - The former {@code FunUtil.DOUBLE_NULL} sentinel (0.000000012345) is an
+ *   ordinary number and compares as a value (the sentinel collision is healed).
  */
 class ComparisonNullSemanticsTest {
 
+    /** The former sentinel — now an ordinary value. */
+    @SuppressWarnings("deprecation")
     private static final Double SENTINEL = FunUtil.DOUBLE_NULL;
     private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
     private static final String[] ALL_OPERATORS = { "=", "<>", ">", ">=", "<", "<=" };
@@ -154,15 +151,14 @@ class ComparisonNullSemanticsTest {
                 Arguments.of("<=", 3.0, 2.0, false));
     }
 
-    @ParameterizedTest(name = "sentinel {0} 2.0 and 2.0 {0} sentinel = false")
+    @ParameterizedTest(name = "null {0} 2.0 and 2.0 {0} null = false")
     @ValueSource(strings = { "=", "<>", ">", ">=", "<", "<=" })
-    @DisplayName("A sentinel operand makes every comparison return BOOLEAN_NULL, which is false")
-    void sentinelOperandReturnsBooleanNull(String operator) {
-        // FunUtil.BOOLEAN_NULL is the primitive false ("placeholder until we
-        // actually implement 3VL") — NULL comparisons are indistinguishable
-        // from FALSE today. Even NULL <> x is false.
-        assertThat(compare(operator, SENTINEL, 2.0)).isEqualTo(FunUtil.BOOLEAN_NULL).isFalse();
-        assertThat(compare(operator, 2.0, SENTINEL)).isEqualTo(FunUtil.BOOLEAN_NULL).isFalse();
+    @DisplayName("A Java-null operand makes every comparison return BOOLEAN_NULL, which is false")
+    void javaNullOperandReturnsBooleanNull(String operator) {
+        // FunUtil.BOOLEAN_NULL is the primitive false — no three-valued logic: NULL comparisons are indistinguishable from FALSE. Even
+        // NULL <> x is false.
+        assertThat(compare(operator, null, 2.0)).isEqualTo(FunUtil.BOOLEAN_NULL).isFalse();
+        assertThat(compare(operator, 2.0, null)).isEqualTo(FunUtil.BOOLEAN_NULL).isFalse();
     }
 
     @ParameterizedTest(name = "NaN {0} 2.0 = false")
@@ -174,31 +170,27 @@ class ComparisonNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("A Java null operand causes a NullPointerException (Double.isNaN unboxes before any null check)")
-    void javaNullOperandThrowsNullPointerException() {
+    @DisplayName("Both operands Java null: every comparison returns false (no NPE since )")
+    void bothJavaNullOperandsReturnFalse() {
         for (String operator : ALL_OPERATORS) {
-            assertThatThrownBy(() -> compare(operator, null, 2.0))
-                    .as("operator %s with null left operand", operator)
-                    .isInstanceOf(NullPointerException.class);
-            assertThatThrownBy(() -> compare(operator, 2.0, null))
-                    .as("operator %s with null right operand", operator)
-                    .isInstanceOf(NullPointerException.class);
+            assertThat(compare(operator, null, null))
+                    .as("operator %s with both operands null", operator)
+                    .isFalse();
         }
     }
 
     @Test
-    @DisplayName("A value-equal but distinct 0.000000012345 instance compares as a real value")
+    @DisplayName("0.000000012345 compares as a real value everywhere (the sentinel collision is healed)")
     void computedSentinelValueComparesAsRealValue() {
-        // The '== FunUtil.DOUBLE_NULL' check is reference-based: a distinct
-        // Double with the same value is NOT recognized as NULL and compares
-        // as an ordinary tiny positive number. flips once the sentinel encoding is gone.
         assertThat(compare("=", distinctSentinelValue(), distinctSentinelValue())).isTrue();
         assertThat(compare("<>", distinctSentinelValue(), distinctSentinelValue())).isFalse();
         assertThat(compare(">", distinctSentinelValue(), 0.0)).isTrue();
         assertThat(compare("<", distinctSentinelValue(), 1.0)).isTrue();
 
-        // But against the sentinel singleton itself, the reference check wins
-        // and the comparison degrades to BOOLEAN_NULL (false).
-        assertThat(compare("=", distinctSentinelValue(), SENTINEL)).isFalse();
+        // The former sentinel singleton itself is now an ordinary
+        // value as well: value-equal instances compare EQUAL.
+        assertThat(compare("=", distinctSentinelValue(), SENTINEL)).isTrue();
+        assertThat(compare("=", SENTINEL, SENTINEL)).isTrue();
+        assertThat(compare(">", SENTINEL, 0.0)).isTrue();
     }
 }

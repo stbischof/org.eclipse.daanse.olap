@@ -104,15 +104,16 @@ public class CastCalc extends AbstractProfilingNestedUnknownCalc {
         throw cannotConvert(o, targetType);
     }
 
-    private double toDouble(Object o, final Type targetType) {
+    private Double toDouble(Object o, final Type targetType) {
         if (o == null) {
-            return FunUtil.DOUBLE_NULL;
+            // Cast(NULL as Numeric) is NULL — Java null.
+            return null;
         }
         if (o instanceof Boolean bool) {
             if (Boolean.TRUE.equals(bool)) {
-                return 1;
+                return 1.0;
             } else {
-                return 0;
+                return 0.0;
             }
         }
         if (o instanceof String str) {

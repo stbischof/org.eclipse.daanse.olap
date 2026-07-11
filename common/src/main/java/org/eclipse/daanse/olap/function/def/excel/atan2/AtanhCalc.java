@@ -27,6 +27,11 @@ public class AtanhCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double x = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
+
+        if (x == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         return .5 * Math.log((1.0 + x) / (1.0 - x));
     }
 

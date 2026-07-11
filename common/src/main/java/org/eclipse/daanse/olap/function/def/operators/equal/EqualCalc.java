@@ -33,7 +33,9 @@ public class EqualCalc extends AbstractProfilingNestedBooleanCalc {
     public Boolean evaluateInternal(Evaluator evaluator) {
         final Double v0 = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
         final Double v1 = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
-        if (Double.isNaN(v0) || Double.isNaN(v1) || NullSemantics.isSentinelOnly(v0) || NullSemantics.isSentinelOnly(v1)) {
+        // Null check first: MDX NULL is Java null and Double.isNaN
+        // would throw on unboxing. NULL comparisons yield BOOLEAN_NULL (false).
+        if (NullSemantics.isNull(v0) || NullSemantics.isNull(v1) || Double.isNaN(v0) || Double.isNaN(v1)) {
             return FunUtil.BOOLEAN_NULL;
         }
         return Objects.equals(v0, v1);

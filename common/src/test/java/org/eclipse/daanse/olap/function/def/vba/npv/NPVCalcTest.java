@@ -75,21 +75,21 @@ class NPVCalcTest {
     }
 
     @Test
-    @DisplayName("Should handle null rate")
+    @DisplayName("Should return null for null rate")
     void shouldHandleNullRate() {
         when(rateCalc.evaluate(evaluator)).thenReturn(null);
         when(cashFlowsCalc.evaluate(evaluator)).thenReturn(new Double[] { -1000.0, 1100.0 });
 
-        assertThatThrownBy(() -> npvCalc.evaluate(evaluator)).isInstanceOf(NullPointerException.class);
+        assertThat(npvCalc.evaluate(evaluator)).isNull();
     }
 
     @Test
-    @DisplayName("Should handle null cash flows")
+    @DisplayName("Should return null for null cash flows")
     void shouldHandleNullCashFlows() {
         when(rateCalc.evaluate(evaluator)).thenReturn(0.10);
         when(cashFlowsCalc.evaluate(evaluator)).thenReturn(null);
 
-        assertThatThrownBy(() -> npvCalc.evaluate(evaluator)).isInstanceOf(NullPointerException.class);
+        assertThat(npvCalc.evaluate(evaluator)).isNull();
     }
 
     @Test

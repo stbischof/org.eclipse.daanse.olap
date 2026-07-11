@@ -16,7 +16,6 @@ package org.eclipse.daanse.olap.function.def.udf.nullvalue;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.common.Util;
 
 public class NullValueCalc extends AbstractProfilingNestedDoubleCalc {
 
@@ -26,7 +25,8 @@ public class NullValueCalc extends AbstractProfilingNestedDoubleCalc {
 
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
-        return Util.DOUBLE_NULL;
+        // MDX NULL is Java null in the Double calc world since .
+        return null;
     }
 
 }

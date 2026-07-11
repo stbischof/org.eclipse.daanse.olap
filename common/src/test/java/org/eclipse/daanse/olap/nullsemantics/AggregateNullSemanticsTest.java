@@ -36,21 +36,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * characterization tests for the static aggregate helpers in
- * {@code FunUtil} and their treatment of the {@code DOUBLE_NULL} /
- * {@code Util.nullValue} sentinels.
+ * regression tests for the static aggregate helpers in
+ * {@code FunUtil}.
  *
- * These tests freeze TODAY's behavior as a safety net for the NULL-semantics
- * refactoring (.
- *
- * Frozen characteristics:
- * - Empty sets: sumDouble/percentile/quartile return the primitive sentinel
- *   0.000000012345; sum/min/max/avg return the Util.nullValue singleton.
+ * Since (.
+ * - Empty sets: sumDouble/percentile/quartile return Java {@code null};
+ *   sum/min/max/avg still return the object-level {@code Util.nullValue}
+ *   singleton (cell layer).
  * - NULL cells (Java null or the Util.nullValue singleton) are skipped by
  *   evaluateSet, so aggregates ignore them.
- * - Error cells (Util.valueNotReadyException) turn the aggregate into NaN.
- * - COLLISION: a genuine sum of exactly 0.000000012345 is reported as NULL
- *   by FunUtil.sum.
+ * - Error cells (Util.valueNotReadyException / NotLoaded) turn the aggregate
+ *   into NaN.
+ * - COLLISION HEALED: a genuine sum of exactly
+ *   0.000000012345 is a real value.
  */
 class AggregateNullSemanticsTest {
 
@@ -92,13 +90,13 @@ class AggregateNullSemanticsTest {
     // --- sumDouble / sum ---------------------------------------------------
 
     @Test
-    @DisplayName("sumDouble of an empty set returns the primitive sentinel 0.000000012345")
-    void sumDoubleOfEmptySetReturnsSentinel() {
-        double result = FunUtil.sumDouble(evaluator, tuples(0), exp);
+    @DisplayName("sumDouble of an empty set returns Java null")
+    void sumDoubleOfEmptySetReturnsJavaNull() {
+        Double result = FunUtil.sumDouble(evaluator, tuples(0), exp);
 
-        // Sum({}) = NULL, encoded as the sentinel value. Note that this is
-        // indistinguishable from a genuine sum of 0.000000012345.
-        assertThat(result).isEqualTo(FunUtil.DOUBLE_NULL.doubleValue());
+        // Sum({}) = NULL — Java null, distinguishable from any
+        // genuine sum.
+        assertThat(result).isNull();
     }
 
     @Test
@@ -106,7 +104,7 @@ class AggregateNullSemanticsTest {
     void sumDoubleIgnoresNullCells(){
         stubCellValues(5.0, null, Util.nullValue, 3.0);
 
-        double result = FunUtil.sumDouble(evaluator, tuples(4), exp);
+        Double result = FunUtil.sumDouble(evaluator, tuples(4), exp);
 
         assertThat(result).isEqualTo(8.0);
     }
@@ -116,7 +114,7 @@ class AggregateNullSemanticsTest {
     void sumDoubleWithErrorCellReturnsNaN() {
         stubCellValues(5.0, Util.valueNotReadyException, 3.0);
 
-        double result = FunUtil.sumDouble(evaluator, tuples(3), exp);
+        Double result = FunUtil.sumDouble(evaluator, tuples(3), exp);
 
         assertThat(result).isNaN();
     }
@@ -140,31 +138,31 @@ class AggregateNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("COLLISION: a genuine sum of exactly 0.000000012345 is reported as NULL")
-    void sumCollidingWithSentinelValueIsReportedAsNull() {
+    @DisplayName("HEALED: a genuine sum of exactly 0.000000012345 is a real value")
+    void sumCollidingWithFormerSentinelValueIsARealValue() {
         // The single cell value is a runtime-boxed 0.000000012345 — a real
-        // number, deliberately NOT the sentinel singleton. evaluateSet's
-        // identity check lets it through as a value, but FunUtil.sum compares
-        // the resulting primitive sum against DOUBLE_NULL BY VALUE and
-        // converts it to NULL. This is the value-collision bug; the assertion
-        // flips once the sentinel encoding is gone.
+        // number. Before , FunUtil.sum compared the primitive sum
+        // against DOUBLE_NULL BY VALUE and reported NULL (the value-collision
+        // bug). Since there is no primitive sentinel: the sum is the
+        // real tiny value.
         Double genuineTinyValue = Double.valueOf(SENTINEL_VALUE);
         assertThat(genuineTinyValue).isNotSameAs(Util.nullValue);
         stubCellValues(genuineTinyValue);
 
         Object result = FunUtil.sum(evaluator, tuples(1), exp);
 
-        assertThat(result).isSameAs(Util.nullValue);
+        assertThat(result).isEqualTo(SENTINEL_VALUE);
+        assertThat(result).isNotSameAs(Util.nullValue);
     }
 
     // --- percentile / quartile ----------------------------------------------
 
     @Test
-    @DisplayName("percentile of an empty set returns the primitive sentinel")
-    void percentileOfEmptySetReturnsSentinel() {
-        double result = FunUtil.percentile(evaluator, tuples(0), exp, 0.5);
+    @DisplayName("percentile of an empty set returns Java null")
+    void percentileOfEmptySetReturnsJavaNull() {
+        Double result = FunUtil.percentile(evaluator, tuples(0), exp, 0.5);
 
-        assertThat(result).isEqualTo(FunUtil.DOUBLE_NULL.doubleValue());
+        assertThat(result).isNull();
     }
 
     @Test
@@ -172,17 +170,17 @@ class AggregateNullSemanticsTest {
     void percentileMedianIgnoresNullCells() {
         stubCellValues(3.0, null, 1.0, 2.0);
 
-        double result = FunUtil.percentile(evaluator, tuples(4), exp, 0.5);
+        Double result = FunUtil.percentile(evaluator, tuples(4), exp, 0.5);
 
         assertThat(result).isEqualTo(2.0);
     }
 
     @Test
-    @DisplayName("quartile of an empty set returns the primitive sentinel")
-    void quartileOfEmptySetReturnsSentinel() {
-        double result = FunUtil.quartile(evaluator, tuples(0), exp, 2);
+    @DisplayName("quartile of an empty set returns Java null")
+    void quartileOfEmptySetReturnsJavaNull() {
+        Double result = FunUtil.quartile(evaluator, tuples(0), exp, 2);
 
-        assertThat(result).isEqualTo(FunUtil.DOUBLE_NULL.doubleValue());
+        assertThat(result).isNull();
     }
 
     // --- min / max / avg -----------------------------------------------------

@@ -30,7 +30,9 @@ public class DoubleToBooleanCalc extends AbstractProfilingNestedBooleanCalc {
 	public Boolean evaluateInternal(Evaluator evaluator) {
 		Double v0 = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
 
-		if (Double.isNaN(v0) || NullSemantics.isSentinelOnly(v0)) {
+		// Null check must come first: MDX NULL is Java null and
+		// Double.isNaN would throw on unboxing.
+		if (NullSemantics.isNull(v0) || Double.isNaN(v0)) {
 			return FunUtil.BOOLEAN_NULL;
 		}
 

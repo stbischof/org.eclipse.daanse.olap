@@ -108,7 +108,7 @@ public class BaseExpressionCompiler implements ExpressionCompiler {
      *
      * @param evaluator Evaluator
      * @param validator Validator
-     */
+ */
     public BaseExpressionCompiler(Evaluator evaluator, Validator validator) {
         this(evaluator, validator, ResultStyle.ANY_LIST);
     }
@@ -120,7 +120,7 @@ public class BaseExpressionCompiler implements ExpressionCompiler {
      * @param evaluator    Evaluator
      * @param validator    Validator
      * @param resultStyles List of result styles, preferred first, must not be
-     */
+ */
     public BaseExpressionCompiler(Evaluator evaluator, Validator validator, List<ResultStyle> resultStyles) {
         this.evaluator = evaluator;
         this.validator = validator;
@@ -358,6 +358,9 @@ public class BaseExpressionCompiler implements ExpressionCompiler {
         }
         if (calc instanceof ConstantCalc constantCalc) {
             Boolean bool = switch (constantCalc.evaluate(null)) {
+            // Deliberately NOT null: booleans stay two-valued (no 3VL), so a
+            // NULL constant folds to BOOLEAN_NULL == false - null-to-false is
+            // behavior, not sentinel encoding.
             case null -> FunUtil.BOOLEAN_NULL;
             case Boolean b -> b;
             case Number n -> n.intValue() > 0;
@@ -379,7 +382,8 @@ public class BaseExpressionCompiler implements ExpressionCompiler {
             Object evaluated = constantCalc.evaluate(null);
             if (!(evaluated instanceof Double)) {
                 Double doub = switch (evaluated) {
-                    case null -> FunUtil.DOUBLE_NULL;
+                    // MDX NULL is Java null in the Double calc world.
+                    case null -> null;
                     case Double d -> d;
                     case Number n -> n.doubleValue();
                     case Object obj -> throw TypeConversionException.cannotConvert(obj, "Double");

@@ -22,43 +22,37 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * characterization tests for the NULL ordering comparators.
+ * regression tests for the ordering comparators.
  *
- * These tests freeze TODAY's behavior as a safety net for the NULL-semantics
- * refactoring (.
- *
- * Both {@code FunUtil.compareValues} and {@code Sorter.compareValues} are
- * tested independently: they are duplicates that will be merged in ,
- * so the behavior of BOTH must be frozen.
- *
- * Frozen characteristics:
- * - double overloads implement the MDX total order
- *   -Inf &lt; NULL &lt; values &lt; NaN &lt; +Inf, where NULL is the primitive
- *   sentinel value 0.000000012345 (VALUE-based: any double equal to the
- *   sentinel sorts as NULL — a collision).
- * - Object overloads sort {@code Util.nullValue} below EVERYTHING, including
- *   -Infinity — subtly different from the double overloads, where
- *   -Inf &lt; NULL.
+ * Since (. a primitive
+ * {@code double} cannot carry MDX NULL anymore:
+ * - double overloads implement the total order
+ *   -Inf &lt; values &lt; NaN &lt; +Inf with NO NULL slot; the former sentinel
+ *   value 0.000000012345 sorts as the plain tiny number it is (collision
+ *   healing).
+ * - NULL ordering exists only at the boxed/object level: the Object overloads
+ *   sort Java {@code null} and the {@code Util.nullValue} singleton (cell
+ *   layer, for external consumers) below EVERYTHING, including -Infinity — unchanged.
  */
 class NullOrderingTest {
 
     private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
 
     /**
-     * The frozen total order of the double overloads:
-     * -Inf &lt; NULL &lt; -1 &lt; 0 &lt; 1 &lt; NaN &lt; +Inf.
+     * The total order of the double overloads: no NULL slot;
+     * the former sentinel value sorts numerically (between 0 and 1).
  */
     private static final double[] DOUBLE_ORDER = {
             Double.NEGATIVE_INFINITY,
-            FunUtil.DOUBLE_NULL, // unboxes to the sentinel value
             -1.0,
             0.0,
+            SENTINEL_VALUE, // former sentinel: a plain tiny number
             1.0,
             Double.NaN,
             Double.POSITIVE_INFINITY };
 
     private static final String[] DOUBLE_ORDER_NAMES = {
-            "-Inf", "NULL(sentinel)", "-1", "0", "1", "NaN", "+Inf" };
+            "-Inf", "-1", "0", "1.2345e-8(former sentinel)", "1", "NaN", "+Inf" };
 
     /**
      * The frozen total order of the Object overloads: Util.nullValue sorts
@@ -78,7 +72,7 @@ class NullOrderingTest {
             "nullValue", "-Inf", "-1", "0", "1", "NaN", "+Inf" };
 
     @Test
-    @DisplayName("FunUtil.compareValues(double,double): full pairwise order -Inf < NULL < -1 < 0 < 1 < NaN < +Inf")
+    @DisplayName("FunUtil.compareValues(double,double): full pairwise order -Inf < -1 < 0 < 1.2345e-8 < 1 < NaN < +Inf")
     void funUtilDoubleOverloadPairwiseOrder() {
         for (int i = 0; i < DOUBLE_ORDER.length; i++) {
             for (int j = 0; j < DOUBLE_ORDER.length; j++) {
@@ -90,7 +84,7 @@ class NullOrderingTest {
     }
 
     @Test
-    @DisplayName("Sorter.compareValues(double,double): full pairwise order -Inf < NULL < -1 < 0 < 1 < NaN < +Inf")
+    @DisplayName("Sorter.compareValues(double,double): full pairwise order -Inf < -1 < 0 < 1.2345e-8 < 1 < NaN < +Inf")
     void sorterDoubleOverloadPairwiseOrder() {
         for (int i = 0; i < DOUBLE_ORDER.length; i++) {
             for (int j = 0; j < DOUBLE_ORDER.length; j++) {
@@ -104,11 +98,8 @@ class NullOrderingTest {
     @Test
     @DisplayName("FunUtil.compareValues(Object,Object): full pairwise order nullValue < -Inf < -1 < 0 < 1 < NaN < +Inf")
     void funUtilObjectOverloadPairwiseOrder() {
-        // NOTE: in the Object overload, Util.nullValue sorts BELOW -Infinity —
-        // the opposite of the double overload, where -Inf < NULL. This
-        // discrepancy between the two overloads is frozen here and will be
-        // resolved when the comparators are unified (/3), see
-        // the null-semantics notes
+        // NOTE: NULL ordering exists ONLY at this object level since // Util.nullValue (the cell-layer sentinel) sorts below
+        // everything, including -Infinity.
         for (int i = 0; i < OBJECT_ORDER.length; i++) {
             for (int j = 0; j < OBJECT_ORDER.length; j++) {
                 assertThat(FunUtil.compareValues(OBJECT_ORDER[i], OBJECT_ORDER[j]))
@@ -145,25 +136,21 @@ class NullOrderingTest {
     }
 
     @Test
-    @DisplayName("COLLISION: a genuine double equal to 0.000000012345 sorts as NULL in the double overloads")
-    void computedSentinelValueSortsAsNull() {
-        // The double overloads compare BY VALUE against the sentinel, so a
-        // real measure value of exactly 0.000000012345 sorts as NULL: below
-        // -1 although it is numerically greater. This is the value-collision
-        // bug; these assertions flips once the sentinel encoding is gone; see
-        // the null-semantics notes
-        assertThat(FunUtil.compareValues(SENTINEL_VALUE, -1.0)).isEqualTo(-1);
-        assertThat(FunUtil.compareValues(-1.0, SENTINEL_VALUE)).isEqualTo(1);
-        assertThat(Sorter.compareValues(SENTINEL_VALUE, -1.0)).isEqualTo(-1);
-        assertThat(Sorter.compareValues(-1.0, SENTINEL_VALUE)).isEqualTo(1);
+    @DisplayName("HEALED: a genuine double equal to 0.000000012345 sorts as a real value")
+    void computedSentinelValueSortsAsRealValue() {
+        // Before the double overloads compared BY VALUE against the
+        // sentinel and sorted a real 0.000000012345 as NULL (below -1). Since
+        // there is no primitive sentinel: it sorts numerically.
+        assertThat(FunUtil.compareValues(SENTINEL_VALUE, -1.0)).isEqualTo(1);
+        assertThat(FunUtil.compareValues(-1.0, SENTINEL_VALUE)).isEqualTo(-1);
+        assertThat(Sorter.compareValues(SENTINEL_VALUE, -1.0)).isEqualTo(1);
+        assertThat(Sorter.compareValues(-1.0, SENTINEL_VALUE)).isEqualTo(-1);
 
-        // Via the Object overloads a boxed computed sentinel value is not
-        // reference-identical to Util.nullValue, but it falls through to the
-        // Number branch which delegates to the value-based double overload —
-        // so it STILL sorts as NULL.
+        // Via the Object overloads a boxed computed value falls through to
+        // the Number branch and sorts numerically as well.
         Double boxedComputed = Double.valueOf(SENTINEL_VALUE);
         assertThat(boxedComputed).isNotSameAs(Util.nullValue);
-        assertThat(FunUtil.compareValues((Object) boxedComputed, (Object) Double.valueOf(-1.0))).isEqualTo(-1);
-        assertThat(Sorter.compareValues((Object) boxedComputed, (Object) Double.valueOf(-1.0))).isEqualTo(-1);
+        assertThat(FunUtil.compareValues((Object) boxedComputed, (Object) Double.valueOf(-1.0))).isEqualTo(1);
+        assertThat(Sorter.compareValues((Object) boxedComputed, (Object) Double.valueOf(-1.0))).isEqualTo(1);
     }
 }

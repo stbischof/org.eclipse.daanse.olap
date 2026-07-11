@@ -33,6 +33,11 @@ public class FVCalc extends AbstractProfilingNestedDoubleCalc {
         Double pv = getChildCalc(3, DoubleCalc.class).evaluate(evaluator);
         Boolean type = getChildCalc(4, BooleanCalc.class).evaluate(evaluator);
 
+        if (rate == null || nPer == null || pmt == null || pv == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
+
         return fV(rate, nPer, pmt, pv, type);
     }
 

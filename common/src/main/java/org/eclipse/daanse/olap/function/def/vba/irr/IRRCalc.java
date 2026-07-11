@@ -28,6 +28,11 @@ public class IRRCalc extends AbstractProfilingNestedDoubleCalc {
     public Double evaluateInternal(Evaluator evaluator) {
         Double[] valueArray = (Double[]) getChildCalc(0).evaluate(evaluator);
         Double guess = getChildCalc(1, DoubleCalc.class).evaluate(evaluator);
+
+        if (valueArray == null || guess == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         
 
         return irr(valueArray, guess);

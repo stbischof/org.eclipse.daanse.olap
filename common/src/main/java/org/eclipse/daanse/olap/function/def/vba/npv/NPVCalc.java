@@ -29,6 +29,11 @@ public class NPVCalc extends AbstractProfilingNestedDoubleCalc {
     public Double evaluateInternal(Evaluator evaluator) {
         Double r = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
         Double[] cfs = (Double[]) getChildCalc(1).evaluate(evaluator);
+
+        if (r == null || cfs == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         return nPV(r, cfs);
     }
 

@@ -19,7 +19,6 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
-import org.eclipse.daanse.olap.fun.FunUtil;
 
 public class PointCalc extends AbstractProfilingNestedDoubleCalc {
     private final DoubleCalc xPointCalc;
@@ -45,8 +44,8 @@ public class PointCalc extends AbstractProfilingNestedDoubleCalc {
     public Double evaluateInternal(Evaluator evaluator) {
         Double xPoint = xPointCalc.evaluate(evaluator);
         Value value = LinRegCalc.process(evaluator, tupleListCalc, yCalc, xCalc);
-        if (value == null) {
-            return FunUtil.DOUBLE_NULL;
+        if (value == null || xPoint == null) {
+            return null;
         }
         // use first arg to generate y position
         return xPoint * value.getSlope() + value.getIntercept();

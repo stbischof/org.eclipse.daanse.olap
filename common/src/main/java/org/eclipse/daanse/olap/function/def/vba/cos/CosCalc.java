@@ -27,6 +27,11 @@ public class CosCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Double number = getChildCalc(0, DoubleCalc.class).evaluate(evaluator);
+
+        if (number == null) {
+            // A NULL operand yields NULL; guard before unboxing.
+            return null;
+        }
         return Math.cos(number);
     }
 

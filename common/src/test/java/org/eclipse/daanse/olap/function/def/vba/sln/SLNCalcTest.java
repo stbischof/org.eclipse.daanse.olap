@@ -125,13 +125,13 @@ class SLNCalcTest {
     }
 
     @Test
-    @DisplayName("Should handle null values")
+    @DisplayName("Should return null for null values")
     void shouldHandleNullValues() {
         when(costCalc.evaluate(evaluator)).thenReturn(null);
         when(salvageCalc.evaluate(evaluator)).thenReturn(1000.0);
         when(lifeCalc.evaluate(evaluator)).thenReturn(5.0);
 
-        assertThatThrownBy(() -> slnCalc.evaluate(evaluator)).isInstanceOf(NullPointerException.class);
+        assertThat(slnCalc.evaluate(evaluator)).isNull();
     }
 
     @Test
