@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
@@ -44,7 +45,7 @@ public class SortedListCalc extends AbstractProfilingNestedCalc {
      *          Compiled expression to compute the list
      * @param keyCalc
      *          Compiled expression to compute the sort key
-     */
+ */
     public SortedListCalc( Type type, TupleListCalc tupleListCalc, Calc keyCalc ) {
       super( type, tupleListCalc, keyCalc );
       this.tupleListCalc = tupleListCalc;
@@ -91,8 +92,10 @@ public class SortedListCalc extends AbstractProfilingNestedCalc {
               if ( exception == null ) {
                 exception = runtimeException;
               }
-            } else if ( Util.isNull( keyValue ) ) {
-              // nothing to do
+            } else if ( Util.isNull( keyValue ) || keyValue == NotLoaded.INSTANCE ) {
+              // NULL: nothing to do. NotLoaded: dirty batching pass whose
+              // ranks are discarded - skip instead of choking on the
+              // non-Comparable marker (the legacy Double(0) sorted silently).
             } else {
               // Assume it's the first time seeing this keyValue.
               Integer valueCounter = uniqueValueCounterMap.put( keyValue, SortedListCalc.ONE );
@@ -115,8 +118,10 @@ public class SortedListCalc extends AbstractProfilingNestedCalc {
               if ( exception == null ) {
                 exception = runtimeException;
               }
-            } else if ( Util.isNull( keyValue ) ) {
-              // nothing to do
+            } else if ( Util.isNull( keyValue ) || keyValue == NotLoaded.INSTANCE ) {
+              // NULL: nothing to do. NotLoaded: dirty batching pass whose
+              // ranks are discarded - skip instead of choking on the
+              // non-Comparable marker (the legacy Double(0) sorted silently).
             } else {
               // Assume it's the first time seeing this keyValue.
               Integer valueCounter = uniqueValueCounterMap.put( keyValue, SortedListCalc.ONE );

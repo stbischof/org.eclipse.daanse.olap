@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.vba.cdbl;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
@@ -27,6 +28,15 @@ public class CDblCalc extends AbstractProfilingNestedDoubleCalc {
     @Override
     public Double evaluateInternal(Evaluator evaluator) {
         Object expression = getChildCalc(0, Calc.class).evaluate(evaluator);
+        if (expression == null) {
+            // MDX NULL stays NULL: the legacy sentinel passed through the
+            // Number branch unchanged, i.e. remained NULL downstream.
+            return null;
+        }
+        if (expression == NotLoaded.INSTANCE) {
+            // discarded dirty-pass marker; legacy Double(0) yielded 0.0
+            return 0.0;
+        }
         if (expression instanceof Number number) {
             return number.doubleValue();
         } else {

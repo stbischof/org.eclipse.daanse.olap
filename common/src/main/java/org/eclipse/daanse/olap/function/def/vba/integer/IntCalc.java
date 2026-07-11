@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
@@ -33,6 +34,11 @@ public class IntCalc extends AbstractProfilingNestedIntegerCalc {
     @Override
     public Integer evaluateInternal(Evaluator evaluator) {
         Object number = getChildCalc(0, Calc.class).evaluate(evaluator);
+        if (number == null || number == NotLoaded.INSTANCE) {
+            // legacy sentinel rounded to 0; NotLoaded is the discarded
+            // dirty-pass marker
+            return 0;
+        }
         if (number instanceof Number num) {
             int v = num.intValue();
             double dv = num.doubleValue();

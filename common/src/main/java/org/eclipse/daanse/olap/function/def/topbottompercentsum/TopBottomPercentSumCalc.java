@@ -16,6 +16,7 @@ package org.eclipse.daanse.olap.function.def.topbottompercentsum;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
@@ -81,6 +82,9 @@ public class TopBottomPercentSumCalc extends AbstractProfilingNestedTupleListCal
                 nullCount++;
             } else if (o instanceof Number n) {
                 runningTotal += n.doubleValue();
+            } else if (o == NotLoaded.INSTANCE) {
+                // dirty batching pass, results discarded - the legacy
+                // Double(0) marker used to add 0 to the running total here
             } else if (o instanceof Exception) {
                 // ignore the error
             } else {
