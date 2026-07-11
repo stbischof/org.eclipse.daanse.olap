@@ -40,6 +40,11 @@ Darstellung per Definition falsch, egal wie präzise.
 
 ## §2 Option: Immer `BigDecimal` („alles exakt")
 
+> **Update 2026-07-11:** Diese Option wurde auf User-Wunsch vertieft
+> evaluiert — mit JMH-Messungen auf dieser Codebasis und vollständigem
+> Blast-Radius-Inventar. Ergebnis (Ablehnung bestätigt, Zahlen ersetzen
+> die Behauptungen unten): [Doc 10](10-evaluation-komplettumstellung-bigdecimal.md).
+
 | Pro | Contra |
 |---|---|
 | Exakte Dezimalarithmetik für Addition/Subtraktion/Multiplikation; keine Darstellungsfehler | **1–2 Größenordnungen langsamer** als double-Hardware-Arithmetik; Allokation pro Operation (BigDecimal ist immutable) — in einem aggregationsdominierten System (Milliarden Additionen) prohibitiv |

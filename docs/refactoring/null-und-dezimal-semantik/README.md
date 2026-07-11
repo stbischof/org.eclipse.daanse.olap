@@ -68,7 +68,7 @@ Diese Initiative beantwortet fünf Fragen:
 | 3 | Sentinel → Java-`null` | **olap-Seite fertig** (2026-07-11): `NullSemantics.isNull(Double)` = `v == null`, primitive `isNull(double)` gelöscht, `compare(double,double)` ohne NULL-Slot; Compiler-Inversion (`case null -> null`, BOOLEAN bleibt per E4); alle Produzenten liefern `null` (Konverter, Operatoren, excel/vba, FunUtil percentile/quartile/sumDouble → `Double`); `Sorter.box` gelöscht; R1-Sweep: Null-Guards in ~30 Calcs; `Util.DOUBLE_NULL`/`isSentinelOnly` deprecated (Löschung Phase 6); Phase-0-Suite auf Heilungs-Regression geflippt (Doc 07 §1.1). **rolap-Seite fertig**: Cell-Layer tolerant (`isNull` statt `Objects.equals`), Kollisions-Demo aktiviert; Differenzlauf = volle testkit-Suite 2182 grün |
 | 4 | `CellValue` Cell-/Cache-Grenze | **fertig** (2026-07-11): sealed `CellValue` (`NullValue`\|`NotLoaded`\|`ErrorValue`\|`ObjectValue`) in `api.result`; Kette Segment→Star→AggManager→CellReader auf `CellValue`, zwei Entpack-Nähte (`RolapEvaluator.evaluateCurrent`, `CellInfo`/`RolapCell`); `isError` = Zustandscheck statt Throwable-instanceof; `Cell.getValue()`-Kontrakt: Java-`null` für NULL (Javadoc korrigiert); XMLA-Fehlerzellen-Referenztest vorab; Storage-Format unverändert. `Util.nullValue` bleibt bis Phase 6 (Storage-Placeholder SegmentLoader + FunUtil.sum-Objektpfad) |
 | 5a | Kahan-Summation | **fertig** (2026-07-11): `CompensatedSum` (Neumaier) in `calc.base`; `FunUtil.sumDouble`/`avg`/`var`/`covariance` + rolap `SumAggregator`; Bestandstests bit-identisch grün (keine Toleranz-Umstellung nötig); adversarialer 10⁷-Test gegen BigDecimal-Referenz. Benchmark-Gate: kein JMH im Repo — informelle Einschätzung (Boxed-Unwrap dominiert die Schleife), dokumentierte Abweichung von Doc 07 §1.4 |
-| 5b | Decimal-Lane | offen |
+| 5b | Decimal-Lane | **Implementierungsplan fertig, Ausführung pausiert** — auf User-Wunsch zuerst Komplettumstellungs-Evaluation (Doc 10, 2026-07-11): Empfehlung Dual-Lane bestätigt, Entscheidung ausstehend. JMH-Benchmark-Modul `benchmarks/` (Profil `-Pbenchmarks`) eingeführt; 5a-Gate aus Doc 07 §1.4 nachträglich bestanden |
 | 6 | Politur / Sentinel-Löschung | offen |
 
 ## Dokumentenübersicht
@@ -84,6 +84,7 @@ Diese Initiative beantwortet fünf Fragen:
 | [`07-verifikation-und-risiken.md`](07-verifikation-und-risiken.md) | Charakterisierungstests, Risikoregister (XMLA, Writeback, Cache-Serialisierung), Benchmark-Ansatz |
 | [`08-anhang-msas-und-fixed-point.md`](08-anhang-msas-und-fixed-point.md) | MSAS-Semantikvergleich, Long-scaled-Fixed-Point-Alternative, Valhalla-Ausblick |
 | [`09-typsystem-api-type.md`](09-typsystem-api-type.md) | Das Typ-Paket `api/…/olap/api/type` im Detail: Inventar, Rollen, das DecimalType-Integer-Idiom, nötige Typ-Zuführungen für die Decimal-Lane |
+| [`10-evaluation-komplettumstellung-bigdecimal.md`](10-evaluation-komplettumstellung-bigdecimal.md) | Vertiefte Evaluation der Komplettumstellung double→BigDecimal (JMH-Messungen, Blast-Radius, semantische Blocker) — Ablehnung bestätigt, Dual-Lane bestätigt |
 | [`99-handover-arbeitsnotizen.md`](99-handover-arbeitsnotizen.md) | Meta: Handover für Umsetzungs-Sessions — Fundstellen-Inventare, Grep-Anker, offene Recherchelücken, ausstehende Entscheidungen |
 
 ## Empfehlung in einem Satz
