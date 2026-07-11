@@ -120,11 +120,11 @@ class AggregateNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("sum of an empty set returns the Util.nullValue singleton")
-    void sumOfEmptySetReturnsNullValueSingleton() {
+    @DisplayName("sum of an empty set returns Java null ")
+    void sumOfEmptySetReturnsNull() {
         Object result = FunUtil.sum(evaluator, tuples(0), exp);
 
-        assertThat(result).isSameAs(Util.nullValue);
+        assertThat(result).isNull();
     }
 
     @Test

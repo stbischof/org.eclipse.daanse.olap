@@ -645,16 +645,16 @@ public class FunUtil extends Util {
     TupleList memberList,
     Calc exp1,
     Calc exp2 ) {
-    SetWrapper sw1 = FunUtil.evaluateSet( evaluator, memberList, exp1 );
-    SetWrapper sw2 = FunUtil.evaluateSet( evaluator, memberList, exp2 );
-    Object covar = FunUtil.covariance( sw1, sw2, false );
-    Object var1 = FunUtil.var( sw1, false ); // this should be false, yes?
-    Object var2 = FunUtil.var( sw2, false );
-
-    return ( (Number) covar ).doubleValue()
-      / Math.sqrt(
-      ( (Number) var1 ).doubleValue()
-        * ( (Number) var2 ).doubleValue() );
+    PairedValues pairs = FunUtil.evaluatePairs( evaluator, memberList, exp1, exp2 );
+    if ( pairs.errorCount > 0 || pairs.size() == 0 ) {
+      return Double.NaN;
+    }
+    // Pearson r over pairwise-complete observations: covariance and both
+    // variances are computed from the SAME aligned pairs.
+    double covar = pairs.covariance( false );
+    double var1 = pairs.variance1( false );
+    double var2 = pairs.variance2( false );
+    return covar / Math.sqrt( var1 * var2 );
   }
 
   public static Object covariance(
@@ -663,47 +663,106 @@ public class FunUtil extends Util {
     Calc exp1,
     Calc exp2,
     boolean biased ) {
-    final int savepoint = evaluator.savepoint();
-    SetWrapper sw1;
-    try {
-      sw1 = FunUtil.evaluateSet( evaluator, members, exp1 );
-    } finally {
-      evaluator.restore( savepoint );
+    PairedValues pairs = FunUtil.evaluatePairs( evaluator, members, exp1, exp2 );
+    if ( pairs.errorCount > 0 ) {
+      return Double.NaN;
     }
-    SetWrapper sw2;
-    try {
-      sw2 = FunUtil.evaluateSet( evaluator, members, exp2 );
-    } finally {
-      evaluator.restore( savepoint );
-    }
-    // todo: because evaluateSet does not add nulls to the SetWrapper, this
-    // solution may lead to mismatched lists and is therefore not robust
-    return FunUtil.covariance( sw1, sw2, biased );
-  }
-
-
-  private static Object covariance(
-    SetWrapper sw1,
-    SetWrapper sw2,
-    boolean biased ) {
-    if ( sw1.v.size() != sw2.v.size() ) {
+    if ( pairs.size() == 0 ) {
       return Util.nullValue;
     }
-    double avg1 = FunUtil.avg( sw1 );
-    double avg2 = FunUtil.avg( sw2 );
-    CompensatedSum covar = new CompensatedSum();
-    for ( int i = 0; i < sw1.v.size(); i++ ) {
-      // all of this casting seems inefficient - can we make SetWrapper
-      // contain an array of double instead?
-      double diff1 = ( ( (Number) sw1.v.get( i ) ).doubleValue() - avg1 );
-      double diff2 = ( ( (Number) sw2.v.get( i ) ).doubleValue() - avg2 );
-      covar.add( diff1 * diff2 );
+    return Double.valueOf( pairs.covariance( biased ) );
+  }
+
+  /**
+   * Evaluates two expressions pairwise over the same tuples. A pair is kept
+   * only if BOTH values are non-NULL (pairwise deletion), which keeps x and
+   * y positionally aligned. This heals the historical misalignment : the previous implementation evaluated each set
+   * independently and dropped NULLs per set, silently pairing values of
+   * different tuples whenever the NULL patterns differed.
+ */
+  private static PairedValues evaluatePairs(
+    Evaluator evaluator,
+    TupleList members,
+    Calc<?> calc1,
+    Calc<?> calc2 ) {
+    PairedValues pairs = new PairedValues();
+    final TupleCursor cursor = members.tupleCursor();
+    int currentIteration = 0;
+    Execution execution = evaluator.getQuery().getStatement().getCurrentExecution();
+    final int savepoint = evaluator.savepoint();
+    try {
+      while ( cursor.forward() ) {
+        CancellationChecker.checkCancelOrTimeout( currentIteration++, execution );
+        cursor.setContext( evaluator );
+        Object o1 = calc1.evaluate( evaluator );
+        Object o2 = calc2.evaluate( evaluator );
+        if ( o1 == NotLoaded.INSTANCE || o2 == NotLoaded.INSTANCE ) {
+          // dirty pass; keep iterating so the batching cell reader sees
+          // every dependent cell, but poison the result
+          pairs.errorCount++;
+        } else if ( NullSemantics.isNull( o1 ) || NullSemantics.isNull( o2 ) ) {
+          // pairwise deletion: skip the tuple entirely
+        } else if ( o1 instanceof Number n1 && o2 instanceof Number n2 ) {
+          pairs.add( n1.doubleValue(), n2.doubleValue() );
+        } else {
+          pairs.errorCount++;
+        }
+      }
+    } finally {
+      evaluator.restore( savepoint );
     }
-    int n = sw1.v.size();
-    if ( !biased ) {
-      n--;
+    return pairs;
+  }
+
+  /** Aligned x/y samples for the paired statistics (Covariance, Correlation). */
+  private static final class PairedValues {
+    private final List<Double> x = new ArrayList<>();
+    private final List<Double> y = new ArrayList<>();
+    int errorCount;
+
+    void add( double v1, double v2 ) {
+      x.add( v1 );
+      y.add( v2 );
     }
-    return Double.valueOf( covar.value() / n );
+
+    int size() {
+      return x.size();
+    }
+
+    private static double mean( List<Double> values ) {
+      CompensatedSum sum = new CompensatedSum();
+      for ( Double v : values ) {
+        sum.add( v );
+      }
+      return sum.value() / values.size();
+    }
+
+    private static double squaredDeviations( List<Double> values, double mean ) {
+      CompensatedSum sum = new CompensatedSum();
+      for ( Double v : values ) {
+        double diff = v - mean;
+        sum.add( diff * diff );
+      }
+      return sum.value();
+    }
+
+    double covariance( boolean biased ) {
+      double meanX = mean( x );
+      double meanY = mean( y );
+      CompensatedSum covar = new CompensatedSum();
+      for ( int i = 0; i < x.size(); i++ ) {
+        covar.add( ( x.get( i ) - meanX ) * ( y.get( i ) - meanY ) );
+      }
+      return covar.value() / ( biased ? x.size() : x.size() - 1 );
+    }
+
+    double variance1( boolean biased ) {
+      return squaredDeviations( x, mean( x ) ) / ( biased ? x.size() : x.size() - 1 );
+    }
+
+    double variance2( boolean biased ) {
+      return squaredDeviations( y, mean( y ) ) / ( biased ? y.size() : y.size() - 1 );
+    }
   }
 
   public static Object stdev(
@@ -746,10 +805,10 @@ public class FunUtil extends Util {
     Evaluator evaluator,
     TupleList members,
     Calc exp ) {
-    Double d = FunUtil.sumDouble( evaluator, members, exp );
-    // Object/cell layer still uses the Util.nullValue sentinel ;
-    // a genuine sum of 0.000000012345 is a real value since .
-    return d == null ? Util.nullValue : d;
+    // Java null for the empty set since - the last calc-layer
+    // producer of the Util.nullValue sentinel is gone; all consumers are
+    // null-tolerant via NullSemantics since phases 3/4.
+    return FunUtil.sumDouble( evaluator, members, exp );
   }
 
   /**

@@ -189,8 +189,8 @@ Abweichungen gegenüber den Annahmen in Doc 01/02 festgestellt:
 | # | Entscheidung | Kontext | Vorschlag aus den Docs | **Getroffen (2026-07-11)** |
 |---|---|---|---|---|
 | E1 | Name/Ort der `NullSemantics`-Klasse | Phase 1 | Paket `fun` oder `calc.base`; exportiert? | **`org.eclipse.daanse.olap.calc.base`** (exportiert; rolap braucht Zugriff) |
-| E2 | Property-Name für Divisions-Politik der Decimal-Lane | Phase 5b | analog `nullDenominatorProducesNull` | offen (bei 5b) |
-| E3 | Integer-Marker-Design | Phase 5b Vorarbeit | `IntegerType` vs. `NumericType.INTEGER_INSTANCE` | offen (bei 5b) |
+| E2 | Property-Name für Divisions-Politik der Decimal-Lane | Phase 5b | analog `nullDenominatorProducesNull` | **obsolet** — Decimal-Lane verworfen (User-Entscheidung 2026-07-11, s. README Phase 5b) |
+| E3 | Integer-Marker-Design | Phase 5b Vorarbeit | `IntegerType` vs. `NumericType.INTEGER_INSTANCE` | **obsolet** — dito; falls das Feature wiederkommt: Implementierungsplan mit getroffenen Detail-Entscheidungen liegt unter `~/.claude/plans/hier-ist-die-thematik-rippling-panda-agent-a11b9445ff0dcf6b4.md` bzw. dessen Kernpunkte sind: INTEGER_INSTANCE-Marker, Literal-Feed nur scale>0, Division default in Double-Lane |
 | E4 | Dreiwertige Boolesche Logik einführen? | nach Phase 3 | Eigenständige Entscheidung | **Nein.** `case null -> BOOLEAN_NULL` im Compiler bleibt: null→false ist Verhaltens-Semantik, keine Sentinel-Kodierung. Abweichung von Doc 06 §Phase 3 („dito :361") ist beabsichtigt. |
 | E5 | `@Deprecated`-Fenster | Phase 3→6 | mind. ein Minor-Release | **Übernommen.** `DOUBLE_NULL`, `EmptyValue`, `DOUBLE_EMPTY`, `valueNotReadyException`, `isSentinelOnly` deprecated(forRemoval); Löschung Phase 6. `nullValue` wird erst in Phase 4 deprecated (Cell-Schicht nutzt es bis dahin legitim). |
 | — | `NotLoaded`-Ort | Phase 2 | rolap, später api | **Direkt `olap.api.result`** (erspart Phase-4-Umzug; olap-Komparator kennt den Marker ohnehin) |
