@@ -21,7 +21,6 @@ import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.function.def.excel.acos.AcosCalc;
 import org.eclipse.daanse.olap.function.def.excel.asin.AsinhCalc;
 import org.eclipse.daanse.olap.function.def.excel.log10.Log10Calc;
@@ -33,21 +32,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * regression tests for a sample of Excel/VBA function calcs and the
- * MDX NULL semantics of the calc layer.
- *
- * Since (. MDX NULL is
- * Java {@code null}: every sampled calc maps a Java-null argument to a
- * Java-null result (the former NPEs are healed), and the former
- * {@code FunUtil.DOUBLE_NULL} sentinel (0.000000012345) is an ordinary value
- * that is computed like any other number (the sentinel collision is healed).
+ * MDX NULL semantics of a sample of Excel/VBA function calcs (MDX NULL is
+ * Java {@code null} in the calc layer): every sampled calc maps a Java-null
+ * argument to a Java-null result instead of throwing, and computes real
+ * values normally.
  */
 class ExcelVbaNullSemanticsTest {
-
-    /** The former sentinel — now an ordinary value. */
-    @SuppressWarnings("deprecation")
-    private static final Double SENTINEL = FunUtil.DOUBLE_NULL;
-    private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
 
     private Evaluator evaluator;
     private DoubleCalc argCalc;
@@ -90,16 +80,12 @@ class ExcelVbaNullSemanticsTest {
         argCalc = mock(DoubleCalc.class);
     }
 
-    private static Double distinctSentinelValue() {
-        return Double.valueOf(SENTINEL_VALUE);
-    }
-
     private void stubArgument(Double value) {
         when(argCalc.evaluate(evaluator)).thenReturn(value);
     }
 
     @Nested
-    @DisplayName("AcosCalc (excel): Java null maps to null, former sentinel is a value")
+    @DisplayName("AcosCalc (excel): Java null maps to null")
     class AcosCalcCharacterization {
 
         @Test
@@ -116,24 +102,10 @@ class ExcelVbaNullSemanticsTest {
             stubArgument(null);
             assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isNull();
         }
-
-        @Test
-        @DisplayName("0.000000012345 is computed as a value — the sentinel collision is healed")
-        void computedSentinelValueIsTreatedAsValue() {
-            stubArgument(distinctSentinelValue());
-            assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.acos(SENTINEL_VALUE));
-
-            // The former sentinel singleton itself is now an
-            // ordinary value as well.
-            stubArgument(SENTINEL);
-            assertThat(new TestableAcosCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.acos(SENTINEL_VALUE));
-        }
     }
 
     @Nested
-    @DisplayName("AsinhCalc (excel): Java null maps to null, former sentinel is a value")
+    @DisplayName("AsinhCalc (excel): Java null maps to null")
     class AsinhCalcCharacterization {
 
         @Test
@@ -141,14 +113,6 @@ class ExcelVbaNullSemanticsTest {
         void realValue() {
             stubArgument(0.0);
             assertThat(new TestableAsinhCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isEqualTo(0.0);
-        }
-
-        @Test
-        @DisplayName("former sentinel singleton is computed as a value")
-        void formerSentinelIsComputedAsValue() {
-            stubArgument(SENTINEL);
-            assertThat(new TestableAsinhCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.log(SENTINEL_VALUE + Math.sqrt(1.0 + (SENTINEL_VALUE * SENTINEL_VALUE))));
         }
 
         @Test
@@ -160,7 +124,7 @@ class ExcelVbaNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("Log10Calc (excel): Java null maps to null, former sentinel is a value")
+    @DisplayName("Log10Calc (excel): Java null maps to null")
     class Log10CalcCharacterization {
 
         @Test
@@ -168,14 +132,6 @@ class ExcelVbaNullSemanticsTest {
         void realValue() {
             stubArgument(100.0);
             assertThat(new TestableLog10Calc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isEqualTo(2.0);
-        }
-
-        @Test
-        @DisplayName("former sentinel singleton is computed as a value")
-        void formerSentinelIsComputedAsValue() {
-            stubArgument(SENTINEL);
-            assertThat(new TestableLog10Calc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.log10(SENTINEL_VALUE));
         }
 
         @Test
@@ -187,7 +143,7 @@ class ExcelVbaNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("SqrtPiCalc (excel): Java null maps to null, former sentinel is a value")
+    @DisplayName("SqrtPiCalc (excel): Java null maps to null")
     class SqrtPiCalcCharacterization {
 
         @Test
@@ -199,14 +155,6 @@ class ExcelVbaNullSemanticsTest {
         }
 
         @Test
-        @DisplayName("former sentinel singleton is computed as a value")
-        void formerSentinelIsComputedAsValue() {
-            stubArgument(SENTINEL);
-            assertThat(new TestableSqrtPiCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.sqrt(SENTINEL_VALUE * Math.PI));
-        }
-
-        @Test
         @DisplayName("Java null input maps to Java null instead of throwing")
         void javaNullMapsToJavaNull() {
             stubArgument(null);
@@ -215,7 +163,7 @@ class ExcelVbaNullSemanticsTest {
     }
 
     @Nested
-    @DisplayName("ExpCalc (vba): Java null maps to null, former sentinel is a value")
+    @DisplayName("ExpCalc (vba): Java null maps to null")
     class ExpCalcCharacterization {
 
         @Test
@@ -223,20 +171,6 @@ class ExcelVbaNullSemanticsTest {
         void realValue() {
             stubArgument(1.0);
             assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator)).isEqualTo(Math.E);
-        }
-
-        @Test
-        @DisplayName("0.000000012345 is computed as a value — the sentinel collision is healed")
-        void computedSentinelValueIsARealValue() {
-            stubArgument(distinctSentinelValue());
-            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.exp(SENTINEL_VALUE));
-
-            // The former sentinel singleton itself is now an
-            // ordinary value as well.
-            stubArgument(SENTINEL);
-            assertThat(new TestableExpCalc(NumericType.INSTANCE, argCalc).evaluate(evaluator))
-                    .isEqualTo(Math.exp(SENTINEL_VALUE));
         }
 
         @Test

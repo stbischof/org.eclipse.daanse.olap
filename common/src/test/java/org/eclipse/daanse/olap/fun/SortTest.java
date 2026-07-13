@@ -55,15 +55,14 @@ class SortTest {
     // Double.NEGATIVE_INFINITY, -34.5, -0.001, 0, 0.00000567, 1, 3.14;
     // equal to NaN; and less than Double.POSITIVE_INFINITY.
     //
-    // Since (the null-semantics notes) the unboxed
-    // order has no NULL slot; the former DOUBLE_NULL sentinel value
-    // 0.000000012345 sorts as the plain tiny number it is.
+    // The unboxed order has no NULL slot: a primitive double cannot carry
+    // MDX NULL, so every value — however tiny — sorts numerically.
     double[] values = {
       Double.NEGATIVE_INFINITY,
       -34.5,
       -0.001,
       0,
-      0.000000012345, // former sentinel: now an ordinary value
+      1.25e-8,
       0.00000567,
       1,
       3.14,

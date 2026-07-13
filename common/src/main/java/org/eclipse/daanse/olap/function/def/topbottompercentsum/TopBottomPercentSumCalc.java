@@ -78,7 +78,7 @@ public class TopBottomPercentSumCalc extends AbstractProfilingNestedTupleListCal
             }
             final List<Member> key = list.get(i);
             final Object o = mapMemberToValue.get(key);
-            if (NullSemantics.isNullValue(o)) {
+            if (NullSemantics.isNull(o)) {
                 nullCount++;
             } else if (o instanceof Number n) {
                 runningTotal += n.doubleValue();

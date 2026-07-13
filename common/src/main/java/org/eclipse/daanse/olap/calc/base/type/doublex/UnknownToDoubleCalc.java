@@ -18,7 +18,6 @@ import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
 
 public class UnknownToDoubleCalc extends AbstractProfilingNestedDoubleCalc {
@@ -32,10 +31,6 @@ public class UnknownToDoubleCalc extends AbstractProfilingNestedDoubleCalc {
 
 		Object o = getFirstChildCalc().evaluate(evaluator);
 		if (o == null) {
-			return null;
-		} else if (NullSemantics.isNullValue(o)) {
-			// Cell layer still delivers the Util.nullValue sentinel ;
-			// translate it to the calc layer's Java null.
 			return null;
 		} else if (o == NotLoaded.INSTANCE) {
 			// Dirty evaluation pass: the cell is not loaded yet and this

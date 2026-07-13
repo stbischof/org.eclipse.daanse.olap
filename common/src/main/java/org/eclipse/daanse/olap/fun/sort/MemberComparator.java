@@ -35,7 +35,6 @@ import java.util.Objects;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.common.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,17 +65,15 @@ abstract class MemberComparator implements Comparator<Member> {
     return descMask * c;
   }
 
-  // applies the Calc to a member, memorizing results
+  // applies the Calc to a member, memorizing results; MDX NULL results are
+  // Java null and must be memorized too, hence the containsKey probe
   protected Object eval( Member m ) {
-    Object val = valueMap.get( m );
-    if ( val == null ) {
-      evaluator.setContext( m );
-      val = exp.evaluate( evaluator );
-      if ( val == null ) {
-        val = Util.nullValue;
-      }
-      valueMap.put( m, val );
+    if ( valueMap.containsKey( m ) ) {
+      return valueMap.get( m );
     }
+    evaluator.setContext( m );
+    Object val = exp.evaluate( evaluator );
+    valueMap.put( m, val );
     return val;
   }
 

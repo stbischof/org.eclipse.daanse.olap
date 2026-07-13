@@ -100,9 +100,6 @@ public class Sorter {
         while ( true ) {
           evaluator.setContext( member );
           Object result = exp.evaluate( evaluator );
-          if ( result == null ) {
-            result = Util.nullValue;
-          }
           mapMemberToValue.put( member, result );
           if ( !parentsToo ) {
             break;
@@ -142,9 +139,6 @@ public class Sorter {
       for ( List<Member> tuple : tuples ) {
         evaluator.setContext( tuple );
         Object result = exp.evaluate( evaluator );
-        if ( result == null ) {
-          result = Util.nullValue;
-        }
         mapMemberToValue.put( tuple, result );
       }
       return mapMemberToValue;

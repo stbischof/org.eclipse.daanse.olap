@@ -37,7 +37,6 @@ import java.util.List;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.util.CancellationChecker;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -66,6 +65,12 @@ abstract class TupleExpMemoComparator extends TupleComparator.TupleExpComparator
     super( e, calc, arity );
   }
 
+  // Marker under which an MDX NULL result is memorized: Caffeine cannot
+  // store null values, and re-evaluating NULL-valued tuples on every
+  // comparison would defeat the memoization. The marker never leaves this
+  // class; eval() unwraps it back to Java null.
+  private static final Object NULL_RESULT = new Object();
+
   // applies the Calc to a tuple, memorizing results
   protected Object eval( List<Member> key ) {
     if ( valueCache == null ) {
@@ -74,7 +79,8 @@ abstract class TupleExpMemoComparator extends TupleComparator.TupleExpComparator
     // Loader exceptions (e.g. CellRequestQuantumExceededException, which drives
     // the batch-reload protocol) propagate unwrapped: Caffeine does not wrap
     // them, unlike the former Guava cache.
-    return valueCache.get( key, this::evaluateCalc );
+    Object val = valueCache.get( key, this::evaluateCalc );
+    return val == NULL_RESULT ? null : val;
   }
 
   private List<Member> dependentMembers( List<Member> tuple ) {
@@ -117,7 +123,7 @@ public int compare( List<Member> a1, List<Member> a2 ) {
   private Object evaluateCalc( List<Member> tuple ) {
     evaluator.setContext( tuple );
     Object val = calc.evaluate( evaluator );
-    return val == null ? Util.nullValue : val;
+    return val == null ? NULL_RESULT : val;
   }
 
   static class BreakTupleComparator extends TupleExpMemoComparator {

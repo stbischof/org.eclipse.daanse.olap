@@ -33,9 +33,9 @@ public class CIntCalc extends AbstractProfilingNestedIntegerCalc {
 
     public static int cInt(Object expression) {
         if (expression == null || expression == NotLoaded.INSTANCE) {
-            // MDX NULL is Java null since ; the legacy DOUBLE_NULL
-            // sentinel took the Number branch and rounded to 0. NotLoaded is
-            // the discarded dirty-pass marker (same dummy).
+            // MDX NULL coerces to 0; NotLoaded is the marker of the dirty
+            // evaluation pass, whose results are discarded, so 0 is a safe
+            // dummy there as well.
             return 0;
         }
         if (expression instanceof Number number) {

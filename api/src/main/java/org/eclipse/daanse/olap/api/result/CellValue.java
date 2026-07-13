@@ -18,10 +18,8 @@ package org.eclipse.daanse.olap.api.result;
  *
  * <p>
  * Between segment storage and the public {@link Cell} API a cell is in
- * exactly one of four states, which historically were encoded ad hoc (Java
- * {@code null}, double sentinels, a {@link Throwable} stored as the value)
- * and told apart by identity comparisons. This sealed hierarchy makes the
- * protocol explicit and compiler-checked: an exhaustive {@code switch} over
+ * exactly one of four states. This sealed hierarchy makes the protocol
+ * explicit and compiler-checked: an exhaustive {@code switch} over
  * {@code CellValue} cannot silently forget a state.
  *
  * <ul>
@@ -58,9 +56,7 @@ public sealed interface CellValue permits NullValue, NotLoaded, ErrorValue, Obje
      * Wraps a value in the legacy object convention: Java {@code null} →
      * {@link NullValue}, {@link NotLoaded} → itself, a {@link Throwable} →
      * {@link ErrorValue}, an existing {@code CellValue} → itself, anything
-     * else → {@link ObjectValue}. Callers still holding the deprecated
-     * {@code Util.nullValue} sentinel must normalize it to Java {@code null}
-     * before wrapping (the api module has no knowledge of the sentinel).
+     * else → {@link ObjectValue}.
  */
     static CellValue fromLegacyValue(Object o) {
         if (o == null) {

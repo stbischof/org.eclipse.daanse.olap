@@ -110,16 +110,6 @@ public class FunUtil extends Util {
   public static final NullMember NullMember = new NullMember();
 
 
-  /**
-   * Special value which indicates that a {@code double} computation has returned the MDX EMPTY value. See {@link
-   * DoubleCalc}.
-   *
-   * @deprecated Dead sentinel, unused outside one test; removal in migration
-   *             .
- */
-  @Deprecated(forRemoval = true)
-  public static final double DOUBLE_EMPTY = -0.000000012345;
-
 //  /**
 //   * Special value which indicates that an {@code int} computation has returned the MDX null value. See {@link
 //   * org.eclipse.daanse.olap.calc.api.IntegerCalc}.
@@ -573,7 +563,7 @@ public class FunUtil extends Util {
     } else {
       final int size = sw.v.size();
       if ( size == 0 ) {
-        return Util.nullValue;
+        return null;
       } else {
         Double min = ( (Number) sw.v.get( 0 ) ).doubleValue();
         for ( int i = 1; i < size; i++ ) {
@@ -597,7 +587,7 @@ public class FunUtil extends Util {
     } else {
       final int size = sw.v.size();
       if ( size == 0 ) {
-        return Util.nullValue;
+        return null;
       } else {
         Double max = ( (Number) sw.v.get( 0 ) ).doubleValue();
         for ( int i = 1; i < size; i++ ) {
@@ -624,7 +614,7 @@ public class FunUtil extends Util {
     if ( sw.errorCount > 0 ) {
       return Double.NaN;
     } else if ( sw.v.isEmpty() ) {
-      return Util.nullValue;
+      return null;
     } else {
       CompensatedSum squaredDeviations = new CompensatedSum();
       double avg = FunUtil.avg( sw );
@@ -668,7 +658,7 @@ public class FunUtil extends Util {
       return Double.NaN;
     }
     if ( pairs.size() == 0 ) {
-      return Util.nullValue;
+      return null;
     }
     return Double.valueOf( pairs.covariance( biased ) );
   }
@@ -676,9 +666,9 @@ public class FunUtil extends Util {
   /**
    * Evaluates two expressions pairwise over the same tuples. A pair is kept
    * only if BOTH values are non-NULL (pairwise deletion), which keeps x and
-   * y positionally aligned. This heals the historical misalignment : the previous implementation evaluated each set
-   * independently and dropped NULLs per set, silently pairing values of
-   * different tuples whenever the NULL patterns differed.
+   * y positionally aligned: dropping NULLs per set independently would
+   * silently pair values of different tuples whenever the NULL patterns
+   * differed.
  */
   private static PairedValues evaluatePairs(
     Evaluator evaluator,
@@ -785,7 +775,7 @@ public class FunUtil extends Util {
       return Double.NaN;
     } else {
         return (sw.v.isEmpty())
-            ? Util.nullValue
+            ? null
             : Double.valueOf(FunUtil.avg(sw));
     }
   }
@@ -805,16 +795,12 @@ public class FunUtil extends Util {
     Evaluator evaluator,
     TupleList members,
     Calc exp ) {
-    // Java null for the empty set since - the last calc-layer
-    // producer of the Util.nullValue sentinel is gone; all consumers are
-    // null-tolerant via NullSemantics since phases 3/4.
     return FunUtil.sumDouble( evaluator, members, exp );
   }
 
   /**
    * Sums {@code exp} over {@code members}. Returns Java {@code null} (MDX
-   * NULL) for an empty set — there is no primitive sentinel
-   * anymore.
+   * NULL) for an empty set.
  */
   public static Double sumDouble(
     Evaluator evaluator,

@@ -39,25 +39,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * regression tests for the numeric comparison operator calcs and the
- * MDX NULL semantics of the calc layer.
- *
- * Since (. MDX NULL is
- * Java {@code null}:
- * - A Java-null (or NaN) operand makes every comparison return
- *   {@code FunUtil.BOOLEAN_NULL}, which is the primitive {@code false} — no
- *   three-valued logic, so a NULL comparison stays
- *   indistinguishable from a genuine FALSE; notably even {@code NULL <> x}
- *   yields false. The former NPE on Java null is healed.
- * - The former {@code FunUtil.DOUBLE_NULL} sentinel (0.000000012345) is an
- *   ordinary number and compares as a value (the sentinel collision is healed).
+ * MDX NULL semantics of the numeric comparison operator calcs (MDX NULL is
+ * Java {@code null} in the calc layer): a Java-null (or NaN) operand makes
+ * every comparison return {@code FunUtil.BOOLEAN_NULL}, which is the
+ * primitive {@code false} — no three-valued logic, so a NULL comparison is
+ * indistinguishable from a genuine FALSE; notably even {@code NULL <> x}
+ * yields false.
  */
 class ComparisonNullSemanticsTest {
 
-    /** The former sentinel — now an ordinary value. */
-    @SuppressWarnings("deprecation")
-    private static final Double SENTINEL = FunUtil.DOUBLE_NULL;
-    private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
     private static final String[] ALL_OPERATORS = { "=", "<>", ">", ">=", "<", "<=" };
 
     private Evaluator evaluator;
@@ -107,10 +97,6 @@ class ComparisonNullSemanticsTest {
         evaluator = mock(Evaluator.class);
         calc0 = mock(DoubleCalc.class);
         calc1 = mock(DoubleCalc.class);
-    }
-
-    private static Double distinctSentinelValue() {
-        return Double.valueOf(SENTINEL_VALUE);
     }
 
     private Boolean compare(String operator, Double v0, Double v1) {
@@ -170,27 +156,12 @@ class ComparisonNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("Both operands Java null: every comparison returns false (no NPE since )")
+    @DisplayName("Both operands Java null: every comparison returns false")
     void bothJavaNullOperandsReturnFalse() {
         for (String operator : ALL_OPERATORS) {
             assertThat(compare(operator, null, null))
                     .as("operator %s with both operands null", operator)
                     .isFalse();
         }
-    }
-
-    @Test
-    @DisplayName("0.000000012345 compares as a real value everywhere (the sentinel collision is healed)")
-    void computedSentinelValueComparesAsRealValue() {
-        assertThat(compare("=", distinctSentinelValue(), distinctSentinelValue())).isTrue();
-        assertThat(compare("<>", distinctSentinelValue(), distinctSentinelValue())).isFalse();
-        assertThat(compare(">", distinctSentinelValue(), 0.0)).isTrue();
-        assertThat(compare("<", distinctSentinelValue(), 1.0)).isTrue();
-
-        // The former sentinel singleton itself is now an ordinary
-        // value as well: value-equal instances compare EQUAL.
-        assertThat(compare("=", distinctSentinelValue(), SENTINEL)).isTrue();
-        assertThat(compare("=", SENTINEL, SENTINEL)).isTrue();
-        assertThat(compare(">", SENTINEL, 0.0)).isTrue();
     }
 }

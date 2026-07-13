@@ -33,37 +33,23 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * regression tests for the type-coercion calcs and the MDX NULL
- * semantics of the calc layer (Java {@code null} since , see
- * the null-semantics notes):
+ * MDX NULL semantics of the type-coercion calcs (MDX NULL is Java
+ * {@code null} throughout the calc layer):
  *
- * - DoubleToBooleanCalc: Java null and NaN map to BOOLEAN_NULL, which is the
- *   primitive false (no 3VL, ); the former sentinel is an ordinary
- *   non-zero value and maps to true (the sentinel collision is healed).
- * - UnknownToDoubleCalc: Java null and the object-level {@code Util.nullValue}
- *   sentinel (cell layer) both map to Java null; a value-equal
- *   computed 0.000000012345 stays a real value.
- * - IntegerToDoubleCalc: Java null input produces Java null.
+ * <ul>
+ * <li>DoubleToBooleanCalc: Java null and NaN map to BOOLEAN_NULL, which is
+ * the primitive false (no 3VL).</li>
+ * <li>UnknownToDoubleCalc: Java null input produces Java null.</li>
+ * <li>IntegerToDoubleCalc: Java null input produces Java null.</li>
+ * </ul>
  */
 class CoercionNullSemanticsTest {
-
-    private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
 
     private Evaluator evaluator;
 
     @BeforeEach
     void setUp() {
         evaluator = mock(Evaluator.class);
-    }
-
-    private static Double distinctSentinelValue() {
-        return Double.valueOf(SENTINEL_VALUE);
-    }
-
-    /** The former sentinel singleton — now an ordinary value. */
-    @SuppressWarnings("deprecation")
-    private static Double sentinelSingleton() {
-        return FunUtil.DOUBLE_NULL;
     }
 
     @Nested
@@ -83,8 +69,8 @@ class CoercionNullSemanticsTest {
         @DisplayName("Java null maps to BOOLEAN_NULL, which is false")
         void javaNullMapsToBooleanNull() {
             when(doubleCalc.evaluate(evaluator)).thenReturn(null);
-            // FunUtil.BOOLEAN_NULL is the primitive false — no 3VL (decision
-            // E4): a NULL boolean is indistinguishable from a genuine FALSE.
+            // FunUtil.BOOLEAN_NULL is the primitive false — no 3VL: a NULL
+            // boolean is indistinguishable from a genuine FALSE.
             assertThat(calc.evaluate(evaluator)).isEqualTo(FunUtil.BOOLEAN_NULL).isFalse();
         }
 
@@ -105,18 +91,6 @@ class CoercionNullSemanticsTest {
             assertThat(calc.evaluate(evaluator)).isTrue();
 
             when(doubleCalc.evaluate(evaluator)).thenReturn(-2.0);
-            assertThat(calc.evaluate(evaluator)).isTrue();
-        }
-
-        @Test
-        @DisplayName("0.000000012345 maps to true (non-zero real value) — the sentinel collision is healed")
-        void computedSentinelValueIsTreatedAsValue() {
-            when(doubleCalc.evaluate(evaluator)).thenReturn(distinctSentinelValue());
-            assertThat(calc.evaluate(evaluator)).isTrue();
-
-            // The former sentinel singleton itself is now an
-            // ordinary value as well.
-            when(doubleCalc.evaluate(evaluator)).thenReturn(sentinelSingleton());
             assertThat(calc.evaluate(evaluator)).isTrue();
         }
     }
@@ -140,26 +114,6 @@ class CoercionNullSemanticsTest {
         void javaNullProducesJavaNull() {
             when(childCalc.evaluate(evaluator)).thenReturn(null);
             assertThat(calc.evaluate(evaluator)).isNull();
-        }
-
-        @Test
-        @DisplayName("the object-level Util.nullValue sentinel (cell layer) maps to Java null")
-        void nullValueSentinelMapsToJavaNull() {
-            when(childCalc.evaluate(evaluator)).thenReturn(org.eclipse.daanse.olap.common.Util.nullValue);
-            assertThat(calc.evaluate(evaluator)).isNull();
-        }
-
-        @Test
-        @DisplayName("incoming value-equal 0.000000012345 is passed through as a real value")
-        void computedSentinelValueIsARealValue() {
-            // The object-level check is identity-based (Util.nullValue stays
-            // an in-band sentinel for external consumers), so a value-equal distinct
-            // Double is passed through as an ordinary value.
-            Double genuineTinyValue = distinctSentinelValue();
-            assertThat(genuineTinyValue).isNotSameAs(org.eclipse.daanse.olap.common.Util.nullValue);
-            when(childCalc.evaluate(evaluator)).thenReturn(genuineTinyValue);
-
-            assertThat(calc.evaluate(evaluator)).isSameAs(genuineTinyValue);
         }
 
         @Test

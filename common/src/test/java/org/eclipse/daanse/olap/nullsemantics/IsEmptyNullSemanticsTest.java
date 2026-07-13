@@ -28,16 +28,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Pins the uniform {@code IsEmpty} semantics: MDX NULL is Java null in
- * BOTH lanes, so {@code IsEmpty} of any NULL-valued expression is
+ * Pins the uniform {@code IsEmpty} semantics: MDX NULL is Java null
+ * everywhere, so {@code IsEmpty} of any NULL-valued expression is
  * {@code true} — including computed numeric NULLs such as
  * {@code NullValue()}. This matches MSAS.
- *
- * <p>
- * Historical note: the pre-migration engine encoded a computed numeric NULL
- * in-band (the {@code DOUBLE_NULL} sentinel), so {@code IsEmpty(NullValue())}
- * was observably {@code false} while a NULL cell read was {@code true}. That
- * split was a sentinel artifact; the TCK expectation is pinned accordingly.
  */
 class IsEmptyNullSemanticsTest {
 

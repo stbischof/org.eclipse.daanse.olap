@@ -37,13 +37,13 @@ class FormatEdgeCasesTest {
     class NullAndEmptyHandling {
 
         @Test
-        void nullValue() {
+        void nullInput() {
             Format f = new Format("#,##0.00", Locale.US);
             assertThat(f.format(null)).isEqualTo("");
         }
 
         @Test
-        void nullValueWithFourSections() {
+        void nullInputWithFourSections() {
             Format f = new Format("#,##0.00;(#,##0.00);Zero;Null", Locale.US);
             assertThat(f.format(null)).isEqualTo("Null");
         }

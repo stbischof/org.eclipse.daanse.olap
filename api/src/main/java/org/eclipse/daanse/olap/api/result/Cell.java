@@ -56,11 +56,7 @@ public interface Cell {
      * processing, such as plotting a chart.
      *
      * <p>
-     * If the cell is NULL, the value is Java {@code null} (contract change in
-     * the null-semantics migration — historically the in-band sentinel
-     * {@code Util.nullValue} was documented here, although Java {@code null}
-     * was already returned in practice; see
-     * the null-semantics notes in the olap repo). If the
+     * If the cell is NULL, the value is Java {@code null}. If the
      * cell contains an error, {@link #isError()} is true and this method
      * returns the underlying {@link Throwable}. Otherwise the type of this value
      * depends upon the type of measure: possible types include

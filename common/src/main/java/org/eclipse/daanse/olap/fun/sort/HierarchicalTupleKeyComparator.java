@@ -51,10 +51,10 @@ class HierarchicalTupleKeyComparator extends TupleExpMemoComparator {
   private int compareMemberOrderKeysHierarchically(
     OrderKey k1, OrderKey k2 ) {
     // null is less than anything else
-    if ( NullSemantics.isNullValue(k1) ) {
+    if ( NullSemantics.isNull(k1) ) {
       return -1;
     }
-    if ( NullSemantics.isNullValue(k2) ) {
+    if ( NullSemantics.isNull(k2) ) {
       return 1;
     }
     Member m1 = k1.member;

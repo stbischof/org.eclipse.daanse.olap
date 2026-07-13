@@ -27,32 +27,26 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.execution.Execution;
 import org.eclipse.daanse.olap.api.execution.Statement;
 import org.eclipse.daanse.olap.api.query.component.Query;
+import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
-import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * regression tests for the static aggregate helpers in
- * {@code FunUtil}.
+ * NULL semantics of the static aggregate helpers in {@code FunUtil}:
  *
- * Since (.
- * - Empty sets: sumDouble/percentile/quartile return Java {@code null};
- *   sum/min/max/avg still return the object-level {@code Util.nullValue}
- *   singleton (cell layer).
- * - NULL cells (Java null or the Util.nullValue singleton) are skipped by
- *   evaluateSet, so aggregates ignore them.
- * - Error cells (Util.valueNotReadyException / NotLoaded) turn the aggregate
- *   into NaN.
- * - COLLISION HEALED: a genuine sum of exactly
- *   0.000000012345 is a real value.
+ * <ul>
+ * <li>Empty sets: sum/sumDouble/min/max/avg/percentile/quartile return Java
+ * {@code null} (MDX NULL).</li>
+ * <li>NULL cells (Java {@code null}) are skipped by evaluateSet, so
+ * aggregates ignore them — including the divisor of avg.</li>
+ * <li>Error cells ({@link NotLoaded}) turn the aggregate into NaN.</li>
+ * </ul>
  */
 class AggregateNullSemanticsTest {
-
-    private static final double SENTINEL_VALUE = Double.parseDouble("0.000000012345");
 
     private Evaluator evaluator;
     private Calc<Object> exp;
@@ -100,19 +94,19 @@ class AggregateNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("sumDouble skips Java-null and Util.nullValue cells")
+    @DisplayName("sumDouble skips NULL cells")
     void sumDoubleIgnoresNullCells(){
-        stubCellValues(5.0, null, Util.nullValue, 3.0);
+        stubCellValues(5.0, null, 3.0);
 
-        Double result = FunUtil.sumDouble(evaluator, tuples(4), exp);
+        Double result = FunUtil.sumDouble(evaluator, tuples(3), exp);
 
         assertThat(result).isEqualTo(8.0);
     }
 
     @Test
-    @DisplayName("sumDouble returns NaN when a cell holds valueNotReadyException (error)")
+    @DisplayName("sumDouble returns NaN when a cell holds NotLoaded (error)")
     void sumDoubleWithErrorCellReturnsNaN() {
-        stubCellValues(5.0, Util.valueNotReadyException, 3.0);
+        stubCellValues(5.0, NotLoaded.INSTANCE, 3.0);
 
         Double result = FunUtil.sumDouble(evaluator, tuples(3), exp);
 
@@ -135,24 +129,6 @@ class AggregateNullSemanticsTest {
         Object result = FunUtil.sum(evaluator, tuples(2), exp);
 
         assertThat(result).isEqualTo(5.0);
-    }
-
-    @Test
-    @DisplayName("HEALED: a genuine sum of exactly 0.000000012345 is a real value")
-    void sumCollidingWithFormerSentinelValueIsARealValue() {
-        // The single cell value is a runtime-boxed 0.000000012345 — a real
-        // number. Before , FunUtil.sum compared the primitive sum
-        // against DOUBLE_NULL BY VALUE and reported NULL (the value-collision
-        // bug). Since there is no primitive sentinel: the sum is the
-        // real tiny value.
-        Double genuineTinyValue = Double.valueOf(SENTINEL_VALUE);
-        assertThat(genuineTinyValue).isNotSameAs(Util.nullValue);
-        stubCellValues(genuineTinyValue);
-
-        Object result = FunUtil.sum(evaluator, tuples(1), exp);
-
-        assertThat(result).isEqualTo(SENTINEL_VALUE);
-        assertThat(result).isNotSameAs(Util.nullValue);
     }
 
     // --- percentile / quartile ----------------------------------------------
@@ -186,19 +162,19 @@ class AggregateNullSemanticsTest {
     // --- min / max / avg -----------------------------------------------------
 
     @Test
-    @DisplayName("min of an empty set returns the Util.nullValue singleton")
-    void minOfEmptySetReturnsNullValueSingleton() {
+    @DisplayName("min of an empty set returns Java null")
+    void minOfEmptySetReturnsNull() {
         Object result = FunUtil.min(evaluator, tuples(0), exp);
 
-        assertThat(result).isSameAs(Util.nullValue);
+        assertThat(result).isNull();
     }
 
     @Test
-    @DisplayName("max of an empty set returns the Util.nullValue singleton")
-    void maxOfEmptySetReturnsNullValueSingleton() {
+    @DisplayName("max of an empty set returns Java null")
+    void maxOfEmptySetReturnsNull() {
         Object result = FunUtil.max(evaluator, tuples(0), exp);
 
-        assertThat(result).isSameAs(Util.nullValue);
+        assertThat(result).isNull();
     }
 
     @Test
@@ -212,11 +188,11 @@ class AggregateNullSemanticsTest {
     }
 
     @Test
-    @DisplayName("avg of an empty set returns the Util.nullValue singleton")
-    void avgOfEmptySetReturnsNullValueSingleton() {
+    @DisplayName("avg of an empty set returns Java null")
+    void avgOfEmptySetReturnsNull() {
         Object result = FunUtil.avg(evaluator, tuples(0), exp);
 
-        assertThat(result).isSameAs(Util.nullValue);
+        assertThat(result).isNull();
     }
 
     @Test

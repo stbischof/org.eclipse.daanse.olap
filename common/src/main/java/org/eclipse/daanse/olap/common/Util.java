@@ -28,7 +28,6 @@
  */
 package org.eclipse.daanse.olap.common;
 
-import static org.eclipse.daanse.olap.fun.FunUtil.DOUBLE_EMPTY;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -90,7 +89,6 @@ import org.eclipse.daanse.olap.api.Parameter;
 import org.eclipse.daanse.olap.api.access.Role;
 import org.eclipse.daanse.olap.api.agg.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
-import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.calc.profile.CalculationProfile;
 import org.eclipse.daanse.olap.api.calc.profile.ProfileHandler;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
@@ -126,7 +124,6 @@ import org.eclipse.daanse.olap.api.query.component.QueryAxis;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
 import org.eclipse.daanse.olap.api.result.CellSet;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.calc.base.profile.SimpleCalculationProfileWriter;
 import org.eclipse.daanse.olap.exceptions.MdxCantFindMemberException;
 import org.eclipse.daanse.olap.exceptions.MdxChildObjectNotFoundException;
@@ -174,54 +171,6 @@ public class Util {
             LoggerFactory.getLogger("daanse.profile");
 
     /**
-     * Former in-band sentinel which encoded the MDX NULL value of a
-     * {@code double} computation. See {@link DoubleCalc}.
-     *
-     * @deprecated Since the null-semantics migration the calc layer represents MDX NULL
-     *             as Java {@code null}; a {@code Double} of this value is an
-     *             ordinary number. The constant is retained only for external
-     *             consumers of the exported {@code calc*} packages and will be
-     *             removed, see
-     *             the null-semantics notes
- */
-    @Deprecated(forRemoval = true)
-    public static final Double DOUBLE_NULL = Double.valueOf(0.000000012345);
-
-    /**
-     * Placeholder which indicates a value NULL.
-     *
-     * <p>
-     * NOT deprecated yet: the cell/object layer ({@code CellReader},
-     * {@code RolapResult}, comparators) still uses this sentinel by identity.
-     * It is replaced by an explicit {@code CellValue} state in migration
-     * .
- */
-    @SuppressWarnings("deprecation")
-    public static final Object nullValue = DOUBLE_NULL;
-
-    /**
-     * Special cell value indicates that the value is not in cache yet.
-     *
-     * @deprecated Use {@link org.eclipse.daanse.olap.api.result.NotLoaded#INSTANCE}
-     *             directly. Historically this was {@code Double.valueOf(0)} — a
-     *             real number that flowed through arithmetic during the dirty
-     *             evaluation pass. The alias is retained for identity
-     *             comparisons in external consumers until the null-semantics migration,
-     *.
- */
-    @Deprecated(forRemoval = true)
-    public static final Object valueNotReadyException = org.eclipse.daanse.olap.api.result.NotLoaded.INSTANCE;
-
-    /**
-     * Placeholder which indicates an EMPTY value.
-     *
-     * @deprecated Dead sentinel, unused outside one test; removal in migration
-     *             .
- */
-    @Deprecated(forRemoval = true)
-    public static final Object EmptyValue = Double.valueOf(DOUBLE_EMPTY);
-
-    /**
      * Special value represents a null key.
  */
     public static final Comparable<?> sqlNullValue =
@@ -248,10 +197,14 @@ public class Util {
                 throw new OlapRuntimeException(cce);
             }
         }
-    } 
-    
+    }
+
+    /**
+     * Returns whether a cell value corresponds to the MDX NULL value, which
+     * is Java {@code null}.
+ */
     public static boolean isNull(Object o) {
-        return NullSemantics.isNull(o);
+        return o == null;
     }
 
     /**

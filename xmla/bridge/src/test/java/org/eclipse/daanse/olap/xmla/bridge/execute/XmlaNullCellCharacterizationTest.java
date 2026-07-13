@@ -34,7 +34,6 @@ import org.eclipse.daanse.olap.api.result.CellSetAxis;
 import org.eclipse.daanse.olap.api.result.CellSetAxisMetaData;
 import org.eclipse.daanse.olap.api.result.CellSetMetaData;
 import org.eclipse.daanse.olap.api.result.Position;
-import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.xmla.api.execute.statement.StatementResponse;
 import org.eclipse.daanse.xmla.model.record.mddataset.CellTypeR;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,21 +41,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * characterization tests for the XMLA serialization of NULL cells in
- * {@link XmlaResponseConverter#toStatementResponseMddataset}.
- *
- * <p>
- * These tests freeze TODAY's converter behavior before the null/decimal
- * semantics refactoring (see the
-null-semantics notes). Full byte-level XMLA reference tests can follow;
- * this class pins the converter-level branch behavior:
+ * XMLA serialization contract for NULL cells in
+ * {@link XmlaResponseConverter#toStatementResponseMddataset}:
  * <ul>
  * <li>a NULL cell whose cell properties are all null is omitted from CellData
  * entirely — except at ordinal 0,</li>
  * <li>a NULL cell with a non-null property (e.g. FORMATTED_VALUE) is emitted
  * WITHOUT a &lt;Value&gt; element,</li>
  * <li>Double.POSITIVE_INFINITY is serialized as the string "INF",</li>
- * <li>a regular Double value keeps its numeric string form.</li>
+ * <li>a regular Double value keeps its numeric string form,</li>
+ * <li>an error cell serializes its Throwable as xsd:string.</li>
  * </ul>
  */
 class XmlaNullCellCharacterizationTest {
@@ -142,15 +136,14 @@ class XmlaNullCellCharacterizationTest {
     }
 
     /**
-     * A NULL cell the way RolapCell reports it today: isNull() is true, but the
-     * VALUE property still carries the in-band sentinel {@link Util#nullValue}
-     * and FORMATTED_VALUE a non-null (empty) string.
+     * A NULL cell that still carries a non-null (empty) FORMATTED_VALUE, the
+     * way a formatted NULL measure is reported.
  */
-    private static Cell sentinelNullCell() {
+    private static Cell formattedNullCell() {
         Cell cell = mock(Cell.class);
         lenient().when(cell.isNull()).thenReturn(true);
-        lenient().when(cell.getValue()).thenReturn(Util.nullValue);
-        lenient().when(cell.getPropertyValue("VALUE")).thenReturn(Util.nullValue);
+        lenient().when(cell.getValue()).thenReturn(null);
+        lenient().when(cell.getPropertyValue("VALUE")).thenReturn(null);
         lenient().when(cell.getPropertyValue("FORMATTED_VALUE")).thenReturn("");
         return cell;
     }
@@ -174,7 +167,7 @@ class XmlaNullCellCharacterizationTest {
     @DisplayName("Regular double cell keeps value; NULL cell with formatted value is emitted without <Value>")
     void nullCellWithFormattedValueIsEmittedWithoutValue() {
         mockAxisPositions(2);
-        mockCells(valueCell(42.5d, "42.5"), sentinelNullCell());
+        mockCells(valueCell(42.5d, "42.5"), formattedNullCell());
 
         List<org.eclipse.daanse.xmla.api.mddataset.CellType> cells = convert();
 
@@ -226,7 +219,7 @@ class XmlaNullCellCharacterizationTest {
     }
 
     @Test
-    @DisplayName("Double.POSITIVE_INFINITY (today's x/NULL result) is serialized as INF")
+    @DisplayName("Double.POSITIVE_INFINITY (the x/NULL result) is serialized as INF")
     void positiveInfinityIsSerializedAsInf() {
         mockAxisPositions(1);
         mockCells(valueCell(Double.POSITIVE_INFINITY, "Infinity"));
@@ -240,12 +233,11 @@ class XmlaNullCellCharacterizationTest {
     }
 
     /**
-     * Error cells (reference 4): today the evaluation
-     * error is stored as the cell VALUE (a Throwable) and the formatted value
-     * carries the "#ERR:" text. The converter has no error-specific branch:
-     * the Throwable falls through ValueInfo's default case and is serialized
-     * as its toString() with type xsd:string. The rolap-side ErrorValue
-     * rework must keep Cell.getValue()/getPropertyValue returning the
+     * Error cells: the evaluation error is stored as the cell VALUE (a
+     * Throwable) and the formatted value carries the "#ERR:" text. The
+     * converter has no error-specific branch: the Throwable falls through
+     * ValueInfo's default case and is serialized as its toString() with type
+     * xsd:string. Cell.getValue()/getPropertyValue must keep returning the
      * Throwable so this serialization stays stable.
  */
     @Test
@@ -272,24 +264,4 @@ class XmlaNullCellCharacterizationTest {
         });
     }
 
-    /**
-     * The DOUBLE_NULL sentinel is an ordinary double for the converter: a cell
-     * that carries the sentinel VALUE but reports isNull() == false (e.g. a
-     * computed value colliding with the sentinel that slipped through) is
-     * serialized as the literal number — documenting that NULL suppression
-     * happens solely via isNull(), not via the value itself.
- */
-    @Test
-    @DisplayName("Sentinel-valued cell that is not isNull() serializes the magic number literally")
-    void sentinelValueWithoutIsNullSerializesLiterally() {
-        mockAxisPositions(1);
-        mockCells(valueCell(Util.DOUBLE_NULL, "0.000000012345"));
-
-        List<org.eclipse.daanse.xmla.api.mddataset.CellType> cells = convert();
-
-        assertThat(cells).hasSize(1);
-        CellTypeR cell = (CellTypeR) cells.get(0);
-        assertThat(cell.value()).isNotNull();
-        assertThat(cell.value().value()).contains("1.2345");
-    }
 }

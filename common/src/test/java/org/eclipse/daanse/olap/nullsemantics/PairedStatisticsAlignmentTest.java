@@ -30,19 +30,17 @@ import org.eclipse.daanse.olap.api.execution.Statement;
 import org.eclipse.daanse.olap.api.query.component.Query;
 import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
-import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * regression tests for the healed pair alignment of the paired
- * statistics : Covariance and Correlation now
+ * Pair alignment of the paired statistics: Covariance and Correlation
  * evaluate both expressions per tuple and drop a tuple ONLY when one of the
- * two values is NULL (pairwise deletion). Historically each set was
- * evaluated independently with NULLs silently removed, so differing NULL
- * patterns paired x and y values of different tuples.
+ * two values is NULL (pairwise deletion) — dropping NULLs per set
+ * independently would silently pair x and y values of different tuples
+ * whenever the NULL patterns differed.
  */
 class PairedStatisticsAlignmentTest {
 
@@ -90,9 +88,8 @@ class PairedStatisticsAlignmentTest {
 
         assertThat(covar).isInstanceOf(Double.class);
         assertThat((Double) covar).isEqualTo(16.0);
-        // The old misaligned computation paired (1,2),(3,4),(5,10) after
-        // dropping NULLs per set - sizes 3 vs 3 slipped past the guard and
-        // produced a different (wrong) value.
+        // Dropping NULLs per set instead would pair (1,2),(3,4),(5,10) and
+        // produce a different (wrong) value.
     }
 
     @Test
@@ -114,7 +111,7 @@ class PairedStatisticsAlignmentTest {
         when(exp2.evaluate(evaluator)).thenReturn(null, 4.0);
 
         Object covar = FunUtil.covariance(evaluator, tuples(2), exp1, exp2, false);
-        assertThat(covar).isSameAs(Util.nullValue);
+        assertThat(covar).isNull();
 
         when(exp1.evaluate(evaluator)).thenReturn(1.0, null);
         when(exp2.evaluate(evaluator)).thenReturn(null, 4.0);

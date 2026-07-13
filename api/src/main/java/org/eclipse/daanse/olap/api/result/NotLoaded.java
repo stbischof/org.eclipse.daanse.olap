@@ -20,15 +20,9 @@ package org.eclipse.daanse.olap.api.result;
  * The batching cell reader returns this singleton on a cache miss while it
  * collects cell requests; the evaluation pass that produced it is marked
  * dirty and its results are discarded after the batch has been fetched.
- * Historically this marker was the plain {@code Double.valueOf(0)} (see
- * {@code Util.valueNotReadyException}), which meant a not-yet-loaded cell
- * flowed through real arithmetic as a literal zero. {@code NotLoaded} is
+ * {@code NotLoaded} is
  * deliberately not a {@link Number}: any code that tries to compute with it
  * fails fast instead of silently producing values from thin air.
- *
- * <p>
- * Planned to become part of the sealed {@code CellValue} state type at the
- * cell/cache boundary.
  */
 public record NotLoaded() implements CellValue {
 
