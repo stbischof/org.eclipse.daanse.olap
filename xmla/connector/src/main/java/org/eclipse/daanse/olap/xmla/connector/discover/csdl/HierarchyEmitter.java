@@ -39,6 +39,7 @@ import org.eclipse.daanse.xmla.model.csdl.v2.bi.TPropertyRefs;
 import org.eclipse.daanse.xmla.model.csdl.v2.bi.TPropertyStatistics;
 import org.eclipse.daanse.xmla.model.csdl.v2.edm.EdmFactory;
 import org.eclipse.daanse.xmla.model.csdl.v2.edm.TEntityProperty;
+import org.eclipse.daanse.olap.api.relational.RelationalLevel;
 
 /**
  * The bi:Hierarchy elements of a dimension entity, level by level.
@@ -160,7 +161,9 @@ public final class HierarchyEmitter {
         if (nameProperty.isPresent()) {
             typeMapper.apply(p, nameProperty.get().getType());
         } else {
-            typeMapper.apply(p, level.getDatatype());
+            // A level that is not read from a column has names for keys.
+            typeMapper.apply(p, level instanceof RelationalLevel relational ? relational.getDatatype()
+                    : org.eclipse.daanse.sql.model.type.Datatype.VARCHAR);
         }
         TProperty biProp = bi.createTProperty();
         biProp.setHidden(true);

@@ -14,13 +14,9 @@
 package org.eclipse.daanse.olap.api;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
 
-import javax.sql.DataSource;
-
-import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.dmv.parser.api.DmvParserProvider;
 import org.eclipse.daanse.mdx.parser.api.MdxParserProvider;
 import org.eclipse.daanse.olap.api.agg.AggregationFactory;
@@ -35,7 +31,6 @@ import org.eclipse.daanse.olap.api.execution.Statement;
 import org.eclipse.daanse.olap.api.function.FunctionService;
 import org.eclipse.daanse.olap.api.monitor.EventBus;
 import org.eclipse.daanse.olap.api.result.ResultShepherd;
-import org.eclipse.daanse.sql.guard.api.SqlGuardFactory;
 
 /**
  * The Context gives access to all resources and configurations that are needed
@@ -85,22 +80,6 @@ public interface Context<C extends Connection> {
             "VisualTotals", "When", "Where", "With", "WTD", "Xor");
 
     CatalogCache getCatalogCache();
-
-    /**
-     * Gives access to the javax.sql.DataSource that holds the java.sql.Connection}s
-     * to the Database.
-     *
-     * @return DataSource
-     */
-    DataSource getDataSource();
-
-    /**
-     * Gives access to the Dialect that must be used to generate SQL querys against
-     * the javax.sql.DataSource.
-     *
-     * @return DataSource
-     */
-    Dialect getDialect();
 
     /**
      * Gives access to a QueryProvider.
@@ -169,8 +148,6 @@ public interface Context<C extends Connection> {
 
     Semaphore getQueryLimitSemaphore();
 
-    Optional<Map<Object, Object>> getSqlMemberSourceValuePool();
-
     FunctionService getFunctionService();
 
     MdxParserProvider getMdxParserProvider();
@@ -181,8 +158,6 @@ public interface Context<C extends Connection> {
      * query is then refused with that reason instead of being guessed at by other parsers.
      */
     Optional<DmvParserProvider> getDmvParserProvider();
-
-    Optional<SqlGuardFactory> getSqlGuardFactory();
 
     default List<String> getKeywordList() {
         return KEYWORD_LIST;

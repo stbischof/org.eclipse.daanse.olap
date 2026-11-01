@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.sql.DataSource;
 
 import org.eclipse.daanse.olap.api.Context;
 import org.eclipse.daanse.olap.api.DataType;
@@ -302,12 +301,6 @@ public class ExecutionCatalogReaderWrapper implements CatalogReader {
     @Override
     public Parameter getParameter(String name) {
         return ExecutionContext.where(execution.asContext(), () -> delegate.getParameter(name));
-    }
-
-    @Override
-    @Deprecated
-    public DataSource getDataSource() {
-        return ExecutionContext.where(execution.asContext(), () -> delegate.getDataSource());
     }
 
     @Override

@@ -55,6 +55,7 @@ import org.eclipse.daanse.sql.guard.api.SqlGuardFactory;
 import org.eclipse.daanse.sql.guard.api.exception.GuardException;
 import org.eclipse.daanse.sql.guard.api.exception.UnparsableStatementGuardException;
 import org.slf4j.Logger;
+import org.eclipse.daanse.olap.api.relational.RelationalContext;
 
 
 /**
@@ -149,21 +150,25 @@ public abstract class ConnectionBase implements Connection {
         FunctionService funTable,
         boolean strictValidation)
     {
-        Optional<SqlGuardFactory> oSqlGuardFactory = getContext().getSqlGuardFactory();
+        // Only a relational provider can be asked SQL.
+        if (!(getContext() instanceof RelationalContext<?> relational)) {
+            return parseAsMdxAfterAll(statement, queryToParse, funTable, strictValidation, null);
+        }
+        Optional<SqlGuardFactory> oSqlGuardFactory = relational.getSqlGuardFactory();
         if (oSqlGuardFactory.isEmpty()) {
             return parseAsMdxAfterAll(statement, queryToParse, funTable, strictValidation, null);
         }
         List<DatabaseSchema> ds = (List<DatabaseSchema>) this.getCatalogReader().getDatabaseSchemas();
         String catalogName = getCatalog().getName();
-        String schemaName = currentSchemaName(ds);
+        String schemaName = currentSchemaName(relational, ds);
         org.eclipse.daanse.sql.guard.api.elements.DatabaseCatalog dc = new GuardDatabaseCatalog(catalogName, ds);
         //TODO need resolve function list from other place
         SqlGuard guard = oSqlGuardFactory.get().create(catalogName, schemaName, dc,
-                List.of("sum", "avg", "min", "max", "count", "concat"), this.getContext().getDialect());
+                List.of("sum", "avg", "min", "max", "count", "concat"), relational.getDialect());
         // TODO add white list functions
         try {
             String sanetizedSql = guard.guard(queryToParse);
-            return new SqlQueryImpl(sanetizedSql, getContext().getDataSource());
+            return new SqlQueryImpl(sanetizedSql, relational.getDataSource());
         } catch (UnparsableStatementGuardException uex) {
             return parseAsMdxAfterAll(statement, queryToParse, funTable, strictValidation, uex);
         } catch (GuardException guardEx) {
@@ -178,10 +183,10 @@ public abstract class ConnectionBase implements Connection {
      * catalog has exactly one schema, that one; otherwise the empty string, which resolves
      * nothing and lets the guard report the name as unknown.
      */
-    private String currentSchemaName(List<DatabaseSchema> schemas) {
+    private String currentSchemaName(RelationalContext<?> relational, List<DatabaseSchema> schemas) {
         if (currentSchemaName == null) {
             String fromDriver = null;
-            DataSource dataSource = getContext().getDataSource();
+            DataSource dataSource = relational.getDataSource();
             if (dataSource != null) {
                 try (java.sql.Connection connection = dataSource.getConnection()) {
                     fromDriver = connection.getSchema();

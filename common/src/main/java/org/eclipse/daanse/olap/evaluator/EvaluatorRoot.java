@@ -359,7 +359,4 @@ public EvaluatorRoot( Statement statement ) {
   public abstract Object evaluateExpression( org.eclipse.daanse.olap.api.calc.Calc<?> calc,
       EvaluatorImpl slicerEvaluator, org.eclipse.daanse.olap.api.evaluator.Evaluator contextEvaluator );
 
-  /** Whether the result still owes values that have not been loaded. */
-  public abstract boolean isDirty();
-
 }

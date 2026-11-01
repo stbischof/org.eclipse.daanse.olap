@@ -26,7 +26,8 @@ import org.eclipse.daanse.olap.api.result.CellSet;
 import org.eclipse.daanse.olap.api.result.Property;
 import org.eclipse.daanse.olap.api.result.Result;
 import org.eclipse.daanse.olap.api.result.Scenario;
-import org.eclipse.daanse.olap.api.sql.SqlStatementI;
+import org.eclipse.daanse.olap.api.relational.SqlStatementI;
+import org.eclipse.daanse.olap.api.result.DrillThroughRows;
 import org.eclipse.daanse.olap.common.StandardProperty;
 import org.slf4j.Logger;
 
@@ -99,10 +100,6 @@ public class CellImpl implements Cell {
         return cell.isError();
     }
 
-    @Override
-    public String getDrillThroughSQL(boolean extendedContext) {
-        return null;
-    }
 
     @Override
     public boolean canDrillThrough() {
@@ -266,14 +263,19 @@ public class CellImpl implements Cell {
         if (rowCountSlot != null) {
             rowCountSlot[0] = cell.getDrillThroughCount();
         }
-        final SqlStatementI sqlStmt =
+        final DrillThroughRows rows =
                 drillThroughInternal(maxRowCount, firstRowOrdinal, fields, extendedContext, logger);
-        return sqlStmt.getWrappedResultSet();
+        if (rows instanceof SqlStatementI sqlStmt) {
+            return sqlStmt.getWrappedResultSet();
+        }
+        rows.close();
+        throw new UnsupportedOperationException(
+                "Drill-through rows of this provider do not come from SQL; a JDBC result set over them is not available");
     }
 
 
     @Override
-    public SqlStatementI drillThroughInternal(int maxRowCount, int firstRowOrdinal, List<OlapElement> fields,
+    public DrillThroughRows drillThroughInternal(int maxRowCount, int firstRowOrdinal, List<OlapElement> fields,
             boolean extendedContext, Logger logger) {
         return cell.drillThroughInternal(
                     maxRowCount, firstRowOrdinal, fields, extendedContext,

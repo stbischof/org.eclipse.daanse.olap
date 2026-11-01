@@ -84,11 +84,6 @@ public class ResultEvaluatorRoot extends EvaluatorRoot {
   }
 
   @Override
-  public boolean isDirty() {
-    return result.isDirty();
-  }
-
-  @Override
 	protected Evaluator.NamedSetEvaluator evaluateNamedSet( final NamedSet namedSet, boolean create ) {
     final String name = namedSet.getNameUniqueWithinQuery();
     if ( namedSet.isDynamic() && !create ) {

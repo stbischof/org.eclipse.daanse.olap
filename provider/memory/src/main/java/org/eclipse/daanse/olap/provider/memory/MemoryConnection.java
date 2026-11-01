@@ -142,12 +142,6 @@ public class MemoryConnection extends ConnectionBase {
                 "MemoryConnection.getCacheControl is not part of this provider");
     }
 
-    @Override
-    public javax.sql.DataSource getDataSource() {
-        throw new UnsupportedOperationException(
-                "MemoryConnection.getDataSource is not part of this provider");
-    }
-
     /**
      * The statement the engine uses for its own lookups while it resolves a query. One per
      * connection, created on first use.

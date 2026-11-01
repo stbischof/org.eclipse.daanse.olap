@@ -45,6 +45,7 @@ import org.eclipse.daanse.olap.common.StandardProperty;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.function.core.AbstractAggregateFunDef;
+import org.eclipse.daanse.olap.api.relational.RelationalContext;
 
 public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
     private static final String TIMING_NAME = "AggregateFunDef";
@@ -147,7 +148,9 @@ public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
         Context<?> context = evaluator.getCatalogReader().getContext();
         // maxConstraints exists because most databases cap the length of an IN list.
         // A database that does not needs no list optimization at all.
-        boolean unlimitedIn = context.getDialect().supportsUnlimitedValueList();
+        // Only a relational provider has an IN list to keep short.
+        boolean unlimitedIn = !(context instanceof RelationalContext<?> relational)
+                || relational.getDialect().supportsUnlimitedValueList();
         int maxConstraints = context.getConfig().maxConstraints();
         boolean tupleSizeWithinInListSize =
             tupleList.size() <= maxConstraints;

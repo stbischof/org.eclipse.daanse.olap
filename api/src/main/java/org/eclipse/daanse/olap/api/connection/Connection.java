@@ -32,7 +32,6 @@ package org.eclipse.daanse.olap.api.connection;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-import javax.sql.DataSource;
 
 import org.eclipse.daanse.olap.api.Context;
 import org.eclipse.daanse.olap.api.access.Role;
@@ -131,14 +130,6 @@ public interface Connection {
      * @param pw Writer to which to write logging information; may be null
      */
     CacheControl getCacheControl(PrintWriter pw);
-
-    /**
-     * Returns the data source this connection uses to create connections to the
-     * underlying JDBC database.
-     *
-     * @return Data source
-     */
-    DataSource getDataSource();
 
     Context<?> getContext();
 

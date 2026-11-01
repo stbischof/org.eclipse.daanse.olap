@@ -99,8 +99,6 @@ public interface Aggregator {
      */
     Object aggregate(List<Object> rawData, DataTypeJdbc datatype);
 
-    StringBuilder getExpression(CharSequence inner);
-
     boolean isDistinct();
 
     Aggregator getNonDistinctAggregator();

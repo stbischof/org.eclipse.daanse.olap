@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
+import org.eclipse.daanse.olap.api.relational.RelationalContext;
 import org.eclipse.daanse.olap.api.result.NullValue;
 import org.eclipse.daanse.olap.api.result.ObjectValue;
 import org.eclipse.daanse.olap.api.result.CellReader;
@@ -144,10 +145,9 @@ class MemoryCatalogTest {
         assertThat(context.getExpressionCompilerFactory()).isNotNull();
         assertThat(context.getCatalogReader().getCubes()).hasSize(1);
 
-        // Null, not an exception: the engine asks for a data source to learn the current
-        // schema name and skips that step when there is none. Throwing would make a
-        // provider without a database look broken.
-        assertThat(context.getDataSource()).isNull();
+        // Not relational: the engine reaches SQL only through RelationalContext, so a
+        // provider without a database never gets asked for a data source.
+        assertThat(context).isNotInstanceOf(RelationalContext.class);
         // Running a query end to end is checked in the function module instead. It needs
         // the MDX function library on the classpath, and that module depends on this one.
         assertThat(context.getConnectionWithDefaultRole()).isNotNull();

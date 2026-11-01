@@ -25,7 +25,7 @@
 package org.eclipse.daanse.olap.spi;
 
 import org.eclipse.daanse.olap.api.Context;
-import org.eclipse.daanse.olap.execution.ExecutionImpl;
+import org.eclipse.daanse.olap.api.execution.Execution;
 
 /**
  * Provides estimates of the number of rows in a database.
@@ -60,7 +60,7 @@ public interface StatisticsProvider {
         String catalog,
         String schema,
         String table,
-        ExecutionImpl execution);
+        Execution execution);
 
     /**
      * Returns an estimate of the number of rows returned by a query.
@@ -75,7 +75,7 @@ public interface StatisticsProvider {
     long getQueryCardinality(
         Context context,
         String sql,
-        ExecutionImpl execution);
+        Execution execution);
 
     /**
      * Returns an estimate of the number of rows in a table.
@@ -96,5 +96,5 @@ public interface StatisticsProvider {
         String schema,
         String table,
         String column,
-        ExecutionImpl execution);
+        Execution execution);
 }

@@ -31,9 +31,7 @@ package org.eclipse.daanse.olap.api.element;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.daanse.sql.model.type.Datatype;
 import org.eclipse.daanse.olap.api.formatter.MemberFormatter;
-import org.eclipse.daanse.olap.api.sql.SqlExpression;
 
 /**
  * A Level is a group of Members in a Hierarchy, all with the same attributes
@@ -94,15 +92,19 @@ public interface Level extends OlapElement, MetaElement {
 
     boolean isUnique();
 
-    List<? extends SqlExpression> getOrdinalExps();
+    /**
+     * Whether the members of this level carry an order key of their own, so that siblings can be
+     * ordered by it instead of by their ordinal.
+     */
+    default boolean hasOrderKey() {
+        return false;
+    }
 
     boolean isParentChild();
 
     boolean isParentAsLeafEnable();
 
     String getParentAsLeafNameFormat();
-
-    Datatype getDatatype();
 
     default HideMemberCondition getHideMemberCondition() {
         return HideMemberCondition.NEVER;

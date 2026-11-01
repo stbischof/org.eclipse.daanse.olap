@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import org.eclipse.daanse.olap.xmla.connector.common.DiscoverScope;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.olap.xmla.connector.common.OleDbType;
+import org.eclipse.daanse.olap.api.relational.RelationalContext;
 
 /**
  * The MDSCHEMA_* rowsets: cubes, dimensions, hierarchies, levels, measures,
@@ -1304,9 +1305,8 @@ public class MdSchemaDiscover {
         row.setDatasourceType(RELATIONAL);
         contexts.getContext(catalog.getName()).ifPresent(context -> {
             context.getDescription().ifPresent(row::setDescription);
-            Dialect dialect = context.getDialect();
-            if (dialect != null) {
-                row.setDbmsName(dialect.name());
+            if (context instanceof RelationalContext<?> relational && relational.getDialect() != null) {
+                row.setDbmsName(relational.getDialect().name());
             }
         });
         return row;

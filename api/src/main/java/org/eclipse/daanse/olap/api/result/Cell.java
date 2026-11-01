@@ -34,7 +34,6 @@ import java.util.List;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.OlapElement;
-import org.eclipse.daanse.olap.api.sql.SqlStatementI;
 import org.slf4j.Logger;
 
 /**
@@ -91,21 +90,6 @@ public interface Cell {
     boolean isError();
 
     /**
-     * Returns a SQL query that, when executed, returns drill through data for this
-     * Cell.
-     *
-     * If the parameter {@code extendedContext} is true, then the query will include
-     * all the levels (i.e. columns) of non-constraining members (i.e. members which
-     * are at the "All" level).
-     *
-     * If the parameter {@code extendedContext} is false, the query will exclude the
-     * levels (coulmns) of non-constraining members.
-     *
-     * The result is null if the cell is based upon a calculated member.
- */
-    String getDrillThroughSQL(boolean extendedContext);
-
-    /**
      * Returns true if drill through is possible for this Cell. Returns false if the
      * Cell is based on a calculated measure.
      *
@@ -155,6 +139,15 @@ public interface Cell {
  */
     void setValue(Scenario scenario, Object newValue, AllocationPolicy allocationPolicy, Object... allocationArgs);
 
-    SqlStatementI drillThroughInternal(int maxRowCount, int firstRowOrdinal, List<OlapElement> fields,
+    /**
+     * The rows behind this cell; the caller closes them.
+     *
+     * @param maxRowCount     maximum number of rows, {@code <= 0} when unlimited
+     * @param firstRowOrdinal ordinal of the first row (1-based), {@code 0} to start at the beginning
+     * @param fields          the fields to return; empty for the default
+     * @param extendedContext whether the levels of non-constraining members are included
+     * @param logger          where the provider logs what it runs; may be {@code null}
+     */
+    DrillThroughRows drillThroughInternal(int maxRowCount, int firstRowOrdinal, List<OlapElement> fields,
             boolean extendedContext, Logger logger);
 }

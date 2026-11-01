@@ -553,8 +553,8 @@ class MdSchemaDiscoverTest {
      */
     @Test
     void inputDatasourcesDescribeTheStoreBehindTheCatalog() {
-        org.eclipse.daanse.olap.api.Context<?> context = org.mockito.Mockito
-                .mock(org.eclipse.daanse.olap.api.Context.class);
+        org.eclipse.daanse.olap.api.relational.RelationalContext<?> context = org.mockito.Mockito
+                .mock(org.eclipse.daanse.olap.api.relational.RelationalContext.class);
         org.eclipse.daanse.sql.dialect.api.Dialect dialect = org.mockito.Mockito
                 .mock(org.eclipse.daanse.sql.dialect.api.Dialect.class);
         when(dialect.name()).thenReturn("DUCKDB");

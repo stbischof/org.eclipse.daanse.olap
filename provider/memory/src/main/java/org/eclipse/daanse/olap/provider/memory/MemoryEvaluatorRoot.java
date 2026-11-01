@@ -61,10 +61,4 @@ public class MemoryEvaluatorRoot extends EvaluatorRoot {
         Evaluator context = contextEvaluator != null ? contextEvaluator : slicerEvaluator;
         return calc.evaluate(context);
     }
-
-    @Override
-    public boolean isDirty() {
-        // Nothing is loaded in batches here, so nothing is ever owed.
-        return false;
-    }
 }

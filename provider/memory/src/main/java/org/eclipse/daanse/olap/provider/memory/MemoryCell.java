@@ -114,19 +114,13 @@ public class MemoryCell implements Cell {
     }
 
     @Override
-    public String getDrillThroughSQL(boolean extendedContext) {
-        throw new UnsupportedOperationException(
-                "MemoryCell.getDrillThroughSQL: there are no rows behind this cell to reach");
-    }
-
-    @Override
     public void setValue(Scenario scenario, Object newValue, AllocationPolicy allocationPolicy,
             Object... allocationArgs) {
         throw new UnsupportedOperationException(
                 "MemoryCell.setValue: this provider holds its values, it does not write them back");
     }
     @Override
-    public org.eclipse.daanse.olap.api.sql.SqlStatementI drillThroughInternal(int maxRowCount, int firstRowOrdinal,
+    public org.eclipse.daanse.olap.api.result.DrillThroughRows drillThroughInternal(int maxRowCount, int firstRowOrdinal,
             List<org.eclipse.daanse.olap.api.element.OlapElement> fields, boolean extendedContext,
             org.slf4j.Logger logger) {
         throw new UnsupportedOperationException(

@@ -32,7 +32,6 @@ package org.eclipse.daanse.olap.api.catalog;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
 
 import org.eclipse.daanse.olap.api.Context;
 import org.eclipse.daanse.olap.api.DataType;
@@ -456,14 +455,6 @@ public interface CatalogReader {
      * found.
      */
     Parameter getParameter(String name);
-
-    /**
-     * Returns the data source.
-     *
-     * @return data source
-     */
-    @Deprecated
-    DataSource getDataSource();
 
     /**
      * Returns a similar schema reader that has no access control.

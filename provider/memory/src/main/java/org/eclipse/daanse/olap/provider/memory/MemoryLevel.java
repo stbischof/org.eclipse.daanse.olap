@@ -97,11 +97,6 @@ public class MemoryLevel extends LevelBase {
 
 
     @Override
-    public org.eclipse.daanse.sql.model.type.Datatype getDatatype() {
-        return org.eclipse.daanse.sql.model.type.Datatype.VARCHAR;
-    }
-
-    @Override
     public boolean isParentChild() {
         return false;
     }
@@ -119,11 +114,6 @@ public class MemoryLevel extends LevelBase {
     @Override
     public boolean areMembersUnique() {
         return true;
-    }
-
-    @Override
-    public java.util.List<? extends org.eclipse.daanse.olap.api.sql.SqlExpression> getOrdinalExps() {
-        return java.util.List.of();
     }
 
 

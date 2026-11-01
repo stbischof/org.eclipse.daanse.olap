@@ -12,11 +12,9 @@
 package org.eclipse.daanse.olap.provider.memory;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
 
-import javax.sql.DataSource;
 
 import org.eclipse.daanse.mdx.parser.api.MdxParserProvider;
 import org.eclipse.daanse.olap.api.connection.ConnectionProps;
@@ -176,35 +174,6 @@ public class MemoryContext extends AbstractBasicContext<Connection> {
     }
 
     // ---- no database ----------------------------------------------------------
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>{@code null}, because this provider answers from values it holds. That is the
-     * answer callers check for: {@code ConnectionBase} asks for the data source to learn
-     * the current schema name and skips that step when there is none. Throwing here would
-     * turn a provider without a database into a broken one.
-     */
-    @Override
-    public DataSource getDataSource() {
-        return null;
-    }
-
-    @Override
-    public org.eclipse.daanse.sql.dialect.api.Dialect getDialect() {
-        throw new UnsupportedOperationException(
-                "MemoryContext has no Dialect: this provider speaks no SQL");
-    }
-
-    @Override
-    public Optional<org.eclipse.daanse.sql.guard.api.SqlGuardFactory> getSqlGuardFactory() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Map<Object, Object>> getSqlMemberSourceValuePool() {
-        return Optional.empty();
-    }
 
     @Override
     public org.eclipse.daanse.olap.api.agg.AggregationFactory getAggragationFactory() {

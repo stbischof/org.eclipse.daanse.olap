@@ -13,7 +13,7 @@
  */
 
 /**
- * Aggregator services a provider registers with the OSGi whiteboard.
+ * The standard aggregators, computed over cell values; a provider extends them with what it needs.
  */
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")

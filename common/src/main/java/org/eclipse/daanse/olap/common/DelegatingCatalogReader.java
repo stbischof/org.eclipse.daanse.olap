@@ -31,7 +31,6 @@ package org.eclipse.daanse.olap.common;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
 
 import org.eclipse.daanse.olap.api.Context;
 import org.eclipse.daanse.olap.api.DataType;
@@ -353,12 +352,6 @@ public abstract class DelegatingCatalogReader implements CatalogReader {
     @Override
 	public Parameter getParameter(String name) {
         return schemaReader.getParameter(name);
-    }
-
-    @Override
-    @Deprecated
-	public DataSource getDataSource() {
-        return schemaReader.getDataSource();
     }
 
     @Override

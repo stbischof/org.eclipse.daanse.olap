@@ -683,7 +683,7 @@ public class Sorter {
     if(
         ExecutionConfig.current().compareSiblingsByOrderKey()
         &&
-        m1.getLevel().getOrdinalExps() != null
+        m1.getLevel().hasOrderKey()
     ) {
       final Comparable k1 = m1.getOrderKey();
       final Comparable k2 = m2.getOrderKey();

@@ -30,6 +30,7 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.eclipse.daanse.olap.api.Context;
+import org.eclipse.daanse.olap.api.relational.RelationalContext;
 import org.eclipse.daanse.olap.api.access.Role;
 import org.eclipse.daanse.olap.api.cache.CacheControl;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
@@ -62,7 +63,7 @@ import org.slf4j.LoggerFactory;
 class ConnectionBaseParseSqlTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private Context<?> context;
+    private RelationalContext<?> context;
     @Mock
     private Catalog catalog;
     @Mock
@@ -121,10 +122,6 @@ class ConnectionBaseParseSqlTest {
 		}
 		@Override
 		public CacheControl getCacheControl(PrintWriter pw) {
-            throw new UnsupportedOperationException();
-		}
-		@Override
-		public DataSource getDataSource() {
             throw new UnsupportedOperationException();
 		}
 		@Override

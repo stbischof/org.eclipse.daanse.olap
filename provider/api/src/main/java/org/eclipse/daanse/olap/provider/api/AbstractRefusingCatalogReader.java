@@ -72,11 +72,6 @@ public abstract class AbstractRefusingCatalogReader implements org.eclipse.daans
     }
 
     @Override
-    public javax.sql.DataSource getDataSource() {
-        throw refuse("getDataSource");
-    }
-
-    @Override
     public java.util.List<? extends org.eclipse.daanse.olap.api.element.db.DatabaseSchema> getDatabaseSchemas() {
         throw refuse("getDatabaseSchemas");
     }
