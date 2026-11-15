@@ -23,8 +23,6 @@
  */
 package org.eclipse.daanse.olap.util;
 
-import org.eclipse.daanse.sql.dialect.api.Dialect;
-import org.slf4j.LoggerFactory;
 
 /**
  * Holder for constants which indicate whether particular issues have been
@@ -71,33 +69,6 @@ public class Bug {
     public static final boolean Ssas2005Compatible = false;
 
     /**
-     * If you want to tag a piece of code in mondrian that needs to be changed
-     * when we upgrade to a future version of olap4j, reference this function.
-     * It will always return false.
-     */
-    public static boolean olap4jUpgrade(String reason) {
-        return false;
-    }
-
-    /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-229">MONDRIAN-229,
-     * "NON EMPTY when hierarchy's default member is not 'all'"</a>
-     * is fixed.
-     */
-    public static final boolean Bug229Fixed = false;
-
-    // Properties relating to checkin 7641.
-    // This is part of the junit test Checkin_7641 that
-    // shows that there is a difference when the default
-    // member is not the one used in an axis.
-    // When Checkin 7641 is resolved, then this System property access and
-    // boolean should go away.
-    // (What's the bug associated with this??)
-
-    public static final boolean Checkin7641UseOptimizer = false;
-
-    /**
      * Whether
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-207">MONDRIAN-207,
      * "IS EMPTY and IS NULL"</a> is fixed.
@@ -111,22 +82,6 @@ public class Bug {
      * is fixed.
      */
     public static final boolean Bug446Fixed = false;
-
-    /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-313">bug MONDRIAN-313,
-     * "Predicate references RolapStar.Column when used in AggStar"</a>
-     * is fixed.
-     */
-    public static final boolean Bug313Fixed = false;
-
-    /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-314">bug MONDRIAN-314,
-     * "Predicate sometimes has null RolapStar.Column"</a>
-     * is fixed.
-     */
-    public static final boolean Bug314Fixed = false;
 
     /**
      * Whether
@@ -154,27 +109,11 @@ public class Bug {
     public static final boolean Bug441Fixed = false;
 
     /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-486">bug MONDRIAN-486,
-     * "HighCardinalityTest test cases disabled"</a>
-     * is fixed.
-     */
-    public static final boolean Bug486Fixed = false;
-
-    /**
      * Whether bug <a href="http://jira.pentaho.com/browse/MONDRIAN-495">
      * MONDRIAN-495, "Table filter concept does not support dialects."</a>
      * is fixed.
      */
     public static final boolean Bug495Fixed = false;
-
-    /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-503">bug MONDRIAN-503,
-     * "RolapResultTest disabled"</a>
-     * is fixed.
-     */
-    public static final boolean Bug503Fixed = false;
 
     /**
      * Whether
@@ -212,28 +151,12 @@ public class Bug {
     public static final boolean Bug648Fixed = false;
 
     /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-687">bug MONDRIAN-687,
-     * "Format treats negative numbers differently than SSAS"</a>
-     * is fixed.
-     */
-    public static final boolean Bug687Fixed = false;
-
-    /**
      * Whether bug
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-747">bug MONDRIAN-747,
      * "When joining a shared dimension into a cube at a level
      * other than its leaf level, Mondrian gives wrong results"</a> is fixed.
      */
     public static final boolean Bug747Fixed = false;
-
-    /**
-     * Whether
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-759">bug MONDRIAN-759,
-     * "use dynamic parameters and PreparedStatement for frequently executed SQL
-     * patterns"</a> is fixed.
-     */
-    public static final boolean Bug759Fixed = false;
 
     /**
      * Whether
@@ -269,44 +192,4 @@ public class Bug {
      */
     public static final boolean BugSegregateRolapCubeMemberFixed = false;
 
-    /**
-     * Returns whether to avoid a test because the memory monitor may cause it
-     * to fail.
-     *
-     * Some tests fail if memory monitor is switched on, and Access and
-     * Derby tend to use a lot of memory because they are embedded.
-     *
-     * @param dialect Dialect
-     * @return Whether to avoid a test
-     */
-    public static boolean avoidMemoryOverflow(Dialect dialect, boolean memoryMonitor) {
-        return dialect.name().equals("access")
-            && memoryMonitor;
-    }
-
-    /**
-     * Returns true if we are running against
-     * mondrian.spi.Dialect.DatabaseProduct#LUCIDDB and we wish to
-     * avoid slow tests.
-     *
-     * This is because some tests involving parent-child hierarchies are
-     * very slow. If we are running performance tests (indicated by the
-     * {@code mondrian.test.PerforceTest} logger set at
-     * org.eclipse.daanse.olap.api.MappingLevel.Level#DEBUG or higher), we expect the suite to
-     * take a long time, so we enable the tests.
-     *
-     * Fixing either {@link #Bug759Fixed MONDRIAN-759} or
-     * <a href="http://issues.eigenbase.org/browse/FRG-400">FRG-400, "rewrite
-     * statements containing literals to use internally-managed dynamic
-     * parameters instead"</a> would solve the problem.
-     *
-     * @return Whether we are running LucidDB and we wish to avoid slow tests.
-     */
-    public static boolean avoidSlowTestOnLucidDB(Dialect dialect) {
-        return
-            !Bug759Fixed
-            && dialect.name().equals("luciddb")
-            && !LoggerFactory.getLogger("daanse.test.PerformanceTest")
-                .isDebugEnabled();
-    }
 }

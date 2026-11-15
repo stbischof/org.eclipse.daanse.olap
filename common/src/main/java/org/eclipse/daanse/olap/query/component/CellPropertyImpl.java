@@ -29,7 +29,7 @@ package org.eclipse.daanse.olap.query.component;
 
 import java.util.List;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.query.component.CellProperty;
 import org.eclipse.daanse.olap.common.AbstractQueryPart;
 import org.eclipse.daanse.olap.common.Util;

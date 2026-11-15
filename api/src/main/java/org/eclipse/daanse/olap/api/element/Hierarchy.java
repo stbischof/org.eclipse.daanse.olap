@@ -74,6 +74,17 @@ public interface Hierarchy extends OlapElement, MetaElement {
     Member getAllMember();
 
     /**
+     * Whether a write chooses its scenario from this hierarchy.
+     * <p>
+     * Asked rather than tested by name, so that a catalog which calls its writing dimension something
+     * else can say so. The default answers what every catalog has answered so far: the hierarchy called
+     * {@code Scenario}.
+     */
+    default boolean isScenario() {
+        return "Scenario".equals(getName());
+    }
+
+    /**
      * Returns a special member representing the "null" value. This never occurs on
      * an axis, but may occur if functions such as Lead, NextMember and ParentMember
      * walk off the end of the hierarchy.

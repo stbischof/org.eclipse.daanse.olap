@@ -38,7 +38,7 @@ import org.eclipse.daanse.olap.api.NameResolver;
 import org.eclipse.daanse.olap.api.Parameter;
 import org.eclipse.daanse.olap.api.access.AccessMember;
 import org.eclipse.daanse.olap.api.access.Role;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Catalog;
@@ -173,13 +173,7 @@ public abstract class DelegatingCatalogReader implements CatalogReader {
         DataType category,
         MatchType matchType)
     {
-            return new NameResolverImpl().resolve(
-                parent,
-                Util.toOlap4j(names),
-                failIfNotFound,
-                category,
-                matchType,
-                getNamespaces());
+        return NameResolverImpl.lookupCompound(this, parent, names, failIfNotFound, category, matchType);
     }
 
     @Override

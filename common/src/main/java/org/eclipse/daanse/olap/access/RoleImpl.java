@@ -54,7 +54,6 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.NamedSet;
 import org.eclipse.daanse.olap.api.element.OlapElement;
-import org.eclipse.daanse.olap.api.element.VirtualCube;
 import org.eclipse.daanse.olap.api.element.db.DatabaseColumn;
 import org.eclipse.daanse.olap.api.element.db.DatabaseSchema;
 import org.eclipse.daanse.olap.api.element.db.DatabaseTable;
@@ -475,7 +474,7 @@ public class RoleImpl implements Role {
                 }
                 // Last thing is to allow for equality correspondences
                 // to work with virtual cubes.
-                if (cubeGrant.getKey() instanceof VirtualCube
+                if (cubeGrant.getKey() instanceof Cube keyed && keyed.drawsFromOtherCubes()
                     && dimension.equals(dimension1))
                 {
                     return cubeGrant.getValue();

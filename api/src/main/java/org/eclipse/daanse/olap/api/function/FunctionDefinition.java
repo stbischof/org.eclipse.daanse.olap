@@ -51,4 +51,16 @@ public interface FunctionDefinition {
 
     Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler);
 
+    /**
+     * Whether a call of this function aggregates a set of its own, the way {@code Aggregate} does. The
+     * engine asks it to place a calculation in the scope it belongs to: a calculation that aggregates is
+     * expanded after the others. A function that computes over one cell answers no, which is why that is
+     * the answer of every function that says nothing.
+     *
+     * @return true when a call of this function aggregates over a set
+     */
+    default boolean aggregates() {
+        return false;
+    }
+
 }

@@ -30,7 +30,7 @@ package org.eclipse.daanse.olap.api.element;
 
 import java.util.Locale;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 
 /**

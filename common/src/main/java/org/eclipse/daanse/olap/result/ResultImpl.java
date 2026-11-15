@@ -106,6 +106,8 @@ import  org.eclipse.daanse.olap.util.CancellationChecker;
 import org.eclipse.daanse.olap.api.element.VisualTotalMember;
 import org.eclipse.daanse.olap.api.result.CellReader;
 import org.eclipse.daanse.olap.evaluator.CompoundSlicerMember;
+import org.eclipse.daanse.olap.evaluator.CompoundSlicerMemberImpl;
+import org.eclipse.daanse.olap.evaluator.DependencyTestingEvaluator;
 import org.eclipse.daanse.olap.evaluator.EvaluatorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -481,7 +483,7 @@ public abstract class ResultImpl extends ResultBase {
                 evaluator.getTiming().markStart( "EvalForSlicer" );
                 TupleList list =
                     AbstractAggregateFunDef.processUnrelatedDimensions( ( (EvaluatorImpl) evaluator )
-                        .getOptimizedSlicerTuples( null ), evaluator );
+                        .getOptimizedSlicerTuples( false ), evaluator );
                 for ( Member member : prevSlicerMembers ) {
                   if ( evaluator.getContext( member.getHierarchy() ) instanceof CompoundSlicerMember ) {
                     evaluator.setContext( member );
@@ -1482,11 +1484,24 @@ public Cell getCell( int[] pos ) {
   // ---- what only a provider can answer ------------------------------------
 
   /**
-   * The evaluator this result evaluates with, over a root that answers the
-   * result seam. Called twice: once before and once after the subcube
-   * members are resolved, because the root collects the default members.
+   * The evaluator this result runs with, over a root that answers the result seam. Called twice: once
+   * before and once after the subcube members are resolved, because the root collects the default
+   * members. Where the context asks for dependencies to be checked, that is what it gets, whatever the
+   * catalog is made of: a calc that claims not to depend on a hierarchy is made to prove it. Otherwise
+   * the art says which evaluator it runs.
    */
   protected EvaluatorImpl createEvaluator() {
+    int checks = dependencyChecks();
+    return checks > 0 ? new DependencyTestingEvaluator( this, checks ) : plainEvaluator();
+  }
+
+  /** How often a claimed independence is put to the test; none unless the context asks for it. */
+  protected int dependencyChecks() {
+    return query.getConnection().getContext().getConfig().testExpDependencies();
+  }
+
+  /** The evaluator of this art when nothing special is asked for. */
+  protected EvaluatorImpl plainEvaluator() {
     return new EvaluatorImpl( new ResultEvaluatorRoot( this ) );
   }
 
@@ -1572,12 +1587,19 @@ public Cell getCell( int[] pos ) {
   /**
    * The placeholder member that carries a compound slicer: the null member of
    * the member's hierarchy, evaluating {@code calc} over {@code tuples}, with
-   * the member's format properties. A provider without compound slicers may
-   * refuse.
+   * the member's format properties. The default is the neutral
+   * {@link CompoundSlicerMemberImpl}; a provider whose members carry more
+   * brings its own.
    */
   protected Member compoundSlicerPlaceholder( Member member, Calc calc, ValueFormatter formatter, TupleList tuples,
       int solveOrder ) {
-    throw new UnsupportedOperationException( "compound slicers need a provider member" );
+    CompoundSlicerMemberImpl placeholder =
+        new CompoundSlicerMemberImpl( member.getHierarchy().getNullMember(), calc, tuples, solveOrder );
+    placeholder.setProperty( StandardProperty.FORMAT_STRING.getName(),
+        member.getPropertyValue( StandardProperty.FORMAT_STRING.getName() ) );
+    placeholder.setProperty( StandardProperty.FORMAT_EXP_PARSED.getName(),
+        member.getPropertyValue( StandardProperty.FORMAT_EXP_PARSED.getName() ) );
+    return placeholder;
   }
 
   /**
@@ -1585,6 +1607,12 @@ public Cell getCell( int[] pos ) {
    * whether to keep going. {@code false} raises the error.
    */
   protected boolean onEvalDepthExceeded( EvaluatorImpl evaluator, int count ) {
+    if ( evaluator instanceof DependencyTestingEvaluator ) {
+      // Checking dependencies can start a new request every cycle: let it run as usual for a while,
+      // then stop checking rather than stop answering.
+      ( (DependencyTestingEvaluator.DteRoot) evaluator.getRoot() ).disabled = true;
+      return count <= maxEvalDepth() * 2;
+    }
     return false;
   }
 

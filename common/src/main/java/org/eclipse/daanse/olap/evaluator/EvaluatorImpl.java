@@ -35,7 +35,6 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.Measure;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.StoredMeasure;
-import org.eclipse.daanse.olap.api.element.VirtualCube;
 import org.eclipse.daanse.olap.api.result.CellReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,6 +47,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Optional;
 
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
 import org.eclipse.daanse.olap.api.cache.ExpCacheDescriptor;
@@ -59,7 +59,6 @@ import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.NamedSet;
-import org.eclipse.daanse.olap.api.element.VirtualCube;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.execution.QueryTiming;
 import org.eclipse.daanse.olap.api.execution.Statement;
@@ -176,7 +175,10 @@ public class EvaluatorImpl implements Evaluator {
     return slicerPredicateInfo;
   }
 
-  /** Caches the compound-slicer translation on this evaluator (see {@code RolapAggregationManager}). */
+  /**
+   * Keeps what an implementation worked out about the current compound slicer, handed back by
+   * {@link #getSlicerPredicateInfo()}. Opaque here; only its author reads it.
+   */
   public void setSlicerPredicateInfo(Object slicerPredicateInfo) {
     this.slicerPredicateInfo = slicerPredicateInfo;
   }
@@ -312,23 +314,22 @@ public boolean mightReturnNullForUnrelatedDimension() {
             .getConfig().ignoreMeasureForNonJoiningDimension() ) {
       return false;
     }
-    Cube virtualCube = getCube();
-    return virtualCube instanceof VirtualCube;
+    return getCube().drawsFromOtherCubes();
   }
 
   @Override
 public boolean needToReturnNullForUnrelatedDimension( Member[] members ) {
     assert mightReturnNullForUnrelatedDimension() : "Should not even call this method if nulls are impossible";
-    Cube baseCube = getMeasureCube();
-    if ( baseCube == null ) {
+    // The measure says what it reaches; the cube in context says whether what it does not reach is left
+    // standing. Both are asked of the thing that knows, so a catalog that groups its measures some other
+    // way than by cube answers them too.
+    if ( !( currentMembers[0] instanceof Measure measure ) ) {
       return false;
     }
-    Cube virtualCube = getCube();
-    if ( virtualCube instanceof VirtualCube vc && vc.shouldIgnoreUnrelatedDimensions( baseCube.getName() ) ) {
+    if ( getCube().unrelatedDimensionsStayFor( measure ) ) {
       return false;
     }
-    Set<Dimension> nonJoiningDimensions = baseCube.nonJoiningDimensions( members );
-    return !nonJoiningDimensions.isEmpty();
+    return !measure.dimensionsNotReached( members ).isEmpty();
   }
 
   @Override
@@ -346,15 +347,17 @@ public boolean currentIsEmpty() {
     if ( NullSemantics.isNull( o ) ) {
       return true;
     }
-    final Cube measureCube = getMeasureCube();
-    if ( measureCube == null ) {
+    // Without something that counts the facts behind the measure, nobody can tell an empty cell from one
+    // that works out to zero - and a measure that is worked out from a formula counts nothing at all.
+    Optional<Member> counted = currentMembers[0] instanceof Measure measure ? measure.factCount()
+        : Optional.empty();
+    if ( counted.isEmpty() ) {
       return false;
     }
-    // For other cell values (e.g. zero), the cell is deemed empty if the
-    // number of fact table rows is zero.
+    // For other cell values (e.g. zero), the cell is deemed empty if nothing was counted behind it.
     final int savepoint = savepoint();
     try {
-      emptinessProbe( measureCube ).ifPresent( this::setContext );
+      setContext( counted.get() );
       o = evaluateCurrent();
     } finally {
       restore( savepoint );
@@ -602,12 +605,12 @@ public final int hashCode() {
    * TODO: Add Virtual Cube test cases, demonstrating unrelated dimensions. TODO: Test various Tuple List sizes - tuples
    * sizes that are bigger and smaller than list size
    *
-   * @param baseCube
-   *          if this is a virtual cube, remove the unrelated tuples from the slicer.
+   * @param dropWhatTheMeasureDoesNotReach
+   *          whether a dimension the measure in context does not reach is taken out of the slicer
    *
    * @return optimized slicer tuple list
  */
-  public final TupleList getOptimizedSlicerTuples( Cube baseCube ) {
+  public final TupleList getOptimizedSlicerTuples( boolean dropWhatTheMeasureDoesNotReach ) {
     // removes members in the tuple list that are no longer compound.
     // for each member in the tuple, see if the evaluator is still set to
     // the current member
@@ -626,14 +629,11 @@ public final int hashCode() {
         toRemove++;
         removeMember[i] = true;
       }
-      // Remove unrelated dimensions from slicer as well
-      if ( !removeMember[i] && baseCube != null ) {
-        Level level = (Level) slicerTuples.get( 0 ).get( i ).getLevel();
-        Level cubeLevel = baseCubeLevel( baseCube, level );
-        if ( cubeLevel == null ) {
-          toRemove++;
-          removeMember[i] = true;
-        }
+      // A dimension the measure does not reach says nothing about its cells, so it goes too
+      if ( !removeMember[i] && dropWhatTheMeasureDoesNotReach && currentMembers[0] instanceof Measure measure
+          && measure.levelReached( (Level) slicerTuples.get( 0 ).get( i ).getLevel() ).isEmpty() ) {
+        toRemove++;
+        removeMember[i] = true;
       }
     }
     if ( toRemove == slicerTuples.getArity() ) {
@@ -1504,20 +1504,6 @@ public final void setEvalAxes( boolean evalAxes ) {
     return null;
   }
 
-  /**
-   * The measure a provider can count rows with, used to decide whether the current cell is
-   * empty rather than zero. Empty when the provider cannot tell the two apart.
-   */
-  protected java.util.Optional<Member> emptinessProbe( Cube cube ) {
-    return java.util.Optional.empty();
-  }
 
-  /**
-   * The level of {@code level} within {@code baseCube}, for a virtual cube that maps one
-   * onto another. A provider without virtual cubes returns the level unchanged.
-   */
-  protected Level baseCubeLevel( Cube baseCube, Level level ) {
-    return level;
-  }
 
 }

@@ -45,7 +45,7 @@ import org.eclipse.daanse.olap.core.LoggingEventBus;
  * <p>There is no data source and no dialect, and that is not a gap: this provider answers
  * from values it holds, not from a database.
  */
-public class MemoryContext extends AbstractBasicContext<Connection> {
+public class MemoryContext extends AbstractBasicContext<Connection> implements AutoCloseable {
 
     /** A cube whose every cell is empty, used when nobody supplied a reader. */
     private static final CellReader EMPTY_CELLS = new CellReader() {
@@ -176,13 +176,6 @@ public class MemoryContext extends AbstractBasicContext<Connection> {
     // ---- no database ----------------------------------------------------------
 
     @Override
-    public org.eclipse.daanse.olap.api.agg.AggregationFactory getAggragationFactory() {
-        throw new UnsupportedOperationException(
-                "MemoryContext has no aggregation factory: aggregation over segments is a"
-                        + " relational concern");
-    }
-
-    @Override
     public List<CustomAggregatorFactory> getCustomAggregators() {
         return List.of();
     }
@@ -219,6 +212,20 @@ public class MemoryContext extends AbstractBasicContext<Connection> {
      */
     public Evaluator createEvaluator(org.eclipse.daanse.olap.api.execution.Execution execution) {
         return evaluatorOver(new MemoryEvaluatorRoot(execution));
+    }
+
+    /**
+     * Ends this context; connections and evaluators made from it are refused afterwards. There
+     * is nothing else to release: the catalog and its cells are plain objects.
+     */
+    @Override
+    public void close() {
+        shutdown();
+    }
+
+    /** Where the cell values of this context come from. */
+    CellReader cellReader() {
+        return cellReader;
     }
 
     private Evaluator evaluatorOver(MemoryEvaluatorRoot root) {

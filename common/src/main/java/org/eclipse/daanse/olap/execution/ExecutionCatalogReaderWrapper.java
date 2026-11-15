@@ -24,7 +24,7 @@ import org.eclipse.daanse.olap.api.NameResolver;
 import org.eclipse.daanse.olap.api.Parameter;
 import org.eclipse.daanse.olap.api.access.AccessMember;
 import org.eclipse.daanse.olap.api.access.Role;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Catalog;

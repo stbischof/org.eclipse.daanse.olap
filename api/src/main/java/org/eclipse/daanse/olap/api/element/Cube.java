@@ -182,4 +182,36 @@ public interface Cube extends OlapElement, MetaElement {
     Hierarchy getTimeHierarchy(String name);
 
     boolean isLoadInProgress();
+
+    /**
+     * Whether this cube takes its measures from other cubes instead of holding facts of its own. A
+     * cube that does has dimensions a given measure never reaches, so a cell of such a pairing is
+     * empty rather than wrong.
+     *
+     * <p>Asked rather than tested for a type, so that a catalog which groups its measures some other
+     * way can answer it too.
+     */
+    default boolean drawsFromOtherCubes() {
+        return false;
+    }
+
+    /**
+     * Whether a dimension that the cube holding the measure does not reach is left as it stands instead
+     * of emptying the cell. Only a cube that draws from others is ever asked.
+     *
+     * <p>
+     * Asked with the measure itself rather than with the cube it comes from: a catalog whose measures are
+     * not grouped by cube has no such cube to name, and the caller holds the measure anyway.
+     */
+    default boolean unrelatedDimensionsStayFor(Measure measure) {
+        return false;
+    }
+
+    /**
+     * Whether a client may write into this cube's cells at all. A catalog that keeps nowhere to put a
+     * written value says no, which is what a client is told before it tries.
+     */
+    default boolean takesWrites() {
+        return false;
+    }
 }

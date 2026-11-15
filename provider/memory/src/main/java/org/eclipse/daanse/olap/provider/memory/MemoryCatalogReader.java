@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.daanse.olap.api.Context;
 import org.eclipse.daanse.olap.api.NameResolver;
 import org.eclipse.daanse.olap.api.access.Role;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Catalog;
 import org.eclipse.daanse.olap.api.element.Cube;
@@ -230,7 +230,94 @@ public class MemoryCatalogReader extends AbstractRefusingCatalogReader
 
     @Override
     public int compareMembersHierarchically(Member m1, Member m2) {
-        return m1.getUniqueName().compareTo(m2.getUniqueName());
+        if (m1 == m2) {
+            return 0;
+        }
+        List<Member> path1 = pathFromRoot(m1);
+        List<Member> path2 = pathFromRoot(m2);
+        int common = Math.min(path1.size(), path2.size());
+        for (int i = 0; i < common; i++) {
+            Member a = path1.get(i);
+            Member b = path2.get(i);
+            if (a != b) {
+                List<Member> siblings = i == 0 ? getHierarchyRootMembers(a.getHierarchy())
+                        : getMemberChildren(path1.get(i - 1));
+                return Integer.compare(siblings.indexOf(a), siblings.indexOf(b));
+            }
+        }
+        // one is an ancestor of the other: the ancestor comes first
+        return Integer.compare(path1.size(), path2.size());
+    }
+
+    private List<Member> pathFromRoot(Member member) {
+        List<Member> path = new ArrayList<>();
+        for (Member m = member; m != null; m = getMemberParent(m)) {
+            path.add(0, m);
+        }
+        return path;
+    }
+
+    /** Every member is in memory, so the count is always known. */
+    @Override
+    public int getChildrenCountFromCache(Member member) {
+        return getMemberChildren(member).size();
+    }
+
+    /** Without roles every child is fully accessible. */
+    @Override
+    public java.util.Map<? extends Member, org.eclipse.daanse.olap.api.access.AccessMember> getMemberChildrenWithDetails(
+            Member member, Evaluator evaluator) {
+        java.util.Map<Member, org.eclipse.daanse.olap.api.access.AccessMember> children = new java.util.LinkedHashMap<>();
+        for (Member child : getMemberChildren(member, evaluator)) {
+            children.put(child, org.eclipse.daanse.olap.api.access.AccessMember.ALL);
+        }
+        return children;
+    }
+
+    @Override
+    public List<Member> lookupMemberChildrenByNames(Member parent,
+            List<org.eclipse.daanse.olap.api.query.NameSegment> names, MatchType matchType) {
+        List<Member> found = new ArrayList<>();
+        for (org.eclipse.daanse.olap.api.query.NameSegment name : names) {
+            Member child = lookupMemberChildByName(parent, name, matchType);
+            if (child != null) {
+                found.add(child);
+            }
+        }
+        return found;
+    }
+
+    @Override
+    public Member getMemberByUniqueName(List<Segment> uniqueNameParts, boolean failIfNotFound) {
+        return getMemberByUniqueName(uniqueNameParts, failIfNotFound, MatchType.EXACT);
+    }
+
+    @Override
+    public Member getMemberByUniqueName(List<Segment> uniqueNameParts, boolean failIfNotFound, MatchType matchType) {
+        for (Cube cube : getCubes()) {
+            OlapElement element = lookupCompound(cube, uniqueNameParts, false,
+                    org.eclipse.daanse.olap.api.DataType.MEMBER, matchType);
+            if (element instanceof Member member) {
+                return member;
+            }
+        }
+        if (failIfNotFound) {
+            throw new org.eclipse.daanse.olap.api.exception.OlapRuntimeException(
+                    "Member not found: " + org.eclipse.daanse.olap.common.Util.implode(uniqueNameParts));
+        }
+        return null;
+    }
+
+    /** The cubes of this provider define no calculated members, so none is found. */
+    @Override
+    public Member getCalculatedMember(List<Segment> nameParts) {
+        return null;
+    }
+
+    /** The cubes of this provider define no named sets, so none is found. */
+    @Override
+    public org.eclipse.daanse.olap.api.element.NamedSet getNamedSet(List<Segment> nameParts) {
+        return null;
     }
 
     @Override

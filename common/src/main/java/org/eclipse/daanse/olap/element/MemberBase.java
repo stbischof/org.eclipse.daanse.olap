@@ -30,13 +30,16 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
+import org.eclipse.daanse.olap.api.element.KeyMember;
 import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.MatchType;
 import org.eclipse.daanse.olap.api.element.Member;
+import org.eclipse.daanse.olap.api.element.MetaData;
+import org.eclipse.daanse.olap.api.element.Property;
 import org.eclipse.daanse.olap.api.element.OlapElement;
 import org.eclipse.daanse.olap.api.formatter.MemberFormatter;
 import org.eclipse.daanse.olap.api.query.component.Expression;
@@ -314,6 +317,27 @@ public Comparable getOrderKey() {
     return null;
   }
 
+  /**
+   * How far down this member sits. Answered from its level, which is where a member sits unless a
+   * hierarchy nests its members within one level; such a hierarchy answers from the tree instead.
+   */
+  @Override
+public int getDepth() {
+    return getLevel().getDepth();
+  }
+
+  /** The properties a member of this level carries, its own and those it inherits. */
+  @Override
+public Property[] getProperties() {
+    return getLevel().getInheritedProperties();
+  }
+
+  /** Nothing, unless a member is told something about itself beyond its properties. */
+  @Override
+public MetaData getMetaData() {
+    return OlapMetaDataBase.empty();
+  }
+
   @Override
 public boolean isHidden() {
     return false;
@@ -374,13 +398,36 @@ public Object getPropertyValue( String propertyName, boolean matchCase ) {
       return parent == null ? null : parent.getUniqueName();
     } else if ( property == StandardProperty.PARENT_COUNT ) {
       return getParentMember() == null ? 0 : 1;
-    } else if ( property == StandardProperty.DEPTH ) {
-      return getDepth();
     } else if ( property == StandardProperty.VISIBLE ) {
-      return visible;
+      return isVisible();
+    } else if ( property == StandardProperty.KEY || property == StandardProperty.MEMBER_KEY ) {
+      return keyValue();
+    } else if ( property == StandardProperty.CHILDREN_CARDINALITY ) {
+      return childCount();
     } else if ( property == StandardProperty.DESCRIPTION_PROPERTY ) {
       return null;
     }
+    return null;
+  }
+
+  /**
+   * The key that addresses this member where its facts are kept. A member that is addressed that way
+   * says so by being a {@link KeyMember}; the all member stands for everything and reads as zero.
+   */
+  private Object keyValue() {
+    if ( isAll() ) {
+      return 0;
+    }
+    return this instanceof KeyMember keyed ? keyed.getKey() : null;
+  }
+
+  /**
+   * How many children this member has, for the client that asks the member rather than reading them. An
+   * art that would have to fetch them to count answers {@code null} unless counting is cheap for it.
+   *
+   * @return the number of children, or {@code null} when this art does not say
+   */
+  protected Integer childCount() {
     return null;
   }
 

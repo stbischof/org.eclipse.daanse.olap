@@ -87,7 +87,7 @@ import org.eclipse.daanse.mdx.model.api.expression.operation.PlainPropertyOperat
 import org.eclipse.daanse.olap.api.DataType;
 import org.eclipse.daanse.olap.api.Parameter;
 import org.eclipse.daanse.olap.api.access.Role;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.profile.CalculationProfile;
 import org.eclipse.daanse.olap.api.calc.profile.ProfileHandler;
@@ -665,6 +665,11 @@ public class Util {
                         break;
                     }
                 }
+            } else if (names.get(i) instanceof IdImpl.KeySegment key) {
+                // A key of several parts is not resolved here, and neither is a key anywhere but under
+                // a level. Saying so beats asking the reader for a child without a name.
+                throw new OlapRuntimeException("a compound key is not resolved: " + key + " of "
+                        + Util.implode(names));
             } else {
                 name = null;
                 child = catalogReader.getElementChild(parent, name, matchType);

@@ -44,7 +44,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.query.NameSegment;
 import org.eclipse.daanse.olap.api.query.Quoting;
 import org.eclipse.daanse.olap.common.Util;

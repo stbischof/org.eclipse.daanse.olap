@@ -26,7 +26,7 @@ package org.eclipse.daanse.olap.function.def.crossjoin;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Catalog;
 import org.eclipse.daanse.olap.api.element.Cube;

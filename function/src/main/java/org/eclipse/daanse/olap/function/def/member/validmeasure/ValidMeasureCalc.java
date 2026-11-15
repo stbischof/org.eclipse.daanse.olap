@@ -29,7 +29,6 @@ import org.eclipse.daanse.olap.api.element.Cube;
 import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
-import org.eclipse.daanse.olap.api.element.PhysicalCube;
 import org.eclipse.daanse.olap.api.element.VirtualCubeMeasure;
 import org.eclipse.daanse.olap.api.exception.OlapRuntimeException;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
@@ -59,7 +58,7 @@ public class ValidMeasureCalc extends AbstractProfilingNestedUnknownCalc {
           return null;
         }
 
-        if (virtualCube instanceof PhysicalCube) {
+        if (!virtualCube.drawsFromOtherCubes()) {
             // this is not a virtual cube,
             // there's nothing for ValidMeasure to do.
             // just evaluate sub-expression

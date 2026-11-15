@@ -30,17 +30,20 @@ package org.eclipse.daanse.olap.element;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
+import org.eclipse.daanse.olap.api.element.KeyMember;
 import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.LevelType;
 import org.eclipse.daanse.olap.api.element.MatchType;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.OlapElement;
+import org.eclipse.daanse.olap.api.exception.OlapRuntimeException;
 import org.eclipse.daanse.olap.api.formatter.MemberFormatter;
 import org.eclipse.daanse.olap.api.query.NameSegment;
+import org.eclipse.daanse.olap.api.query.Quoting;
 import org.eclipse.daanse.olap.common.Util;
 /**
  * Skeleton implementation of {@link Level}.
@@ -161,6 +164,9 @@ public abstract class LevelBase
 	public OlapElement lookupChild(
         CatalogReader schemaReader, Segment s, MatchType matchType)
     {
+        if (s.getQuoting() == Quoting.KEY) {
+            return memberByKey(schemaReader, s);
+        }
         if (areMembersUnique()
             && s instanceof NameSegment nameSegment)
         {
@@ -169,6 +175,32 @@ public abstract class LevelBase
         } else {
             return null;
         }
+    }
+
+    /**
+     * The member of this level that carries the key a segment names, the way {@code &[7]} names the
+     * key 7. A key of several parts names no member of one level, and saying so beats answering that
+     * a member of that name is missing.
+     *
+     * @param schemaReader the reader that hands out the members
+     * @param key the segment, a key by its quoting
+     * @return the member carrying that key, or null when no member does
+     */
+    private OlapElement memberByKey(CatalogReader schemaReader, Segment key) {
+        List<NameSegment> parts = key.getKeyParts();
+        if (parts == null || parts.size() != 1) {
+            throw new OlapRuntimeException(
+                "a compound key is not resolved: " + key + " of level " + getUniqueName());
+        }
+        String wanted = parts.get(0).getName();
+        for (Member member : schemaReader.getLevelMembers(this, false)) {
+            if (member instanceof KeyMember keyed && keyed.getKey() != null
+                && String.valueOf(keyed.getKey()).equals(wanted))
+            {
+                return member;
+            }
+        }
+        return null;
     }
 
     @Override

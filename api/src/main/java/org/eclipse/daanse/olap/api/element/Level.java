@@ -110,6 +110,20 @@ public interface Level extends OlapElement, MetaElement {
         return HideMemberCondition.NEVER;
     }
 
+    /**
+     * The kind of value the keys of this level's members hold, said in the vocabulary a property uses for
+     * its own values. An art that does not say answers {@link Property.Datatype#TYPE_OTHER}, and a client
+     * that has to name a type then falls back on text.
+     *
+     * <p>A relational level knows the SQL type of its key column and may be asked for that instead
+     * (see {@code RelationalLevel}); this answer is the one every art can give.
+     *
+     * @return the kind of value a key holds
+     */
+    default Property.Datatype getKeyType() {
+        return Property.Datatype.TYPE_OTHER;
+    }
+
     default Optional<OrderByProperty> getOrderByProperty() {
         return Optional.empty();
     }

@@ -50,7 +50,7 @@ import org.eclipse.daanse.olap.api.NameResolver;
 import org.eclipse.daanse.olap.api.Parameter;
 import org.eclipse.daanse.olap.api.access.AccessMember;
 import org.eclipse.daanse.olap.api.access.Role;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
 import org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler;
@@ -162,10 +162,7 @@ public class QueryImpl extends AbstractQueryPart implements Query {
 
     private Formula[] formulas;
 
-    /**
-     * public-private: This must be public because it is still accessed in
-     * rolap.RolapConnection
-     */
+    /** Public because an implementation of the connection still reaches in here. */
     public QueryAxis[] axes;
 
     private QueryAxis slicerAxis;
@@ -1734,32 +1731,32 @@ public class QueryImpl extends AbstractQueryPart implements Query {
 
         @Override
 		public List<Member> getMemberChildren(Member member) {
-            //Must be RolapMember, not LimitedRollupMember
-            Member rolapMember = query.getRolapMember(member);
-            return query.getSubcubeMembers(super.getMemberChildren(rolapMember), false);
+            // The member itself, not the stand-in a role put in front of it.
+            Member unlimited = query.withoutRoleLimit(member);
+            return query.getSubcubeMembers(super.getMemberChildren(unlimited), false);
         }
 
         @Override
 		public List<Member> getMemberChildren(List<Member> members) {
-            //Must be RolapMember, not LimitedRollupMember
-            List<Member> rolapMembers = query.getRolapMembers(members);
-            return query.getSubcubeMembers(super.getMemberChildren(rolapMembers), false);
+            // The member itself, not the stand-in a role put in front of it.
+            List<Member> unlimitedMembers = query.withoutRoleLimit(members);
+            return query.getSubcubeMembers(super.getMemberChildren(unlimitedMembers), false);
         }
 
         @Override
 		public List<Member> getMemberChildren(Member member, Evaluator context) {
-            //Must be RolapMember, not LimitedRollupMember
-            Member rolapMember = query.getRolapMember(member);
-            return query.getSubcubeMembers(super.getMemberChildren(rolapMember, context), false);
+            // The member itself, not the stand-in a role put in front of it.
+            Member unlimited = query.withoutRoleLimit(member);
+            return query.getSubcubeMembers(super.getMemberChildren(unlimited, context), false);
         }
 
         @Override
 		public List<Member> getMemberChildren(
                 List<Member> members, Evaluator context)
         {
-            //Must be RolapMember, not LimitedRollupMember
-            List<Member> rolapMembers = query.getRolapMembers(members);
-            return query.getSubcubeMembers(super.getMemberChildren(rolapMembers, context), false);
+            // The member itself, not the stand-in a role put in front of it.
+            List<Member> unlimitedMembers = query.withoutRoleLimit(members);
+            return query.getSubcubeMembers(super.getMemberChildren(unlimitedMembers, context), false);
         }
 
         @Override
@@ -1767,9 +1764,9 @@ public class QueryImpl extends AbstractQueryPart implements Query {
                 Member member,
                 Evaluator evaluator)
         {
-            //Must be RolapMember, not LimitedRollupMember
-            Member rolapMember = query.getRolapMember(member);
-            Map<Member, AccessMember> sourceMembers = (Map<Member, AccessMember>)super.getMemberChildrenWithDetails(rolapMember, evaluator);
+            // The member itself, not the stand-in a role put in front of it.
+            Member unlimited = query.withoutRoleLimit(member);
+            Map<Member, AccessMember> sourceMembers = (Map<Member, AccessMember>)super.getMemberChildrenWithDetails(unlimited, evaluator);
             HashMap<Member, AccessMember> newMembers = new HashMap<>();
             for(Map.Entry<Member, AccessMember> entry : sourceMembers.entrySet()) {
                 Member subcubeMember = query.getSubcubeMember(entry.getKey(), false);
@@ -1969,10 +1966,10 @@ public class QueryImpl extends AbstractQueryPart implements Query {
                 }
             }
 
-            //Must be RolapMember, not LimitedRollupMember
+            // The member itself, not the stand-in a role put in front of it.
             OlapElement parentOlapElement = parent;
-            if(parent instanceof KeyMember rolapMember) {
-                parentOlapElement = query.getRolapMember(rolapMember);
+            if(parent instanceof KeyMember keyed) {
+                parentOlapElement = query.withoutRoleLimit(keyed);
             }
             OlapElement child = null;
             for (NameResolver.Namespace namespace : this.getNamespaces()) {
@@ -1984,8 +1981,8 @@ public class QueryImpl extends AbstractQueryPart implements Query {
                 }
             }
 
-            if(child instanceof KeyMember rolapMember) {
-                return query.getSubcubeMember(rolapMember, true);
+            if(child instanceof KeyMember keyed) {
+                return query.getSubcubeMember(keyed, true);
             }
 
             return null;
@@ -2411,10 +2408,6 @@ public class QueryImpl extends AbstractQueryPart implements Query {
             if(exp != null){
                 formula.setExpression(replaceSubcubeMember(exp));
             }
-            exp = formula.getExpression();
-            if(exp != null){
-                formula.setExpression(replaceSubcubeMember(exp));
-            }
         }
     }
 
@@ -2449,15 +2442,15 @@ public class QueryImpl extends AbstractQueryPart implements Query {
         return newMembers;
     }
 
-    private List<Member> getRolapMembers(List<Member> members) {
+    private List<Member> withoutRoleLimit(List<Member> members) {
         ArrayList<Member> newMembers = new ArrayList<>();
         for(Member sourceMember: members) {
-            newMembers.add(this.getRolapMember(sourceMember));
+            newMembers.add(this.withoutRoleLimit(sourceMember));
         }
         return newMembers;
     }
 
-    private Member getRolapMember(Member member) {
+    private Member withoutRoleLimit(Member member) {
         if(member == null || !(member instanceof LimitedMember)) {
             return member;
         }

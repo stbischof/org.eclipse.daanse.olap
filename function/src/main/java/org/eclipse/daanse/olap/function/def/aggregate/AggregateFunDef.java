@@ -29,6 +29,12 @@ import org.slf4j.LoggerFactory;
 
 public class AggregateFunDef extends AbstractAggregateFunDef {
 
+    /** A call of this function aggregates the set it is given. */
+    @Override
+    public boolean aggregates() {
+        return true;
+    }
+
     private static final Logger LOGGER =
         LoggerFactory.getLogger(AggregateFunDef.class);
     /**

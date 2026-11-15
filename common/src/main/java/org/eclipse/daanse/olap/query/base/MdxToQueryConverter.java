@@ -59,7 +59,7 @@ import org.eclipse.daanse.mdx.model.api.select.SelectQueryClause;
 import org.eclipse.daanse.mdx.model.api.select.SelectQueryEmptyClause;
 import org.eclipse.daanse.mdx.model.api.select.SelectSlicerAxisClause;
 import org.eclipse.daanse.mdx.model.api.select.SelectWithClause;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.query.NameSegment;
 import org.eclipse.daanse.olap.api.query.Quoting;
 import org.eclipse.daanse.olap.api.query.component.AxisOrdinal;
@@ -291,6 +291,16 @@ public class MdxToQueryConverter {
 
     }
 
+    /**
+     * Today every part of a key becomes a name segment of its own, so {@code &[7]} reaches the tree as
+     * {@code [7]} and the key is gone. A key is <em>one</em> segment, and making it one is a change the
+     * relational side feels: it then refuses
+     * {@code [Warehouse].[State Province].&[DF].[Mexico City].[Freeman And Co]}, whose level has a key
+     * of two columns, where a client's query relies on the name. The decision belongs to the owner.
+     *
+     * @param keyObjectIdentifier the key the parser read
+     * @return one name segment per part of the key
+     */
     static List<Segment> getExpressionByKeyObjectIdentifier(KeyObjectIdentifier keyObjectIdentifier) {
         return keyObjectIdentifier.nameObjectIdentifiers().stream()
                 .map(MdxToQueryConverter::getExpressionByNameObjectIdentifier).toList();

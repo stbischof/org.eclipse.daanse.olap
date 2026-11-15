@@ -54,10 +54,14 @@ public class MemoryCube extends CubeBase implements org.eclipse.daanse.olap.api.
     /** Adds a dimension of an explicit type. */
     public MemoryDimension dimension(String dimensionName, DimensionType dimensionType) {
         MemoryDimension d = new MemoryDimension(this, dimensionName, dimensionType);
-        miniDimensions.add(d);
-        dimensions.add(d);
         if (dimensionType == DimensionType.MEASURES_DIMENSION) {
+            // the engine finds the current measure at position 0 of its context
+            miniDimensions.add(0, d);
+            dimensions.add(0, d);
             measuresDimension = d;
+        } else {
+            miniDimensions.add(d);
+            dimensions.add(d);
         }
         return d;
     }
@@ -150,6 +154,11 @@ public class MemoryCube extends CubeBase implements org.eclipse.daanse.olap.api.
     /** Attaches this cube to its catalog; called by {@link MemoryCatalog}. */
     void catalog(org.eclipse.daanse.olap.api.element.Catalog value) {
         this.catalog = value;
+        // Positions follow getHierarchies(), measures first, whatever order the cube was declared in.
+        int ordinal = 0;
+        for (org.eclipse.daanse.olap.api.element.Hierarchy hierarchy : getHierarchies()) {
+            ((MemoryHierarchy) hierarchy).ordinalInCube(ordinal++);
+        }
     }
 
     @Override
