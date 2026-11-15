@@ -27,7 +27,7 @@ public abstract class AbstractRefusingCatalogReader implements org.eclipse.daans
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.Member getCalculatedMember(java.util.List<org.eclipse.daanse.olap.api.agg.Segment> a0) {
+    public org.eclipse.daanse.olap.api.element.Member getCalculatedMember(java.util.List<org.eclipse.daanse.olap.api.query.Segment> a0) {
         throw refuse("getCalculatedMember");
     }
 
@@ -82,12 +82,12 @@ public abstract class AbstractRefusingCatalogReader implements org.eclipse.daans
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.OlapElement getElementChild(org.eclipse.daanse.olap.api.element.OlapElement a0, org.eclipse.daanse.olap.api.agg.Segment a1) {
+    public org.eclipse.daanse.olap.api.element.OlapElement getElementChild(org.eclipse.daanse.olap.api.element.OlapElement a0, org.eclipse.daanse.olap.api.query.Segment a1) {
         throw refuse("getElementChild");
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.OlapElement getElementChild(org.eclipse.daanse.olap.api.element.OlapElement a0, org.eclipse.daanse.olap.api.agg.Segment a1, org.eclipse.daanse.olap.api.element.MatchType a2) {
+    public org.eclipse.daanse.olap.api.element.OlapElement getElementChild(org.eclipse.daanse.olap.api.element.OlapElement a0, org.eclipse.daanse.olap.api.query.Segment a1, org.eclipse.daanse.olap.api.element.MatchType a2) {
         throw refuse("getElementChild");
     }
 
@@ -137,12 +137,12 @@ public abstract class AbstractRefusingCatalogReader implements org.eclipse.daans
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.Member getMemberByUniqueName(java.util.List<org.eclipse.daanse.olap.api.agg.Segment> a0, boolean a1) {
+    public org.eclipse.daanse.olap.api.element.Member getMemberByUniqueName(java.util.List<org.eclipse.daanse.olap.api.query.Segment> a0, boolean a1) {
         throw refuse("getMemberByUniqueName");
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.Member getMemberByUniqueName(java.util.List<org.eclipse.daanse.olap.api.agg.Segment> a0, boolean a1, org.eclipse.daanse.olap.api.element.MatchType a2) {
+    public org.eclipse.daanse.olap.api.element.Member getMemberByUniqueName(java.util.List<org.eclipse.daanse.olap.api.query.Segment> a0, boolean a1, org.eclipse.daanse.olap.api.element.MatchType a2) {
         throw refuse("getMemberByUniqueName");
     }
 
@@ -187,7 +187,7 @@ public abstract class AbstractRefusingCatalogReader implements org.eclipse.daans
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.NamedSet getNamedSet(java.util.List<org.eclipse.daanse.olap.api.agg.Segment> a0) {
+    public org.eclipse.daanse.olap.api.element.NamedSet getNamedSet(java.util.List<org.eclipse.daanse.olap.api.query.Segment> a0) {
         throw refuse("getNamedSet");
     }
 
@@ -227,17 +227,17 @@ public abstract class AbstractRefusingCatalogReader implements org.eclipse.daans
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.OlapElement lookupCompound(org.eclipse.daanse.olap.api.element.OlapElement a0, java.util.List<org.eclipse.daanse.olap.api.agg.Segment> a1, boolean a2, org.eclipse.daanse.olap.api.DataType a3) {
+    public org.eclipse.daanse.olap.api.element.OlapElement lookupCompound(org.eclipse.daanse.olap.api.element.OlapElement a0, java.util.List<org.eclipse.daanse.olap.api.query.Segment> a1, boolean a2, org.eclipse.daanse.olap.api.DataType a3) {
         throw refuse("lookupCompound");
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.OlapElement lookupCompound(org.eclipse.daanse.olap.api.element.OlapElement a0, java.util.List<org.eclipse.daanse.olap.api.agg.Segment> a1, boolean a2, org.eclipse.daanse.olap.api.DataType a3, org.eclipse.daanse.olap.api.element.MatchType a4) {
+    public org.eclipse.daanse.olap.api.element.OlapElement lookupCompound(org.eclipse.daanse.olap.api.element.OlapElement a0, java.util.List<org.eclipse.daanse.olap.api.query.Segment> a1, boolean a2, org.eclipse.daanse.olap.api.DataType a3, org.eclipse.daanse.olap.api.element.MatchType a4) {
         throw refuse("lookupCompound");
     }
 
     @Override
-    public org.eclipse.daanse.olap.api.element.Member lookupMemberChildByName(org.eclipse.daanse.olap.api.element.Member a0, org.eclipse.daanse.olap.api.agg.Segment a1, org.eclipse.daanse.olap.api.element.MatchType a2) {
+    public org.eclipse.daanse.olap.api.element.Member lookupMemberChildByName(org.eclipse.daanse.olap.api.element.Member a0, org.eclipse.daanse.olap.api.query.Segment a1, org.eclipse.daanse.olap.api.element.MatchType a2) {
         throw refuse("lookupMemberChildByName");
     }
 

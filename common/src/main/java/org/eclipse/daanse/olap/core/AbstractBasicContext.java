@@ -166,9 +166,16 @@ public abstract class AbstractBasicContext<C extends Connection> implements Cont
 		// context-free subset. The shared once-latch keeps the two from
 		// running on top of each other.
 		if (teardownDone == null || teardownDone.compareAndSet(false, true)) {
-			catalogCache.clear();
-			aggMgr.shutdown();
-			shepherd.shutdown();
+			// a provider without a catalog cache or a cell cache manager leaves them unset
+			if (catalogCache != null) {
+				catalogCache.clear();
+			}
+			if (aggMgr != null) {
+				aggMgr.shutdown();
+			}
+			if (shepherd != null) {
+				shepherd.shutdown();
+			}
 		}
 		if (cleanable != null) {
 			// latch already spent: this only unregisters the safety net

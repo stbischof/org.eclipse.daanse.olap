@@ -45,6 +45,12 @@ public interface RelationalContext<C extends Connection> extends Context<C> {
     Optional<SqlGuardFactory> getSqlGuardFactory();
 
     /**
+     * The factory that says which aggregator a measure of the relational model uses. Which aggregator
+     * a measure has is a question of the model, and only a relational model answers it from a mapping.
+     */
+    org.eclipse.daanse.olap.api.agg.AggregationFactory getAggregationFactory();
+
+    /**
      * The given context as a relational one.
      *
      * @throws IllegalArgumentException when the context is not backed by a database

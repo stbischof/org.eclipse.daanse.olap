@@ -116,24 +116,30 @@ public class MemoryConnection extends ConnectionBase {
                 query.getStatement(), java.util.Optional.empty()));
     }
 
-    @Override
     /**
-     * Runs a query and materialises its result.
-     *
-     * <p>One pass: this provider never defers a cell, so there is nothing to fetch in a
-     * batch and nothing to evaluate a second time.
+     * Runs a query and materialises its result, inside the scope of the execution: functions
+     * look the current execution up for the deadline and for cancellation. A NON EMPTY axis is
+     * filtered after the evaluation, as for every provider.
      */
+    @Override
     public org.eclipse.daanse.olap.api.result.Result execute(
             org.eclipse.daanse.olap.api.execution.Execution execution) {
-        execution.start();
-        try {
-            org.eclipse.daanse.olap.evaluator.EvaluatorImpl evaluator =
-                    (org.eclipse.daanse.olap.evaluator.EvaluatorImpl)
-                            context.createEvaluator(execution);
-            return new MemoryResult(execution, evaluator);
-        } finally {
-            execution.end();
-        }
+        org.eclipse.daanse.olap.api.execution.Statement statement = execution.getDaanseStatement();
+        org.eclipse.daanse.olap.api.result.Result result = org.eclipse.daanse.olap.api.execution.ExecutionContext
+                .where(execution.asContext(), () -> {
+                    statement.start(execution);
+                    org.eclipse.daanse.olap.api.result.Result res = new MemoryResult(execution, true);
+                    int i = 0;
+                    for (org.eclipse.daanse.olap.api.query.component.QueryAxis axis : statement.getQuery().getAxes()) {
+                        if (axis.isNonEmpty()) {
+                            res = new org.eclipse.daanse.olap.result.NonEmptyResult(res, execution, i);
+                        }
+                        ++i;
+                    }
+                    return res;
+                });
+        statement.end(execution);
+        return result;
     }
 
     @Override

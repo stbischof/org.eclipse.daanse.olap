@@ -36,6 +36,7 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.MatchType;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.NamedSet;
+import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.OlapElement;
 import org.eclipse.daanse.olap.api.query.IdentifierSegment;
 import org.eclipse.daanse.olap.api.query.component.Formula;
@@ -50,6 +51,26 @@ public final class NameResolverImpl implements NameResolver {
      * Creates a NameResolver.
      */
     public NameResolverImpl() {
+    }
+
+    /**
+     * Looks a name up as a reader of a catalog does: the reader says which namespaces are in force, and the
+     * segments are read the way a client wrote them. Every reader that resolves a whole name this way asks
+     * here, so the walk itself is written once.
+     *
+     * @param reader         the reader whose namespaces are in force
+     * @param parent         the element the name starts from, or null for the catalog itself
+     * @param names          the name, segment by segment
+     * @param failIfNotFound whether a name that resolves to nothing is an error
+     * @param category       what kind of element is looked for
+     * @param matchType      how closely the name has to match
+     * @return the element the name stands for, or null when there is none and failing is not asked for
+     */
+    public static OlapElement lookupCompound(CatalogReader reader, OlapElement parent,
+            List<org.eclipse.daanse.olap.api.query.Segment> names, boolean failIfNotFound, DataType category,
+            MatchType matchType) {
+        return new NameResolverImpl().resolve(parent, Util.toOlap4j(names), failIfNotFound, category,
+                matchType, reader.getNamespaces());
     }
 
     /**

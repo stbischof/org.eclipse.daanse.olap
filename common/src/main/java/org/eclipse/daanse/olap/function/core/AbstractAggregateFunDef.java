@@ -40,7 +40,6 @@ import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.StoredMeasure;
-import org.eclipse.daanse.olap.api.element.VirtualCube;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.function.FunctionMetaData;
 import org.eclipse.daanse.olap.api.query.Validator;
@@ -176,7 +175,7 @@ public abstract class AbstractAggregateFunDef extends AbstractFunctionDefinition
             return tuplesForAggregation;
         }
 
-        Member measure = AbstractAggregateFunDef.getRolapMeasureForUnrelatedDimCheck(
+        Member measure = AbstractAggregateFunDef.measureForUnrelatedDimensionCheck(
             evaluator, tuplesForAggregation);
 
         if (measure.isCalculated()) {
@@ -184,13 +183,14 @@ public abstract class AbstractAggregateFunDef extends AbstractFunctionDefinition
         }
 
         Cube virtualCube = evaluator.getCube();
-        if (virtualCube instanceof VirtualCube vc) {
+        if (virtualCube.drawsFromOtherCubes()) {
             // this should be a safe cast since we've eliminated calcs above
-            Cube baseCube = ((StoredMeasure)measure).getCube();
+            StoredMeasure stored = (StoredMeasure) measure;
+            Cube baseCube = stored.getCube();
             if (baseCube == null) {
                 return tuplesForAggregation;
             }
-            if (vc.shouldIgnoreUnrelatedDimensions(baseCube.getName()))
+            if (virtualCube.unrelatedDimensionsStayFor(stored))
             {
                 return AbstractAggregateFunDef.ignoreUnrelatedDimensions(
                     tuplesForAggregation, baseCube);
@@ -214,7 +214,7 @@ public abstract class AbstractAggregateFunDef extends AbstractFunctionDefinition
      *      e.g. Aggregate( Crossjoin( {Time.[1997]}, {measures.[Unit Sales]})
      * In both cases the measure(s) will be present in tuplesForAggregation.
      */
-    private static Member getRolapMeasureForUnrelatedDimCheck(
+    private static Member measureForUnrelatedDimensionCheck(
         Evaluator evaluator, TupleList tuplesForAggregation)
     {
         Member measure = evaluator.getMembers()[0];

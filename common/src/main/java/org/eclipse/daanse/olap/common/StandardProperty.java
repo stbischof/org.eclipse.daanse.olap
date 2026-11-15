@@ -377,6 +377,11 @@ public final class StandardProperty extends PropertyBase {
 	 *
 	 * Caution: Level depth of members in parent-child hierarchy isn't from their
 	 * levels. It's calculated from the underlying data dynamically.
+	 *
+	 * <p>This property is declared and not registered among the standard properties, so no name
+	 * resolves to it and no member answers it; a client reads the depth of a member from the member
+	 * itself. Registering it would add it to what a metadata query lists for every catalog, which is a
+	 * decision of its own.
 	 */
 	public static final Property DEPTH = new StandardProperty("DEPTH", Datatype.TYPE_NUMERIC, true, true, false,
 			"The level depth of a member");

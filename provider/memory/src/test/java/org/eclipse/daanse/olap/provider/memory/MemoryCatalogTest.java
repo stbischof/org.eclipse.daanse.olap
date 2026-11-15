@@ -212,4 +212,17 @@ class MemoryCatalogTest {
         }
         return all;
     }
+
+    @Test
+    void aClosedContextRefusesAndClosesOnlyOnce() {
+        MemoryCatalogBuilder builder = MemoryCatalog.builder("Closing");
+        builder.cube("Any").measures().hierarchy("Measures", false).level("MeasuresLevel");
+        MemoryCatalog catalog = builder.build();
+        MemoryContext context = MemoryContext.over(catalog, null, null);
+
+        context.close();
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(context::close)
+                .isInstanceOf(org.eclipse.daanse.olap.api.exception.OlapRuntimeException.class);
+    }
 }

@@ -53,8 +53,29 @@ import org.eclipse.daanse.olap.provider.memory.MemoryMember;
  * <p>{@code Sum([Geo].[South].Children, [Measures].[Amount])} is {@code 120}, and anyone
  * can work that out without looking anything up.
  *
- * <p>There is no database behind this. The in-memory provider answers the method calls of
- * the OLAP interfaces directly, which is all an abstract function needs.
+ * <p>Only city cells hold values. A cell above the cities is the sum of the non-NULL cities
+ * below it, and NULL when all of them are NULL, so
+ * {@code Sum([Geo].[All Geo].[South].Children, [Measures].[Amount])} is {@code 120}. North is
+ * not a leaf.
+ *
+ * <p>The values do not vary by {@code [Time]} or {@code [Sparse]}. Every member of these two
+ * hierarchies, at any level, therefore sees the full value:
+ * {@code ([Time].[All Time].[2023].[Q1].[Jan], [Measures].[Amount])} is {@code 150}, and a sum
+ * over the twelve months of 2023 is {@code 1800}. Values are not additive along {@code [Time]}.
+ *
+ * <p>The default member of {@code [Geo]}, {@code [Time]} and {@code [Sparse]} is the All
+ * member. {@code [Measures]} has no All member; its default is {@code [Measures].[Amount]}.
+ * A value case of a contract is evaluated in this default context.
+ *
+ * <p>Unique names: the hierarchies are {@code [Geo]}, {@code [Time]}, {@code [Sparse]} and
+ * {@code [Measures]}, each named like its dimension. A member carries the full path including
+ * the All member, for example {@code [Geo].[All Geo].[South].[C]} and
+ * {@code [Time].[All Time].[2024].[Q1].[Jan]}. Month names repeat across years, so only the
+ * full path is unambiguous. Members keep their declaration order.
+ *
+ * <p>Both measures sum. A value without a format string prints in the engine's
+ * {@code Standard} format: rounded to a whole number, with thousands separators. A contract that
+ * pins a fraction names its {@code FORMAT_STRING}.
  */
 public final class TestCatalogs {
 

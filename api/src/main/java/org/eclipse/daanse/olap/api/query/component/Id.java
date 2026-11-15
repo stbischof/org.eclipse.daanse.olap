@@ -15,7 +15,7 @@ package org.eclipse.daanse.olap.api.query.component;
 
 import java.util.List;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 
 public non-sealed interface Id extends QueryComponent {
 

@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleIteratorCalc;

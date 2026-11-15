@@ -13,8 +13,14 @@
  */
 package org.eclipse.daanse.olap.api.element;
 
+/** A cube whose measures come from other cubes. */
 public interface VirtualCube extends Cube {
 
-    boolean shouldIgnoreUnrelatedDimensions(String name);
+    @Override
+    boolean unrelatedDimensionsStayFor(Measure measure);
 
+    @Override
+    default boolean drawsFromOtherCubes() {
+        return true;
+    }
 }

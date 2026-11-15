@@ -19,7 +19,6 @@ import java.util.concurrent.Semaphore;
 
 import org.eclipse.daanse.dmv.parser.api.DmvParserProvider;
 import org.eclipse.daanse.mdx.parser.api.MdxParserProvider;
-import org.eclipse.daanse.olap.api.agg.AggregationFactory;
 import org.eclipse.daanse.olap.api.aggregator.CustomAggregatorFactory;
 import org.eclipse.daanse.olap.api.cache.CatalogCache;
 import org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler;
@@ -162,8 +161,6 @@ public interface Context<C extends Connection> {
     default List<String> getKeywordList() {
         return KEYWORD_LIST;
     }
-
-    AggregationFactory getAggragationFactory();
 
     Evaluator createEvaluator(Statement statement);
 

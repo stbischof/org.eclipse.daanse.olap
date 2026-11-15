@@ -68,8 +68,9 @@ public class MemoryHierarchy extends HierarchyBase {
 
     /** Adds a root member on the top level. */
     public MemoryMember member(String memberName) {
-        MemoryMember member = new MemoryMember(memberName, miniLevels.get(0), null,
-                miniDimension.isMeasures() ? Member.MemberType.MEASURE : Member.MemberType.REGULAR);
+        MemoryMember member = miniDimension.isMeasures()
+                ? new MemoryMeasure(memberName, miniLevels.get(0), null, Member.MemberType.MEASURE)
+                : new MemoryMember(memberName, miniLevels.get(0), null, Member.MemberType.REGULAR);
         if (hasAll && allMember == null) {
             allMember = member;
         }
@@ -185,8 +186,9 @@ public class MemoryHierarchy extends HierarchyBase {
             org.eclipse.daanse.olap.api.query.component.Formula formula) {
         MemoryLevel target = level != null ? (MemoryLevel) level
                 : (MemoryLevel) (parent != null ? parent.getLevel() : miniLevels.get(0));
-        MemoryMember member = new MemoryMember(name, target, (MemoryMember) parent,
-                Member.MemberType.FORMULA);
+        MemoryMember member = miniDimension.isMeasures()
+                ? new MemoryMeasure(name, target, (MemoryMember) parent, Member.MemberType.FORMULA)
+                : new MemoryMember(name, target, (MemoryMember) parent, Member.MemberType.FORMULA);
         member.formula(formula);
         return member;
     }

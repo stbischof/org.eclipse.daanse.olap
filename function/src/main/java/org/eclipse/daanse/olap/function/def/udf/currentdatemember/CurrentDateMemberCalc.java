@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.HierarchyCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.element.Dimension;

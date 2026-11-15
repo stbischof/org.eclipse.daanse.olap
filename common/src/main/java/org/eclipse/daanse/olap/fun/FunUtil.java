@@ -43,7 +43,7 @@ import org.eclipse.daanse.mdx.model.api.expression.operation.OperationAtom;
 import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.DataType;
 import org.eclipse.daanse.olap.api.access.AccessMember;
-import org.eclipse.daanse.olap.api.agg.Segment;
+import org.eclipse.daanse.olap.api.query.Segment;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;

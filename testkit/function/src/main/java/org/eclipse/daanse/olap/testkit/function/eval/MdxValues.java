@@ -31,9 +31,8 @@ public final class MdxValues {
     }
 
     /**
-     * Like {@link #formattedValueOf(Connection, String, String)}, but with an explicit
-     * {@code FORMAT_STRING} on the calculated member — the default cell format has no decimal
-     * places, so a fractional result would otherwise come back rounded to the nearest integer.
+     * Like {@link #formattedValueOf(Connection, String, String)}, with an explicit
+     * {@code FORMAT_STRING} on the calculated member.
      */
     public static String formattedValueOf(Connection connection, String cubeName, String expression,
             String formatString) {

@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.daanse.mdx.model.api.expression.operation.BracesOperationAtom;
 import org.eclipse.daanse.mdx.model.api.expression.operation.FunctionOperationAtom;
 import org.eclipse.daanse.olap.api.element.Member;
+import org.eclipse.daanse.olap.api.element.ParentChildMember;
 import org.eclipse.daanse.olap.api.element.MetaData;
 import org.eclipse.daanse.olap.api.element.Property;
 import org.eclipse.daanse.olap.api.element.VisualTotalMember;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * A provider whose evaluator needs its own member type overrides
  * {@link HierarchyBase#createVisualTotalMember} and returns that type instead.
  */
-public class VisualTotalMemberImpl extends MemberBase implements VisualTotalMember {
+public class VisualTotalMemberImpl extends CalculableMemberBase implements VisualTotalMember {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VisualTotalMemberImpl.class);
 
@@ -215,5 +216,24 @@ public class VisualTotalMemberImpl extends MemberBase implements VisualTotalMemb
     @Override
     public void setProperty(String name, Object value) {
         throw new UnsupportedOperationException("a visual total member takes its properties from the member it wraps");
+    }
+
+    /** A visual total stands for a member, so the member behind it makes the leaf. */
+    @Override
+    public Member createPseudoLeafMember(Member child, String name) {
+        if (member instanceof ParentChildMember parentChild) {
+            return parentChild.createPseudoLeafMember(child, name);
+        }
+        throw new UnsupportedOperationException(
+                "the member a visual total stands for has no children of its own");
+    }
+
+    /**
+     * Always {@code null}: a visual total is not a row of any table, it is an aggregate over the
+     * members that follow it, so there is no key that would address it.
+     */
+    @Override
+    public Object getKey() {
+        return null;
     }
 }
