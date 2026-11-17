@@ -136,7 +136,6 @@ public class CellSetImpl extends ExecutionImpl implements CellSet {
         if (this.result != null) {
             this.result.close();
         }
-        statement.onResultSetClose(this);
     }
 
     @Override

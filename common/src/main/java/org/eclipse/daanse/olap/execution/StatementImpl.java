@@ -46,7 +46,6 @@ public class StatementImpl extends org.eclipse.daanse.olap.execution.AbstractSta
 
     private Connection connection;
     private boolean closed;
-    protected boolean closeOnCompletion;
     protected Context context;
 
     /**
@@ -216,12 +215,6 @@ public class StatementImpl extends org.eclipse.daanse.olap.execution.AbstractSta
         } catch (OlapRuntimeException e) {
             throw new RuntimeException(
                 "daanse gave exception while parsing query", e);
-        }
-    }
-
-    public void onResultSetClose(CellSetImpl cellSet) {
-        if (closeOnCompletion) {
-            close();
         }
     }
 

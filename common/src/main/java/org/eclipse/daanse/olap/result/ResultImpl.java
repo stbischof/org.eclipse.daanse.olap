@@ -27,6 +27,9 @@
 
 package org.eclipse.daanse.olap.result;
 
+import org.eclipse.daanse.olap.cellformatter.UserDefinedCellFormatter;
+import org.eclipse.daanse.olap.cellformatter.LocaleCellFormatter;
+import org.eclipse.daanse.olap.cellformatter.FormatStringCellFormatter;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -139,7 +142,7 @@ public abstract class ResultImpl extends ResultBase {
    * The statement Locale's formatter, resolved once per execution in executeBody;
    * the Locale is constant over a statement, so the per-cell leaf path reads only this field.
    */
-  private ValueFormatter defaultLocaleFormatter;
+  private FormatStringCellFormatter defaultLocaleFormatter;
   private CellReader cellReader;
   private final CellReader aggregatingReader;
   private Modulos modulos = null;
@@ -709,7 +712,7 @@ public abstract class ResultImpl extends ResultBase {
  */
   private Member setPlaceholderSlicerAxis( final Member member, final Calc calc, boolean setAxis,
       TupleList tupleList, int solveOrder ) {
-    ValueFormatter formatter = member.getDimension().isMeasures() ? formatterFor( member ) : null;
+    FormatStringCellFormatter formatter = member.getDimension().isMeasures() ? formatterFor( member ) : null;
 
     Member placeholderMember = compoundSlicerPlaceholder( member, calc, formatter, tupleList, solveOrder );
 
@@ -1065,7 +1068,7 @@ public Cell getCell( int[] pos ) {
   }
 
   private void executeBody(EvaluatorImpl evaluator, Query query, final int[] pos ) {
-    defaultLocaleFormatter = ValueFormatter.forLocale( statement.getDaanseConnection().getLocale() );
+    defaultLocaleFormatter = FormatStringCellFormatter.forLocale( statement.getDaanseConnection().getLocale() );
     // Compute the cells several times. The first time, use a dummy
     // evaluator which collects requests.
     int count = 0;
@@ -1214,12 +1217,12 @@ public Cell getCell( int[] pos ) {
 
           // Determine if there is a CellFormatter registered for
           // the current Cube's Measure's Dimension. If so,
-          // then find or create a CellFormatterValueFormatter
+          // then find or create a UserDefinedCellFormatter
           // for it. If not, then find or create a Locale based
-          // FormatValueFormatter.
+          // LocaleCellFormatter.
           Hierarchy measuresHierarchy = measuresHierarchy( getCube() );
           Member m = revaluator.getContext( measuresHierarchy );
-          ValueFormatter valueFormatter = formatterFor( m );
+          FormatStringCellFormatter valueFormatter = formatterFor( m );
           if ( valueFormatter == null ) {
             cachedFormatString = revaluator.getFormatString();
             valueFormatter = defaultLocaleFormatter;
@@ -1563,7 +1566,7 @@ public Cell getCell( int[] pos ) {
   }
 
   /** The formatter a measure declares, or {@code null} for the locale's format string. */
-  protected ValueFormatter formatterFor( Member measure ) {
+  protected FormatStringCellFormatter formatterFor( Member measure ) {
     return null;
   }
 
@@ -1591,7 +1594,7 @@ public Cell getCell( int[] pos ) {
    * {@link CompoundSlicerMemberImpl}; a provider whose members carry more
    * brings its own.
    */
-  protected Member compoundSlicerPlaceholder( Member member, Calc calc, ValueFormatter formatter, TupleList tuples,
+  protected Member compoundSlicerPlaceholder( Member member, Calc calc, FormatStringCellFormatter formatter, TupleList tuples,
       int solveOrder ) {
     CompoundSlicerMemberImpl placeholder =
         new CompoundSlicerMemberImpl( member.getHierarchy().getNullMember(), calc, tuples, solveOrder );
