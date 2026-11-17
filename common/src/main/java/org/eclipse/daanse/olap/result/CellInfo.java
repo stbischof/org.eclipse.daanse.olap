@@ -25,6 +25,7 @@
  */
 package org.eclipse.daanse.olap.result;
 
+import org.eclipse.daanse.olap.cellformatter.FormatStringCellFormatter;
 import org.eclipse.daanse.olap.api.result.CellValue;
 import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.result.NullValue;
@@ -46,7 +47,7 @@ public class CellInfo {
      */
     public CellValue value;
     public String formatString;
-    public ValueFormatter valueFormatter;
+    public FormatStringCellFormatter valueFormatter;
     public long key;
 
     /**
@@ -55,7 +56,7 @@ public class CellInfo {
      * @param key Ordinal representing the position of a cell
      */
     public CellInfo(long key) {
-        this(key, null, null, ValueFormatter.EMPTY);
+        this(key, null, null, FormatStringCellFormatter.EMPTY);
     }
 
     /**
@@ -66,7 +67,7 @@ public class CellInfo {
      * @param formatString   Format string of cell, or null
      * @param valueFormatter Formatter for cell, or null
      */
-    public CellInfo(long key, CellValue value, String formatString, ValueFormatter valueFormatter) {
+    public CellInfo(long key, CellValue value, String formatString, FormatStringCellFormatter valueFormatter) {
         this.key = key;
         this.value = value;
         this.formatString = formatString;

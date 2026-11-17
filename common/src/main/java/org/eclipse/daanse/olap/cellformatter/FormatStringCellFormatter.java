@@ -23,7 +23,7 @@
  * Contributors after Fork in 2023:
  *   SmartCity Jena - initial
  */
-package org.eclipse.daanse.olap.result;
+package org.eclipse.daanse.olap.cellformatter;
 
 import java.util.Locale;
 import java.util.Map;
@@ -36,11 +36,11 @@ import org.eclipse.daanse.olap.api.formatter.CellFormatter;
  * Every cell has a value, a format string (or a {@link CellFormatter}) and a
  * formatted value. There are many possible values, hence many formatted
  * strings, but only few format strings and formatters, so the formatters are
- * shared: one {@link FormatValueFormatter} per {@link Locale} through
- * {@link #forLocale(Locale)}, and one {@link CellFormatterValueFormatter} per
+ * shared: one {@link LocaleCellFormatter} per {@link Locale} through
+ * {@link #forLocale(Locale)}, and one {@link UserDefinedCellFormatter} per
  * user-defined formatter.
  */
-public interface ValueFormatter {
+public interface FormatStringCellFormatter {
 
     /**
      * Formats a value according to a format string.
@@ -52,13 +52,13 @@ public interface ValueFormatter {
     String format(Object value, String formatString);
 
     /** Formatter that always returns the empty string. */
-    ValueFormatter EMPTY = (value, formatString) -> "";
+    FormatStringCellFormatter EMPTY = (value, formatString) -> "";
 
     /** JVM-global map from Locale to formatter; holds only the few Locales in use. */
-    Map<Locale, ValueFormatter> FORMAT_VALUE_FORMATTERS = new java.util.concurrent.ConcurrentHashMap<>();
+    Map<Locale, FormatStringCellFormatter> LOCALE_FORMATTERS = new java.util.concurrent.ConcurrentHashMap<>();
 
-    /** The shared {@link FormatValueFormatter} for a locale. */
-    static ValueFormatter forLocale(Locale locale) {
-        return FORMAT_VALUE_FORMATTERS.computeIfAbsent(locale, FormatValueFormatter::new);
+    /** The shared {@link LocaleCellFormatter} for a locale. */
+    static FormatStringCellFormatter forLocale(Locale locale) {
+        return LOCALE_FORMATTERS.computeIfAbsent(locale, LocaleCellFormatter::new);
     }
 }

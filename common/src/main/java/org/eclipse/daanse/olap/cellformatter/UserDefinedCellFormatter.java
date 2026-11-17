@@ -23,39 +23,25 @@
  * Contributors after Fork in 2023:
  *   SmartCity Jena - initial
  */
-package org.eclipse.daanse.olap.result;
+package org.eclipse.daanse.olap.cellformatter;
 
-import java.util.Locale;
+import org.eclipse.daanse.olap.api.formatter.CellFormatter;
 
-import org.eclipse.daanse.olap.util.format.Format;
-
-/**
- * A {@link ValueFormatter} over a {@link Locale}: the locale picks the
- * {@link Format} for a given format string. Shared per locale through
- * {@link ValueFormatter#forLocale(Locale)}.
- */
-public class FormatValueFormatter implements ValueFormatter {
-    final Locale locale;
+/** A {@link FormatStringCellFormatter} that uses a user-defined {@link CellFormatter}. */
+public class UserDefinedCellFormatter implements FormatStringCellFormatter {
+    final CellFormatter cf;
 
     /**
-     * Creates a FormatValueFormatter.
+     * Creates a UserDefinedCellFormatter.
      *
-     * @param locale Locale
+     * @param cf Cell formatter
      */
-    public FormatValueFormatter(Locale locale) {
-        this.locale = locale;
+    public UserDefinedCellFormatter(CellFormatter cf) {
+        this.cf = cf;
     }
 
     @Override
     public String format(Object value, String formatString) {
-        if (value instanceof Throwable) {
-            return "#ERR: " + value.toString();
-        }
-        Format format = getFormat(formatString);
-        return format.format(value);
-    }
-
-    private Format getFormat(String formatString) {
-        return Format.get(formatString, locale);
+        return cf.format(value);
     }
 }

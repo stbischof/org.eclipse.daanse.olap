@@ -31,7 +31,7 @@
  *   SmartCity Jena - initial
  *   Stefan Bischof (bipolis.org) - initial
  */
-package org.eclipse.daanse.olap.util;
+package org.eclipse.daanse.olap.cellformatter;
 
 import java.util.Iterator;
 

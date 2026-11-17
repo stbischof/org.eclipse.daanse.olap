@@ -13,7 +13,7 @@
  */
 
 /**
- * Provider-neutral result machinery: the result skeleton, axes, cell ordinals, cell formatting and the shepherd that runs an execution against its deadline.
+ * Provider-neutral result machinery: the result skeleton, axes, cell ordinals, and the shepherd that runs an execution against its deadline. The cell formatters live in {@code org.eclipse.daanse.olap.cellformatter}.
  */
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")

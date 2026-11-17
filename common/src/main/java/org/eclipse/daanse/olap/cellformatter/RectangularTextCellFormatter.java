@@ -32,7 +32,7 @@
  *   Stefan Bischof (bipolis.org) - initial
  */
 
-package org.eclipse.daanse.olap.result;
+package org.eclipse.daanse.olap.cellformatter;
 
 import java.io.PrintWriter;
 import java.util.AbstractList;
@@ -49,7 +49,7 @@ import org.eclipse.daanse.olap.api.result.Cell;
 import org.eclipse.daanse.olap.api.result.CellSet;
 import org.eclipse.daanse.olap.api.result.CellSetAxis;
 import org.eclipse.daanse.olap.api.result.Position;
-import org.eclipse.daanse.olap.util.CoordinateIterator;
+import org.eclipse.daanse.olap.cellformatter.CoordinateIterator;
 
 
 /**
@@ -88,15 +88,15 @@ import org.eclipse.daanse.olap.util.CoordinateIterator;
  * @author jhyde
  * @since Apr 15, 2009
  */
-public class RectangularCellSetFormatter {
+public class RectangularTextCellFormatter {
     private final boolean compact;
 
     /**
-     * Creates a RectangularCellSetFormatter.
+     * Creates a RectangularTextCellFormatter.
      *
      * @param compact Whether to generate compact output
      */
-    public RectangularCellSetFormatter(boolean compact) {
+    public RectangularTextCellFormatter(boolean compact) {
         this.compact = compact;
     }
 
@@ -109,7 +109,7 @@ public class RectangularCellSetFormatter {
         } else {
             columnsAxis = null;
         }
-        RectangularCellSetFormatter.AxisInfo columnsAxisInfo = computeAxisInfo(columnsAxis);
+        RectangularTextCellFormatter.AxisInfo columnsAxisInfo = computeAxisInfo(columnsAxis);
 
         // Compute how many columns are required to display the rows axis.
         // In the example, this is 3 (the width of USA, CA, Los Angeles)
@@ -119,7 +119,7 @@ public class RectangularCellSetFormatter {
         } else {
             rowsAxis = null;
         }
-        RectangularCellSetFormatter.AxisInfo rowsAxisInfo = computeAxisInfo(rowsAxis);
+        RectangularTextCellFormatter.AxisInfo rowsAxisInfo = computeAxisInfo(rowsAxis);
 
         if (cellSet.getAxes().size() > 2) {
             int[] dimensions = new int[cellSet.getAxes().size() - 2];
@@ -165,9 +165,9 @@ public class RectangularCellSetFormatter {
         PrintWriter pw,
         int[] pageCoords,
         CellSetAxis columnsAxis,
-        RectangularCellSetFormatter.AxisInfo columnsAxisInfo,
+        RectangularTextCellFormatter.AxisInfo columnsAxisInfo,
         CellSetAxis rowsAxis,
-        RectangularCellSetFormatter.AxisInfo rowsAxisInfo)
+        RectangularTextCellFormatter.AxisInfo rowsAxisInfo)
     {
         if (pageCoords.length > 0) {
             pw.println();
@@ -193,8 +193,8 @@ public class RectangularCellSetFormatter {
         final int xOffsset = rowsAxisInfo.getWidth();
 
         // Populate a string matrix
-        RectangularCellSetFormatter.Matrix matrix =
-            new RectangularCellSetFormatter.Matrix(
+        RectangularTextCellFormatter.Matrix matrix =
+            new RectangularTextCellFormatter.Matrix(
                 xOffsset
                     + (columnsAxis == null
                     ? 1
@@ -238,7 +238,7 @@ public class RectangularCellSetFormatter {
         for (int x = 0; x < matrix.width; x++) {
             int columnWidth = 0;
             for (int y = 0; y < matrix.height; y++) {
-                RectangularCellSetFormatter.MatrixCell cell = matrix.get(x, y);
+                RectangularTextCellFormatter.MatrixCell cell = matrix.get(x, y);
                 if (cell != null) {
                     columnWidth =
                         Math.max(columnWidth, cell.value.length());
@@ -262,7 +262,7 @@ public class RectangularCellSetFormatter {
                     if (x > 0) {
                         pw.print(' ');
                     }
-                    final RectangularCellSetFormatter.MatrixCell cell = matrix.get(x, y);
+                    final RectangularTextCellFormatter.MatrixCell cell = matrix.get(x, y);
                     final int len;
                     if (cell != null) {
                         if (cell.sameAsPrev) {
@@ -302,7 +302,7 @@ public class RectangularCellSetFormatter {
         } else {
             for (int y = 0; y < matrix.height; y++) {
                 for (int x = 0; x < matrix.width; x++) {
-                    final RectangularCellSetFormatter.MatrixCell cell = matrix.get(x, y);
+                    final RectangularTextCellFormatter.MatrixCell cell = matrix.get(x, y);
                     final int len;
                     if (cell != null) {
                         if (cell.sameAsPrev) {
@@ -351,9 +351,9 @@ public class RectangularCellSetFormatter {
      * @param offset Ordinal of first cell to populate in matrix
      */
     private void populateAxis(
-        RectangularCellSetFormatter.Matrix matrix,
+        RectangularTextCellFormatter.Matrix matrix,
         CellSetAxis axis,
-        RectangularCellSetFormatter.AxisInfo axisInfo,
+        RectangularTextCellFormatter.AxisInfo axisInfo,
         boolean isColumns,
         int offset)
     {
@@ -369,7 +369,7 @@ public class RectangularCellSetFormatter {
             final List<Member> memberList = position.getMembers();
             for (int j = 0; j < memberList.size(); j++) {
                 Member member = memberList.get(j);
-                final RectangularCellSetFormatter.AxisOrdinalInfo ordinalInfo =
+                final RectangularTextCellFormatter.AxisOrdinalInfo ordinalInfo =
                     axisInfo.ordinalInfos.get(j);
                 while (member != null) {
                     if (member.getDepth() < ordinalInfo.minDepth) {
@@ -416,20 +416,20 @@ public class RectangularCellSetFormatter {
      * @param axis Axis
      * @return Description of axis
      */
-    private RectangularCellSetFormatter.AxisInfo computeAxisInfo(CellSetAxis axis)
+    private RectangularTextCellFormatter.AxisInfo computeAxisInfo(CellSetAxis axis)
     {
         if (axis == null) {
-            return new RectangularCellSetFormatter.AxisInfo(0);
+            return new RectangularTextCellFormatter.AxisInfo(0);
         }
-        final RectangularCellSetFormatter.AxisInfo axisInfo =
-            new RectangularCellSetFormatter.AxisInfo(axis.getAxisMetaData().getHierarchies().size());
+        final RectangularTextCellFormatter.AxisInfo axisInfo =
+            new RectangularTextCellFormatter.AxisInfo(axis.getAxisMetaData().getHierarchies().size());
         int p = -1;
         for (Position position : axis.getPositions()) {
             ++p;
             int k = -1;
             for (Member member : position.getMembers()) {
                 ++k;
-                final RectangularCellSetFormatter.AxisOrdinalInfo axisOrdinalInfo =
+                final RectangularTextCellFormatter.AxisOrdinalInfo axisOrdinalInfo =
                     axisInfo.ordinalInfos.get(k);
                 final int topDepth =
                     member.isAll()
@@ -519,7 +519,7 @@ public class RectangularCellSetFormatter {
      * Description of an axis.
      */
     private static class AxisInfo {
-        final List<RectangularCellSetFormatter.AxisOrdinalInfo> ordinalInfos;
+        final List<RectangularTextCellFormatter.AxisOrdinalInfo> ordinalInfos;
 
         /**
          * Creates an AxisInfo.
@@ -527,9 +527,9 @@ public class RectangularCellSetFormatter {
          * @param ordinalCount Number of hierarchies on this axis
          */
         AxisInfo(int ordinalCount) {
-            ordinalInfos = new ArrayList<RectangularCellSetFormatter.AxisOrdinalInfo>(ordinalCount);
+            ordinalInfos = new ArrayList<RectangularTextCellFormatter.AxisOrdinalInfo>(ordinalCount);
             for (int i = 0; i < ordinalCount; i++) {
-                ordinalInfos.add(new RectangularCellSetFormatter.AxisOrdinalInfo());
+                ordinalInfos.add(new RectangularTextCellFormatter.AxisOrdinalInfo());
             }
         }
 
@@ -541,7 +541,7 @@ public class RectangularCellSetFormatter {
          */
         public int getWidth() {
             int width = 0;
-            for (RectangularCellSetFormatter.AxisOrdinalInfo info : ordinalInfos) {
+            for (RectangularTextCellFormatter.AxisOrdinalInfo info : ordinalInfos) {
                 width += info.getWidth();
             }
             return width;
@@ -552,8 +552,8 @@ public class RectangularCellSetFormatter {
      * Two-dimensional collection of string values.
      */
     private class Matrix {
-        private final Map<List<Integer>, RectangularCellSetFormatter.MatrixCell> map =
-            new HashMap<List<Integer>, RectangularCellSetFormatter.MatrixCell>();
+        private final Map<List<Integer>, RectangularTextCellFormatter.MatrixCell> map =
+            new HashMap<List<Integer>, RectangularTextCellFormatter.MatrixCell>();
         private final int width;
         private final int height;
 
@@ -598,7 +598,7 @@ public class RectangularCellSetFormatter {
         {
             map.put(
                 Arrays.asList(x, y),
-                new RectangularCellSetFormatter.MatrixCell(value, right, sameAsPrev));
+                new RectangularTextCellFormatter.MatrixCell(value, right, sameAsPrev));
             assert x >= 0 && x < width : x;
             assert y >= 0 && y < height : y;
         }
@@ -610,7 +610,7 @@ public class RectangularCellSetFormatter {
          * @param y Y coordinate
          * @return Cell
          */
-        public RectangularCellSetFormatter.MatrixCell get(int x, int y) {
+        public RectangularTextCellFormatter.MatrixCell get(int x, int y) {
             return map.get(Arrays.asList(x, y));
         }
     }
@@ -643,4 +643,4 @@ public class RectangularCellSetFormatter {
     }
 }
 
-// End RectangularCellSetFormatter.java
+// End RectangularTextCellFormatter.java

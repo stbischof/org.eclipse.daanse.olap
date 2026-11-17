@@ -32,8 +32,8 @@ import java.util.function.BiFunction;
 
 /**
  * Defines a cache API. Implementations exist for softly referenced values
- * ({@link SoftValueCache}) and bounded strong references
- * ({@link BoundedCache}).
+ * (the relational engine's {@code SoftValueCache}) and bounded strong
+ * references ({@link BoundedCache}).
  *
  * To iterate over the contents of a cache, pass a task to
  * {@link #execute(Task)}. The iteration is weakly consistent and
@@ -128,7 +128,7 @@ public interface SimpleCache <K, V> {
      *
      * <p>Contract for the iterated entries: {@code iterator.remove()} is
      * supported by every implementation. {@code entry.setValue} is NOT part
-     * of the common contract - {@link SoftValueCache} yields immutable
+     * of the common contract - {@code SoftValueCache} yields immutable
      * snapshot entries (setValue throws), while {@link BoundedCache} yields
      * write-through entries whose setValue is an unconditional put: it can
      * RESURRECT an entry the cache evicted, and it silently discards a

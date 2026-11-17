@@ -32,7 +32,7 @@
  *   Stefan Bischof (bipolis.org) - initial
  */
 
-package org.eclipse.daanse.olap.result;
+package org.eclipse.daanse.olap.cellformatter;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import org.eclipse.daanse.olap.api.result.CellSet;
 import org.eclipse.daanse.olap.api.result.CellSetAxis;
 import org.eclipse.daanse.olap.api.result.Position;
 
-public class TraditionalCellSetFormatter {
+public class TraditionalTextCellFormatter {
     public void format(
         CellSet cellSet,
         PrintWriter pw)
