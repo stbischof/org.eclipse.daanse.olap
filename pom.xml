@@ -61,6 +61,7 @@
     <module>provider</module>
     <module>xmla</module>
     <module>spi</module>
+    <module>segmentcache</module>
     <module>format</module>
     <module>odc</module>
     <module>check</module>
