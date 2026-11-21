@@ -25,11 +25,14 @@ import static org.eclipse.daanse.olap.query.base.MdxToQueryConverter.getExpressi
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.daanse.mdx.model.api.CallStatement;
 import org.eclipse.daanse.mdx.model.api.CreateMemberStatement;
 import org.eclipse.daanse.mdx.model.api.CreateSetStatement;
+import org.eclipse.daanse.mdx.model.api.CreateSubcubeStatement;
 import org.eclipse.daanse.mdx.model.api.DrillthroughStatement;
 import org.eclipse.daanse.mdx.model.api.DropMemberStatement;
 import org.eclipse.daanse.mdx.model.api.DropSetStatement;
+import org.eclipse.daanse.mdx.model.api.DropSubcubeStatement;
 import org.eclipse.daanse.mdx.model.api.ExplainStatement;
 import org.eclipse.daanse.mdx.model.api.MdxStatement;
 import org.eclipse.daanse.mdx.model.api.RefreshStatement;
@@ -78,6 +81,11 @@ public class QueryProviderImpl implements QueryProvider {
         case CreateMemberStatement _, CreateSetStatement _, DropMemberStatement _, DropSetStatement _ ->
             throw new UnsupportedOperationException(
                 "CREATE MEMBER, CREATE SET, DROP MEMBER and DROP SET statements are not supported");
+        // a session subcube is not kept yet
+        case CreateSubcubeStatement _, DropSubcubeStatement _ ->
+            throw new UnsupportedOperationException("CREATE SUBCUBE and DROP SUBCUBE statements are not supported");
+        // there are no stored procedures to call
+        case CallStatement _ -> throw new UnsupportedOperationException("CALL statements are not supported");
         };
     }
 
@@ -135,6 +143,12 @@ public class QueryProviderImpl implements QueryProvider {
         List<Expression> returnList = new ArrayList<>();
         if (drillthroughStatement.returnItems() != null) {
             for (ReturnItem returnItem : drillthroughStatement.returnItems()) {
+                // a column wrapped in Key, Name, Caption, ... picks which value of the attribute is returned; that
+                // choice is not supported yet, so the column is refused rather than read as the bare one
+                if (returnItem.function().isPresent()) {
+                    throw new UnsupportedOperationException("DRILLTHROUGH RETURN with a column wrapped in "
+                            + returnItem.function().get() + " is not supported");
+                }
                 returnList.add(getExpressionByCompoundId(returnItem.compoundId()));
             }
         }

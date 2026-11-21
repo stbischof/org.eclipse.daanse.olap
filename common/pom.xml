@@ -56,5 +56,11 @@
       <artifactId>org.eclipse.daanse.olap.util.format</artifactId>
       <version>${revision}</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.mdx.parser.ccc</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
