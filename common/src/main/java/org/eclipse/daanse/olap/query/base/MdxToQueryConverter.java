@@ -195,6 +195,11 @@ public class MdxToQueryConverter {
     }
 
     static Subcube getSubcubeBySelectCubeClauseSubStatement(SelectCubeClauseSubStatement selectCubeClauseSubStatement) {
+        // NON VISUAL changes which totals the subselect shows; the subcube has no such mode, so the flag is refused
+        // rather than dropped
+        if (selectCubeClauseSubStatement.nonVisual()) {
+            throw new UnsupportedOperationException("NON VISUAL before a subselect is not supported");
+        }
         Subcube subcube = convertCubeClause(selectCubeClauseSubStatement.selectCubeClause());
         List<QueryAxis> axes = convertQueryAxisList(selectCubeClauseSubStatement.selectQueryClause());
         String cubeName = null;
