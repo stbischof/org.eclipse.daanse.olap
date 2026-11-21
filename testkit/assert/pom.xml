@@ -34,6 +34,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.olap.spi</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.olap.testkit.core</artifactId>
       <version>${revision}</version>
       <scope>compile</scope>
