@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.chr;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class ChrWCalc extends AbstractProfilingNestedStringCalc {
+public class ChrWCalc extends AbstractNestedStringCalc {
 
     protected ChrWCalc(Type type, final IntegerCalc charcodeCalc) {
         super(type, charcodeCalc);

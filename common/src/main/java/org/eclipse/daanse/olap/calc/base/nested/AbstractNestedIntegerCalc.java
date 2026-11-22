@@ -17,7 +17,7 @@ import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
 /**
  * Abstract implementation of the
@@ -26,13 +26,13 @@ import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
  * Handles nested child and profiling
  *
  */
-public abstract class AbstractProfilingNestedIntegerCalc extends AbstractProfilingNestedCalc<Integer>
+public abstract class AbstractNestedIntegerCalc extends AbstractNestedCalc<Integer>
 		implements IntegerCalc {
 	/**
 	 * {@inheritDoc}
 	 *
 	 */
-	protected AbstractProfilingNestedIntegerCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedIntegerCalc(Type type, Calc<?>... calcs) {
 		super(type, calcs);
 		requiresType(NumericType.class);
 	}

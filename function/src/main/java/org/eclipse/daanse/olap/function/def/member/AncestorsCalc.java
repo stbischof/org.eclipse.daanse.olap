@@ -22,11 +22,11 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class AncestorsCalc extends AbstractProfilingNestedTupleListCalc {
+public class AncestorsCalc extends AbstractNestedTupleListCalc {
 
     protected AncestorsCalc(Type type, final MemberCalc memberCalc, final IntegerCalc distanceCalc) {
         super(type, memberCalc, distanceCalc);

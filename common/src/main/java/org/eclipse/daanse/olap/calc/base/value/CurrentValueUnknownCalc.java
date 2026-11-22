@@ -28,7 +28,7 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
 /**
  * Expression which yields the value of the current member in the current
@@ -39,7 +39,7 @@ import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCa
  * @author jhyde
  * @since Sep 27, 2005
  */
-public class CurrentValueUnknownCalc extends AbstractProfilingNestedUnknownCalc {
+public class CurrentValueUnknownCalc extends AbstractNestedUnknownCalc {
 
 	public CurrentValueUnknownCalc(Type type) {
 		super(type, new Calc[0]);

@@ -31,7 +31,7 @@ import org.eclipse.daanse.olap.testkit.function.FunctionContract.Promise;
  * diverge from the declared signature or throw instead of returning empty.
  *
  * <p>{@code DataMemberFunDef.compileCall} builds its own anonymous {@code
- * AbstractProfilingNestedMemberCalc} inline, duplicating {@code member.getDataMember()} — the
+ * AbstractNestedMemberCalc} inline, duplicating {@code member.getDataMember()} — the
  * sibling {@code DataMemberCalc} class in the same package does exactly the same thing but is
  * never actually instantiated anywhere. Harmless (both do the identical, correct thing) and
  * out of scope for this contract to clean up, but noted here since it is the same shape of

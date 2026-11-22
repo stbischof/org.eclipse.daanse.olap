@@ -19,12 +19,12 @@ import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.MemberType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
-public abstract class AbstractProfilingNestedMemberCalc extends AbstractProfilingNestedCalc<Member>
+public abstract class AbstractNestedMemberCalc extends AbstractNestedCalc<Member>
 		implements MemberCalc {
 
-	protected AbstractProfilingNestedMemberCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedMemberCalc(Type type, Calc<?>... calcs) {
 		super(type, calcs);
 		requiresType(MemberType.class);
 	}

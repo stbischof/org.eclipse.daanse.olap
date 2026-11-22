@@ -22,10 +22,10 @@ import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedLongCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedLongCalc;
 import org.eclipse.daanse.olap.function.def.vba.dateadd.Interval;
 
-public class DateDiffCalc extends AbstractProfilingNestedLongCalc {
+public class DateDiffCalc extends AbstractNestedLongCalc {
     protected DateDiffCalc(Type type, StringCalc stringCalc, DateTimeCalc dateTimeCalc1, DateTimeCalc dateTimeCalc2, IntegerCalc firstDayOfWeek, IntegerCalc firstWeekOfYear ) {
         super(type, stringCalc, dateTimeCalc1, dateTimeCalc2, firstDayOfWeek, firstWeekOfYear);
     }

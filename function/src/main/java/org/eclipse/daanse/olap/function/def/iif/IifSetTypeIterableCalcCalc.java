@@ -19,9 +19,9 @@ import org.eclipse.daanse.olap.api.calc.ResultStyle;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleIterable;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleIterableCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleIterableCalc;
 
-public class IifSetTypeIterableCalcCalc extends AbstractProfilingNestedTupleIterableCalc {
+public class IifSetTypeIterableCalcCalc extends AbstractNestedTupleIterableCalc {
 
     private final BooleanCalc booleanCalc;
     private final Calc<?> calc1;

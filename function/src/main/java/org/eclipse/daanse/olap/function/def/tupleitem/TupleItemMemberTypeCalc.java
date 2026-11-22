@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 
-public class TupleItemMemberTypeCalc extends AbstractProfilingNestedMemberCalc{
+public class TupleItemMemberTypeCalc extends AbstractNestedMemberCalc{
 
     public TupleItemMemberTypeCalc(Type type, MemberCalc memberCalc, IntegerCalc indexCalc) {
         super(type, memberCalc, indexCalc);

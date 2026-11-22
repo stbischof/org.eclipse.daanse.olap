@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class RadiansCalc extends AbstractProfilingNestedDoubleCalc {
+public class RadiansCalc extends AbstractNestedDoubleCalc {
 
     protected RadiansCalc(Type type, DoubleCalc doubleCalc) {
         super(type, doubleCalc);

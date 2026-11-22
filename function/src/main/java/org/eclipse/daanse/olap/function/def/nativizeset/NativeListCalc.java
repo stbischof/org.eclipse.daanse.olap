@@ -29,10 +29,10 @@ import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.query.component.NamedSetExpression;
 import org.eclipse.daanse.olap.api.query.component.Query;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.common.Util;
 
-public class NativeListCalc  extends AbstractProfilingNestedTupleListCalc {
+public class NativeListCalc  extends AbstractNestedTupleListCalc {
     private final SubstitutionMap substitutionMap;
     private final TupleListCalc simpleCalc;
     private final ExpressionCompiler compiler;

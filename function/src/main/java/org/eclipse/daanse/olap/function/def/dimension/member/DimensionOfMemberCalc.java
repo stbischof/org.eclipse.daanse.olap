@@ -19,9 +19,9 @@ import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDimensionCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDimensionCalc;
 
-public class DimensionOfMemberCalc extends AbstractProfilingNestedDimensionCalc {
+public class DimensionOfMemberCalc extends AbstractNestedDimensionCalc {
 
 	public DimensionOfMemberCalc(Type type, MemberCalc memberCalc) {
 		super(type, memberCalc);

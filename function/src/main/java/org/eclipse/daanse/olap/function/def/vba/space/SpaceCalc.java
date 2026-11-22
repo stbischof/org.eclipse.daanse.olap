@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.space;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class SpaceCalc extends AbstractProfilingNestedStringCalc {
+public class SpaceCalc extends AbstractNestedStringCalc {
 
     private static final String WHITESPACE = " ";
 

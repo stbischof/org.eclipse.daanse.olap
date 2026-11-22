@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.coalesceempty;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
-public class CoalesceEmptyCalc extends AbstractProfilingNestedUnknownCalc {
+public class CoalesceEmptyCalc extends AbstractNestedUnknownCalc {
 
     private final Calc<?>[] calcs;
 

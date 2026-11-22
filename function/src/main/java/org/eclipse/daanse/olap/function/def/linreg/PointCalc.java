@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class PointCalc extends AbstractProfilingNestedDoubleCalc {
+public class PointCalc extends AbstractNestedDoubleCalc {
     private final DoubleCalc xPointCalc;
     private final TupleListCalc tupleListCalc;
     private final DoubleCalc yCalc;

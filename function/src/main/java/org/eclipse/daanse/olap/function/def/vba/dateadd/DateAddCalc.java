@@ -23,9 +23,9 @@ import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDateTimeCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDateTimeCalc;
 
-public class DateAddCalc extends AbstractProfilingNestedDateTimeCalc {
+public class DateAddCalc extends AbstractNestedDateTimeCalc {
 
     public static final long MILLIS_IN_A_DAY = 24L * 60 * 60 * 1000;
 

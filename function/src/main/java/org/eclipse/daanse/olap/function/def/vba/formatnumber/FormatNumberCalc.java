@@ -20,9 +20,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class FormatNumberCalc extends AbstractProfilingNestedStringCalc {
+public class FormatNumberCalc extends AbstractNestedStringCalc {
     protected FormatNumberCalc(Type type, Calc<?> expressionCalc, IntegerCalc numDigitsAfterDecimalCalc,
             IntegerCalc includeLeadingDigitCalc, IntegerCalc useParensForNegativeNumbersCalc,
             IntegerCalc groupDigitsCalc) {

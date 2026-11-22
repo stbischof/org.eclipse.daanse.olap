@@ -21,10 +21,10 @@ import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 
-public class SiblingsCalc extends AbstractProfilingNestedTupleListCalc {
+public class SiblingsCalc extends AbstractNestedTupleListCalc {
 
     protected SiblingsCalc(Type type, final MemberCalc memberCalc) {
         super(type, memberCalc);

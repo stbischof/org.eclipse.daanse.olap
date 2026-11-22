@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 
-public class Rank2MemberCalc extends AbstractProfilingNestedIntegerCalc {
+public class Rank2MemberCalc extends AbstractNestedIntegerCalc {
 
     public Rank2MemberCalc( Type type, MemberCalc memberCalc, Calc<?> listCalc ) {
       super( type,  memberCalc, listCalc );

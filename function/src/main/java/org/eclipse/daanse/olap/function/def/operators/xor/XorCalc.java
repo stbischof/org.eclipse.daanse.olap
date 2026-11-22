@@ -17,9 +17,9 @@ package org.eclipse.daanse.olap.function.def.operators.xor;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 
-public class XorCalc extends AbstractProfilingNestedBooleanCalc {
+public class XorCalc extends AbstractNestedBooleanCalc {
 
     protected XorCalc(Type type, final BooleanCalc calc0, final BooleanCalc calc1) {
         super(type, calc0, calc1);

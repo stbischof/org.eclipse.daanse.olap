@@ -18,10 +18,10 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class GreaterOrEqualCalc extends AbstractProfilingNestedBooleanCalc {
+public class GreaterOrEqualCalc extends AbstractNestedBooleanCalc {
 
     protected GreaterOrEqualCalc(Type type, final DoubleCalc calc0, final DoubleCalc calc1) {
         super(type, calc0, calc1);

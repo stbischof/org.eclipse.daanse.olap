@@ -22,10 +22,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 
-public class LastPeriodsCalc extends AbstractProfilingNestedTupleListCalc {
+public class LastPeriodsCalc extends AbstractNestedTupleListCalc {
 
     public LastPeriodsCalc(Type type, MemberCalc memberCalc, IntegerCalc indexValueCalc) {
         super(type, memberCalc, indexValueCalc);

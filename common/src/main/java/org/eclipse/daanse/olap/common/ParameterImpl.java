@@ -44,8 +44,8 @@ import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.StringType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 
 /**
@@ -292,7 +292,7 @@ public class ParameterImpl
      * @see MemberListParameterCalc
      */
     private static class ParameterCalc
-        extends AbstractProfilingNestedUnknownCalc {
+        extends AbstractNestedUnknownCalc {
 
         private final ParameterSlot slot;
 
@@ -326,7 +326,7 @@ public class ParameterImpl
      * @see ParameterCalc
      */
     private static class MemberListParameterCalc
-        extends AbstractProfilingNestedTupleListCalc {
+        extends AbstractNestedTupleListCalc {
 
         private final ParameterSlot slot;
 

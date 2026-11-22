@@ -20,7 +20,7 @@ import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.StringType;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.query.component.NullLiteralImpl;
 
 /**
@@ -60,7 +60,7 @@ public final class ConfigurationParameter extends ParameterImpl {
 
     @Override
     public Calc compile(ExpressionCompiler compiler) {
-        return new AbstractProfilingNestedUnknownCalc(getType()) {
+        return new AbstractNestedUnknownCalc(getType()) {
             @Override
             public Calc[] getChildCalcs() {
                 return new Calc[0];

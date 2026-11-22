@@ -27,7 +27,8 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.profile.ProfilingCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.fun.sort.SortKeySpec;
@@ -36,7 +37,7 @@ import org.eclipse.daanse.olap.fun.sort.Sorter.SorterFlag;
 import org.eclipse.daanse.olap.calc.base.type.member.MemberOrderKeyCalc;
 import org.eclipse.daanse.olap.function.def.order.OrderFunDef.CalcWithDual;
 
-public class OrderCurrentMemberCalc  extends AbstractProfilingNestedTupleListCalc implements CalcWithDual {
+public class OrderCurrentMemberCalc  extends AbstractNestedTupleListCalc implements CalcWithDual {
     private final TupleIteratorCalc<?> tupleIteratorCalc;
     private final Calc<?> sortKeyCalc;
     private final List<SortKeySpec> keySpecList;
@@ -180,7 +181,7 @@ public class OrderCurrentMemberCalc  extends AbstractProfilingNestedTupleListCal
       while ( iter.hasNext() ) {
         SortKeySpec key = iter.next();
         Calc<?> expCalc = key.getKey();
-        if ( expCalc instanceof MemberOrderKeyCalc calc) {
+        if ( ProfilingCalc.unwrap(expCalc) instanceof MemberOrderKeyCalc calc) {
           Calc<?>[] calcs = calc.getChildCalcs();
           MemberCalc memberCalc = (MemberCalc) calcs[0];
           if ( memberCalc instanceof org.eclipse.daanse.olap.api.calc.ConstantCalc || !listHierarchies.contains( memberCalc.getType()

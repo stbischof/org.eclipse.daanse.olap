@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class FVCalc extends AbstractProfilingNestedDoubleCalc {
+public class FVCalc extends AbstractNestedDoubleCalc {
     protected FVCalc(Type type, DoubleCalc rateCalc, DoubleCalc nPerCalc, DoubleCalc pmtCalc, DoubleCalc pvCalc,
             BooleanCalc typeCalc) {
         super(type, rateCalc, nPerCalc, pmtCalc, pvCalc, typeCalc);

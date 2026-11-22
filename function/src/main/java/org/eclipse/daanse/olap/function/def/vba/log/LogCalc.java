@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.log;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class LogCalc extends AbstractProfilingNestedDoubleCalc {
+public class LogCalc extends AbstractNestedDoubleCalc {
 
     protected LogCalc(Type type, final DoubleCalc numberCalc) {
         super(type, numberCalc);

@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractCalc;
 
-public class NonNativeCalc<E>  extends AbstractProfilingCalc<E> implements Calc<E> {
+public class NonNativeCalc<E>  extends AbstractCalc<E> implements Calc<E> {
     final Calc<E> parent;
     final boolean nativeEnabled;
 

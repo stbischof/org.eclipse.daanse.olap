@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class MinusPrefixCalc extends AbstractProfilingNestedDoubleCalc {
+public class MinusPrefixCalc extends AbstractNestedDoubleCalc {
 
     protected MinusPrefixCalc(Type type, final DoubleCalc calc) {
         super(type, calc);

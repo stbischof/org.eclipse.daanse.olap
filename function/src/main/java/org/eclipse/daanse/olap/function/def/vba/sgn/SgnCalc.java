@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.sgn;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 
-public class SgnCalc extends AbstractProfilingNestedIntegerCalc {
+public class SgnCalc extends AbstractNestedIntegerCalc {
 
     protected SgnCalc(Type type, final DoubleCalc numberCalc) {
         super(type, numberCalc);

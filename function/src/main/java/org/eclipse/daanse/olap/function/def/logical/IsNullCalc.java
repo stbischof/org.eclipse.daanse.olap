@@ -18,10 +18,10 @@ import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.KeyMember;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 import org.eclipse.daanse.olap.common.Util;
 
-public class IsNullCalc extends AbstractProfilingNestedBooleanCalc {
+public class IsNullCalc extends AbstractNestedBooleanCalc {
 
     protected IsNullCalc(Type type, final MemberCalc memberCalc) {
         super(type, memberCalc);

@@ -20,12 +20,12 @@ import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.util.type.TypeUtil;
 
-public class CastCalc extends AbstractProfilingNestedUnknownCalc {
+public class CastCalc extends AbstractNestedUnknownCalc {
     private final Calc<?> calc;
     private final Type targetType;
     private final DataType targetCategory;

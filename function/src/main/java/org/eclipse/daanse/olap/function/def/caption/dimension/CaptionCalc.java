@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DimensionCalc;
 import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class CaptionCalc extends AbstractProfilingNestedStringCalc {
+public class CaptionCalc extends AbstractNestedStringCalc {
 
     protected CaptionCalc(Type type, final DimensionCalc dimensionCalc) {
         super(type, dimensionCalc);

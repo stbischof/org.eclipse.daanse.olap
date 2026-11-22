@@ -17,10 +17,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class StripCalculatedMembersCalc extends AbstractProfilingNestedTupleListCalc {
+public class StripCalculatedMembersCalc extends AbstractNestedTupleListCalc {
 
     protected StripCalculatedMembersCalc(Type type, final TupleListCalc tupleListCalc) {
         super(type, tupleListCalc);

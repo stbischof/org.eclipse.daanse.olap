@@ -21,10 +21,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class SetToStrCalc extends AbstractProfilingNestedStringCalc {
+public class SetToStrCalc extends AbstractNestedStringCalc {
 
     protected SetToStrCalc(Type type, final TupleListCalc tupleListCalc) {
         super(type, tupleListCalc);

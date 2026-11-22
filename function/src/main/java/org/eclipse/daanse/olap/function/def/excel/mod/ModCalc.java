@@ -16,10 +16,10 @@ package org.eclipse.daanse.olap.function.def.excel.mod;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 
-public class ModCalc extends AbstractProfilingNestedDoubleCalc {
+public class ModCalc extends AbstractNestedDoubleCalc {
 
     protected ModCalc(Type type, Calc<?> calc0, Calc<?> calc1) {
         super(type, calc0, calc1);

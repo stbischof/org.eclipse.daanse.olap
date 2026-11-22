@@ -19,11 +19,11 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class ChildrenCalc extends AbstractProfilingNestedTupleListCalc {
+public class ChildrenCalc extends AbstractNestedTupleListCalc {
 
     protected ChildrenCalc(Type type, final MemberCalc memberCalc) {
         super(type, new Calc[] { memberCalc }, false);

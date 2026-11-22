@@ -20,10 +20,10 @@ import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.element.Cube;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedHierarchyCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedHierarchyCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class DimensionNumericCalc extends AbstractProfilingNestedHierarchyCalc {
+public class DimensionNumericCalc extends AbstractNestedHierarchyCalc {
 
 	public DimensionNumericCalc(Type type, IntegerCalc integerCalc) {
 		super(type, integerCalc);

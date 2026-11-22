@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class IifStringCalc extends AbstractProfilingNestedStringCalc {
+public class IifStringCalc extends AbstractNestedStringCalc {
 
     public IifStringCalc(Type type, BooleanCalc booleanCalc, StringCalc calc1, StringCalc calc2) {
         super(type, booleanCalc, calc1, calc2);

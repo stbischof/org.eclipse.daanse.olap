@@ -28,13 +28,13 @@ import org.eclipse.daanse.olap.api.evaluator.NativeEvaluator;
 import org.eclipse.daanse.olap.api.execution.Execution;
 import org.eclipse.daanse.olap.api.execution.ExecutionContext;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleIteratorCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleIteratorCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractTupleCursor;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractTupleIterable;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.util.CancellationChecker;
 
-public class CrossJoinIterCalc extends AbstractProfilingNestedTupleIteratorCalc {
+public class CrossJoinIterCalc extends AbstractNestedTupleIteratorCalc {
     private ResolvedFunCall call;
     private int ctag;
     public CrossJoinIterCalc( ResolvedFunCall call, Calc[] calcs, int ctag ) {

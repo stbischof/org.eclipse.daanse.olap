@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.sin;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class SinCalc extends AbstractProfilingNestedDoubleCalc {
+public class SinCalc extends AbstractNestedDoubleCalc {
 
     protected SinCalc(Type type, final DoubleCalc numberCalc) {
         super(type, numberCalc);

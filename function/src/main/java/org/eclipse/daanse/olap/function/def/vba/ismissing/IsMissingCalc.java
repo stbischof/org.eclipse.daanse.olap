@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.ismissing;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 
-public class IsMissingCalc extends AbstractProfilingNestedBooleanCalc {
+public class IsMissingCalc extends AbstractNestedBooleanCalc {
 
     protected IsMissingCalc(Type type, final Calc<?> varNameCalc) {
         super(type, varNameCalc);

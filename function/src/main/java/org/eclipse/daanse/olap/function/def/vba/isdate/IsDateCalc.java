@@ -21,10 +21,10 @@ import java.util.Date;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 
-public class IsDateCalc extends AbstractProfilingNestedBooleanCalc {
+public class IsDateCalc extends AbstractNestedBooleanCalc {
 
     protected IsDateCalc(Type type, Calc<?> doubleCalc) {
         super(type, doubleCalc);

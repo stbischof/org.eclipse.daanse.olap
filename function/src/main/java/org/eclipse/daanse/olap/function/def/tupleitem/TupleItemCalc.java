@@ -19,10 +19,10 @@ import org.eclipse.daanse.olap.api.calc.TupleCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.TupleType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class TupleItemCalc extends AbstractProfilingNestedMemberCalc{
+public class TupleItemCalc extends AbstractNestedMemberCalc{
 
     private final Member[] nullTupleMembers;
     

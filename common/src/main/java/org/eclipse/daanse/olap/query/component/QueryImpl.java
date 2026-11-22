@@ -103,7 +103,7 @@ import org.eclipse.daanse.olap.api.type.MemberType;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.TupleType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.profile.SimpleCalculationProfileWriter;
+import org.eclipse.daanse.olap.api.calc.profile.SimpleCalculationProfileWriter;
 import org.eclipse.daanse.olap.common.AbstractQueryPart;
 import org.eclipse.daanse.olap.common.ConfigConstants;
 import org.eclipse.daanse.olap.common.DelegatingCatalogReader;

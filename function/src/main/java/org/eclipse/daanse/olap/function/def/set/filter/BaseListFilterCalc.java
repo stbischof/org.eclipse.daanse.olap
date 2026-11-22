@@ -21,10 +21,10 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.evaluator.NativeEvaluator;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 
-public abstract class BaseListFilterCalc extends AbstractProfilingNestedTupleListCalc {
+public abstract class BaseListFilterCalc extends AbstractNestedTupleListCalc {
     private ResolvedFunCall call;
 
     protected BaseListFilterCalc(ResolvedFunCall call, Calc<?>[] calcs) {

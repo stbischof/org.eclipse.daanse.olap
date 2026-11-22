@@ -23,11 +23,11 @@ import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.sort.Sorter;
 
-public class DescendantsByDepthCalc extends AbstractProfilingNestedTupleListCalc {
+public class DescendantsByDepthCalc extends AbstractNestedTupleListCalc {
 
     private Flag flag;
 

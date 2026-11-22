@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 
-public class UnknownToIntegerCalc extends AbstractProfilingNestedIntegerCalc {
+public class UnknownToIntegerCalc extends AbstractNestedIntegerCalc {
 
 	public UnknownToIntegerCalc(Type type, Calc<?> calc) {
 		super(type, calc);

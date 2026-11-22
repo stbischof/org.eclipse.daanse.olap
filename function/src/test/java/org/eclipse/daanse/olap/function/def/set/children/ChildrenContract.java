@@ -61,7 +61,7 @@ public final class ChildrenContract {
             .dependsOn("[Geo].[All Geo].[North].Children")
             .dependsOn("[Geo].[All Geo].[North].Parent.Children")
 
-            // ChildrenCalc explicitly passes mutable = false to AbstractProfilingNestedTupleListCalc
+            // ChildrenCalc explicitly passes mutable = false to AbstractNestedTupleListCalc
             // ("The list is immutable, hence 'false' above" — its own comment), so it reports
             // ResultStyle.LIST, not MUTABLE_LIST: no independentMutableList() claim here.
             .resultStyle("[Geo].[All Geo].[North].Children", ResultStyle.LIST, ResultStyle.LIST)

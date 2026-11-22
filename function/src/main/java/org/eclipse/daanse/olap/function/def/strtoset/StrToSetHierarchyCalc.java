@@ -18,12 +18,12 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.exceptions.EmptyExpressionWasSpecifiedException;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class StrToSetHierarchyCalc extends AbstractProfilingNestedTupleListCalc {
+public class StrToSetHierarchyCalc extends AbstractNestedTupleListCalc {
 
     private Hierarchy hierarchy;
 

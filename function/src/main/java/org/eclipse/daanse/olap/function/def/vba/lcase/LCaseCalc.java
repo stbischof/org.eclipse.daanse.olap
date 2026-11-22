@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.lcase;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class LCaseCalc extends AbstractProfilingNestedStringCalc {
+public class LCaseCalc extends AbstractNestedStringCalc {
 
     protected LCaseCalc(Type type, final StringCalc strCalc) {
         super(type, strCalc);

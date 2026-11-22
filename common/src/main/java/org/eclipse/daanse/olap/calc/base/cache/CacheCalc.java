@@ -28,7 +28,7 @@ import org.eclipse.daanse.olap.api.cache.ExpCacheDescriptor;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
 /**
  * Calculation which retrieves the value of an underlying calculation from
@@ -37,7 +37,7 @@ import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCa
  * @author jhyde
  * @since Oct 10, 2005
  */
-public class CacheCalc extends AbstractProfilingNestedUnknownCalc {
+public class CacheCalc extends AbstractNestedUnknownCalc {
 	private final ExpCacheDescriptor key;
 
 	public CacheCalc(Type type, ExpCacheDescriptor key) {

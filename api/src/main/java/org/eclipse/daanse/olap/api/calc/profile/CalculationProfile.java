@@ -14,7 +14,6 @@
 package org.eclipse.daanse.olap.api.calc.profile;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,24 +21,36 @@ import java.util.Optional;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
 import org.eclipse.daanse.olap.api.type.Type;
 
+/**
+ * The profile of one calc and, below it, of its children: the one model the text view, {@code EXPLAIN PLAN FOR} and
+ * a handler read.
+ */
 public interface CalculationProfile {
 
     Class<?> clazz();
+
+    /** The function the calc computes, as the compiler names it; empty where nobody named it. */
+    Optional<String> name();
 
     Type type();
 
     ResultStyle resultStyle();
 
-    Optional<Instant> start();
+    /** The time of all evaluations together, in nanoseconds: the pauses between them do not count. */
+    long nanos();
 
-    Optional<Instant> end();
+    /** The elements of the sets the calc returned, summed over its evaluations; 0 for a calc of one value. */
+    long elements();
+
+    /** The squares of those element counts, summed: with {@link #elements()} the spread of the set sizes. */
+    long elementsSquared();
 
     Map<String, Object> additionalValues();
 
-    List<CalcEvaluationProfile> evaluationProfiles();
-
     List<CalculationProfile> childProfiles();
 
-    Duration duration();
-
+    /** The time of all evaluations together, {@link #nanos()}. */
+    default Duration duration() {
+        return Duration.ofNanos(nanos());
+    }
 }

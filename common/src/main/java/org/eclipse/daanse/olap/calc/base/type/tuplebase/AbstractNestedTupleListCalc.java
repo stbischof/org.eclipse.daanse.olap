@@ -29,7 +29,7 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
 /**
  * Abstract implementation of the ListCalc interface.
@@ -41,7 +41,7 @@ import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
  * @author jhyde
  * @since Sep 27, 2005
  */
-public abstract class AbstractProfilingNestedTupleListCalc extends AbstractProfilingNestedCalc<TupleList> implements TupleListCalc {
+public abstract class AbstractNestedTupleListCalc extends AbstractNestedCalc<TupleList> implements TupleListCalc {
     private final boolean mutable;
 
     /**
@@ -51,7 +51,7 @@ public abstract class AbstractProfilingNestedTupleListCalc extends AbstractProfi
      * @param type  Type
      * @param calcs List of child compiled expressions (for dependency analysis)
      */
-    protected AbstractProfilingNestedTupleListCalc(Type type, Calc... calcs) {
+    protected AbstractNestedTupleListCalc(Type type, Calc... calcs) {
         this(type, calcs, true);
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractProfilingNestedTupleListCalc extends AbstractProfi
      * @param calcs   List of child compiled expressions (for dependency analysis)
      * @param mutable Whether the list is mutable
      */
-    protected AbstractProfilingNestedTupleListCalc(Type type, Calc[] calcs, boolean mutable) {
+    protected AbstractNestedTupleListCalc(Type type, Calc[] calcs, boolean mutable) {
         super(type, calcs);
         this.mutable = mutable;
         assert type instanceof SetType : "expecting a set: " + getType();

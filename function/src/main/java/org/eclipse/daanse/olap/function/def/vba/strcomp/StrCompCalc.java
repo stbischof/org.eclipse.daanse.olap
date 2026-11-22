@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 
-public class StrCompCalc extends AbstractProfilingNestedIntegerCalc {
+public class StrCompCalc extends AbstractNestedIntegerCalc {
 
     protected StrCompCalc(Type type, final StringCalc string1Calc, final StringCalc string2Calc, final IntegerCalc compareCalc) {
         super(type, string1Calc, string2Calc,compareCalc);

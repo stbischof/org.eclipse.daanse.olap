@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.calc.base.constant;
 import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.MemberType;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingConstantCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractConstantCalc;
 
-public class ConstantMemberCalc extends AbstractProfilingConstantCalc<Member> implements MemberCalc {
+public class ConstantMemberCalc extends AbstractConstantCalc<Member> implements MemberCalc {
 
 	public ConstantMemberCalc(MemberType type, Member value) {
 		super(value, type);

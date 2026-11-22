@@ -86,7 +86,7 @@ import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.api.type.ScalarType;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.calc.base.cache.CacheCalc;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.DelegatingTupleList;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.ListTupleList;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
@@ -310,7 +310,7 @@ public abstract class ResultImpl extends ResultBase {
                         null);
         SetType setType = new SetType(memberType1);
         org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc tupleListCalc =
-                new org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc(
+                new org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc(
                         setType, new Calc[0])
                 {
                   @Override
@@ -479,7 +479,7 @@ public abstract class ResultImpl extends ResultBase {
 
           final List<Member> prevSlicerMembers = new ArrayList<>();
 
-          final Calc calcCached = new AbstractProfilingNestedUnknownCalc( query.getSlicerCalc().getType() ) {
+          final Calc calcCached = new AbstractNestedUnknownCalc( query.getSlicerCalc().getType() ) {
             @Override
 			public Object evaluateInternal( Evaluator evaluator ) {
               try {

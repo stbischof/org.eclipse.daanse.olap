@@ -27,11 +27,11 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.MatchType;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.util.format.Format;
 
-public class CurrentDateMemberCalc extends AbstractProfilingNestedCalc<Object> {
+public class CurrentDateMemberCalc extends AbstractNestedCalc<Object> {
 
     private MatchType matchType;
     private HierarchyCalc hierarchyCalc;

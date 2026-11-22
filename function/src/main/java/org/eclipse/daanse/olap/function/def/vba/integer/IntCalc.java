@@ -22,10 +22,10 @@ import org.eclipse.daanse.olap.api.result.NotLoaded;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 
-public class IntCalc extends AbstractProfilingNestedIntegerCalc {
+public class IntCalc extends AbstractNestedIntegerCalc {
 
     protected IntCalc(Type type, Calc<?> doubleCalc) {
         super(type, doubleCalc);

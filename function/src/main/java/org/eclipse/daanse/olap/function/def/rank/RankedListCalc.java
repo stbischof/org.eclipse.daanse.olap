@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.rank;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
-public class RankedListCalc extends AbstractProfilingNestedCalc {
+public class RankedListCalc extends AbstractNestedCalc {
     private final TupleListCalc tupleListCalc;
     private final boolean tuple;
 

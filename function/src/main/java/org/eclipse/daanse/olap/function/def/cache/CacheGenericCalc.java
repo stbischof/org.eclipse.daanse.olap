@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
-public class CacheGenericCalc extends AbstractProfilingNestedUnknownCalc {
+public class CacheGenericCalc extends AbstractNestedUnknownCalc {
     private final ExpCacheDescriptor cacheDescriptor;
     
     protected CacheGenericCalc(Type type, ExpCacheDescriptor cacheDescriptor) {

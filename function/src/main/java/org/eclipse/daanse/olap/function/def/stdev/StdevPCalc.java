@@ -19,12 +19,12 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.function.core.AbstractAggregateFunDef;
 
-public class StdevPCalc extends AbstractProfilingNestedDoubleCalc {
+public class StdevPCalc extends AbstractNestedDoubleCalc {
 
     public StdevPCalc(Type type, TupleListCalc tupleListCalc, Calc<?> calc) {
         super(type, tupleListCalc, calc);

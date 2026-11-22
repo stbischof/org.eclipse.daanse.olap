@@ -19,11 +19,11 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-class XtdWithMemberCalc extends AbstractProfilingNestedTupleListCalc {
+class XtdWithMemberCalc extends AbstractNestedTupleListCalc {
 
 	private static final String TIMING_NAME = XtdWithMemberCalc.class.getSimpleName();
 	private final Level level;

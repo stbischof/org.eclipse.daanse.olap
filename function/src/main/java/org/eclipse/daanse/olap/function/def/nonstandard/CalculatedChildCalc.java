@@ -22,9 +22,9 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 
-public class CalculatedChildCalc extends AbstractProfilingNestedMemberCalc {
+public class CalculatedChildCalc extends AbstractNestedMemberCalc {
 
     protected CalculatedChildCalc(Type type, final MemberCalc memberCalc, final StringCalc stringCalc) {
         super(type, memberCalc, stringCalc);

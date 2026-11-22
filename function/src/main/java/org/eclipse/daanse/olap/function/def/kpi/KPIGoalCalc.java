@@ -22,10 +22,10 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.exception.OlapRuntimeException;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class KPIGoalCalc  extends AbstractProfilingNestedMemberCalc {
+public class KPIGoalCalc  extends AbstractNestedMemberCalc {
 
     protected KPIGoalCalc(Type type, StringCalc kpiCalc) {
         super(type, kpiCalc);

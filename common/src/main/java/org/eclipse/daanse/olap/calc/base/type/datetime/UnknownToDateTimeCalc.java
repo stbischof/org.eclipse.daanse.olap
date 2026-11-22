@@ -21,9 +21,9 @@ import java.util.Date;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDateTimeCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDateTimeCalc;
 
-public class UnknownToDateTimeCalc extends AbstractProfilingNestedDateTimeCalc {
+public class UnknownToDateTimeCalc extends AbstractNestedDateTimeCalc {
 
 	public UnknownToDateTimeCalc(Type type, Calc<?> calc) {
 		super(type, calc);

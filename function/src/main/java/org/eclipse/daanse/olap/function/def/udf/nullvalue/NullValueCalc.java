@@ -15,9 +15,9 @@ package org.eclipse.daanse.olap.function.def.udf.nullvalue;
 
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class NullValueCalc extends AbstractProfilingNestedDoubleCalc {
+public class NullValueCalc extends AbstractNestedDoubleCalc {
 
     protected NullValueCalc(Type type) {
         super(type);

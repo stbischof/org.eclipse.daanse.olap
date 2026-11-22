@@ -31,7 +31,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.ScalarType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.calc.base.value.CurrentValueUnknownCalc;
 
 /**
@@ -48,7 +48,7 @@ import org.eclipse.daanse.olap.calc.base.value.CurrentValueUnknownCalc;
  * @author jhyde
  * @since Sep 27, 2005
  */
-public class MemberValueCalc extends AbstractProfilingNestedUnknownCalc {
+public class MemberValueCalc extends AbstractNestedUnknownCalc {
     private final MemberCalc memberCalc;
     private final boolean nullCheck;
 
@@ -86,7 +86,7 @@ public class MemberValueCalc extends AbstractProfilingNestedUnknownCalc {
      *   evaluator context to each resulting member, then evaluate the current
      *   context
      */
-    public static AbstractProfilingNestedUnknownCalc create(
+    public static AbstractNestedUnknownCalc create(
     		 Type type,
             MemberCalc[] memberCalcs,
             boolean nullCheck)

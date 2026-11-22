@@ -22,9 +22,9 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleCalc;
 
-public class SetItemTupleCalc extends AbstractProfilingNestedTupleCalc{
+public class SetItemTupleCalc extends AbstractNestedTupleCalc{
 
     private final TupleListCalc tupleListCalc;
     private final IntegerCalc indexCalc;

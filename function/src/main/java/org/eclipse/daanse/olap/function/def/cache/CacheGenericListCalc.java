@@ -21,10 +21,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleIterable;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 
-public class CacheGenericListCalc extends AbstractProfilingNestedTupleListCalc {
+public class CacheGenericListCalc extends AbstractNestedTupleListCalc {
     private final ExpCacheDescriptor cacheDescriptor;
 
     protected CacheGenericListCalc(Type type, ExpCacheDescriptor cacheDescriptor) {

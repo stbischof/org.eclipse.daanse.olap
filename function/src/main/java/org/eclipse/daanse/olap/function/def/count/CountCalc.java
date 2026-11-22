@@ -21,11 +21,11 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.function.core.AbstractAggregateFunDef;
 
-public class CountCalc extends AbstractProfilingNestedIntegerCalc {
+public class CountCalc extends AbstractNestedIntegerCalc {
 
     private final boolean includeEmpty;
 

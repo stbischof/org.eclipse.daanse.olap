@@ -26,13 +26,14 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.profile.ProfilingCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.DaanseEvaluationException;
 import org.eclipse.daanse.olap.function.def.set.level.LevelMembersCalc;
 
-public class AddCalculatedMembersCalc extends AbstractProfilingNestedTupleListCalc {
+public class AddCalculatedMembersCalc extends AbstractNestedTupleListCalc {
 
     protected AddCalculatedMembersCalc(Type type, final TupleListCalc tupleListCalc) {
         super(type, tupleListCalc);
@@ -42,7 +43,7 @@ public class AddCalculatedMembersCalc extends AbstractProfilingNestedTupleListCa
     public TupleList evaluateInternal(Evaluator evaluator) {
         TupleListCalc tc = getChildCalc(0, TupleListCalc.class);
         final TupleList list = tc.evaluate(evaluator);
-        if ( tc instanceof LevelMembersCalc ) {
+        if ( ProfilingCalc.unwrap(tc) instanceof LevelMembersCalc ) {
             TupleList result = TupleCollections.createList(list.getArity());
             int i = 0;
             int n = list.size();

@@ -22,11 +22,11 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 
-public class NonEmptyCalc extends AbstractProfilingNestedTupleListCalc {
+public class NonEmptyCalc extends AbstractNestedTupleListCalc {
 
     public NonEmptyCalc(
             Type type,

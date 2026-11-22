@@ -23,10 +23,10 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class Rank3TupleCalc extends AbstractProfilingNestedIntegerCalc {
+public class Rank3TupleCalc extends AbstractNestedIntegerCalc {
     private final ExpCacheDescriptor cacheDescriptor;
 
     public Rank3TupleCalc( Type type, TupleCalc tupleCalc, Calc<?> sortCalc,

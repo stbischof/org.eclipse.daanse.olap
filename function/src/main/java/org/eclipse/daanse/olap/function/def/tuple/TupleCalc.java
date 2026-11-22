@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.calc.TupleMemberCalcs;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleCalc;
 
-public class TupleCalc extends AbstractProfilingNestedTupleCalc implements TupleMemberCalcs {
+public class TupleCalc extends AbstractNestedTupleCalc implements TupleMemberCalcs {
     private final MemberCalc[] memberCalcs;
 
     public TupleCalc(ResolvedFunCall call, MemberCalc[] memberCalcs) {

@@ -27,7 +27,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleIteratorCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleIteratorCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractTupleCursor;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractTupleIterable;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
@@ -37,7 +37,7 @@ import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
  * yields a tuple or a set of tuples, and returns the result as a tuple
  * iterator.
  */
-public class ExprIterCalc  extends AbstractProfilingNestedTupleIteratorCalc {
+public class ExprIterCalc  extends AbstractNestedTupleIteratorCalc {
     private final TupleIteratorCalc[] tupleIteratorCalcs;
 
     public ExprIterCalc(

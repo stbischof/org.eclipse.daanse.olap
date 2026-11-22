@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class MIRRCalc extends AbstractProfilingNestedDoubleCalc {
+public class MIRRCalc extends AbstractNestedDoubleCalc {
 
     protected MIRRCalc(Type type, final Calc<?> valueArrayCalc, final DoubleCalc financeRateCalc, final DoubleCalc reinvestRateCalc) {
         super(type, valueArrayCalc, financeRateCalc, reinvestRateCalc);

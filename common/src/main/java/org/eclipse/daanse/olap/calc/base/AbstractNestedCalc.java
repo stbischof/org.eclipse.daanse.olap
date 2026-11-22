@@ -24,7 +24,7 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 
-public abstract class AbstractProfilingNestedCalc<E> extends AbstractProfilingCalc<E>
+public abstract class AbstractNestedCalc<E> extends AbstractCalc<E>
 		implements Calc<E> {
 
 	private final Calc<?>[] childCalcs;
@@ -40,7 +40,7 @@ public abstract class AbstractProfilingNestedCalc<E> extends AbstractProfilingCa
 	 * 
 	 * @param childCalcs Child Calcs that are needed to calculate this.
 	 */
-	protected AbstractProfilingNestedCalc(Type type, Calc<?>... childCalcs) {
+	protected AbstractNestedCalc(Type type, Calc<?>... childCalcs) {
 		super(type);
 
         this.childCalcs = childCalcs == null ? new Calc<?>[0] : childCalcs;

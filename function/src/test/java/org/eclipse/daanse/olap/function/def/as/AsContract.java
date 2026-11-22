@@ -71,7 +71,7 @@ public final class AsContract {
             // alias itself introduces no dependency of its own.
             .dependsOn("[Geo].Members as t")
 
-            // AsAliasCalc extends AbstractProfilingNestedTupleIteratorCalc, not the TupleList
+            // AsAliasCalc extends AbstractNestedTupleIteratorCalc, not the TupleList
             // base every other set-returning contract in this suite uses — it is iterator-shaped
             // by construction, so only ITERABLE is asserted here.
             .resultStyle("[Geo].Members as t", ITERABLE, ITERABLE)

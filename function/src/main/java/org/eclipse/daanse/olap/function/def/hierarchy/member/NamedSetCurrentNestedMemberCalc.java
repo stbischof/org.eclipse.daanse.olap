@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.query.component.NamedSetExpression;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 
-public class NamedSetCurrentNestedMemberCalc extends AbstractProfilingNestedMemberCalc {
+public class NamedSetCurrentNestedMemberCalc extends AbstractNestedMemberCalc {
     private NamedSetExpression namedSetExpr;
 
     protected NamedSetCurrentNestedMemberCalc(Type type, final NamedSetExpression namedSetExpr, Calc<?>[] calcs) {
