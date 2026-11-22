@@ -37,6 +37,11 @@
     <slf4j.version>2.0.9</slf4j.version>
     <caffeine.version>3.1.2</caffeine.version>
     <java.version>25</java.version>
+    <!-- AssertJ for every module; the parent manages assertj-core with a fixed version, which the
+         dependencyManagement below replaces -->
+    <assertj.version>3.27.7</assertj.version>
+    <!-- AssertJ 3.27 imports net.bytebuddy from 1.18 on; byte-buddy-agent follows the same property -->
+    <bytebuddy.version>1.18.3</bytebuddy.version>
   </properties>
 
   <repositories>
@@ -68,6 +73,17 @@
     <module>util.format</module>
     <module>testkit</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
