@@ -13,6 +13,7 @@ package org.eclipse.daanse.olap.calc.base.profile;
 
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler;
+import org.eclipse.daanse.olap.api.calc.profile.ProfileCounters;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.query.component.FunctionCall;
 import org.eclipse.daanse.olap.calc.base.compiler.DelegatingExpressionCompiler;
@@ -24,12 +25,17 @@ import org.eclipse.daanse.olap.calc.base.compiler.DelegatingExpressionCompiler;
  */
 public class ProfilingCompiler extends DelegatingExpressionCompiler {
 
-    public ProfilingCompiler(ExpressionCompiler compiler) {
+    private final ProfileCounters counters;
+
+    /** A compiler whose hulls also count every evaluation in {@code counters}, or only time it when that is null. */
+    public ProfilingCompiler(ExpressionCompiler compiler, ProfileCounters counters) {
         super(compiler);
+        this.counters = counters;
     }
 
     @Override
     protected Calc<?> afterCompile(Expression exp, Calc<?> calc, boolean mutable) {
-        return ProfilingCalc.wrap(calc, exp instanceof FunctionCall call ? call.getOperationAtom().name() : null);
+        return ProfilingCalc.wrap(calc, exp instanceof FunctionCall call ? call.getOperationAtom().name() : null,
+                counters);
     }
 }

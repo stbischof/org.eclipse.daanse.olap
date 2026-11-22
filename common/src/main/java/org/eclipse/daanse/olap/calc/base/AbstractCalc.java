@@ -58,7 +58,7 @@ public abstract class AbstractCalc<T> implements Calc<T> {
 	public CalculationProfile getCalculationProfile() {
 		final List<CalculationProfile> childProfiles = getChildProfiles();
 		Map<String, Object> profilingProperties = profilingProperties(new HashMap<String, Object>());
-		return new CalcProfileR(this.getClass(), Optional.empty(), getType(), getResultStyle(), 0, 0, 0,
+		return new CalcProfileR(this.getClass(), Optional.empty(), getType(), getResultStyle(), 0, 0, 0, 0,
 				profilingProperties, childProfiles);
 	}
 

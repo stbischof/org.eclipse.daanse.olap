@@ -126,7 +126,13 @@ public abstract class AbstractStatement implements Statement {
 
     @Override
 	public ProfileHandler getProfileHandler() {
-        return profileHandler;
+        if (profileHandler != null) {
+            return profileHandler;
+        }
+        // the handler the profiling scopes chose for the running query only; a statement keeps no scope decision
+        // past its query
+        org.eclipse.daanse.olap.api.query.component.Query query = getQuery();
+        return query == null ? null : query.getProfileHandler();
     }
 
     @Override

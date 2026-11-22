@@ -43,6 +43,14 @@ public interface ProfileHandler {
     public void explain(String plan, QueryTiming timing);
 
     /**
+     * The counters the hulls of a statement profiled into this handler count into at every evaluation, or
+     * {@code null} for a handler that only reads plans.
+     */
+    default ProfileCounters counters() {
+        return null;
+    }
+
+    /**
      * Called for each part of a statement that has finished executing, a named set, an axis, the slicer or the
      * query body, with the part's profile tree. The default renders the tree as text and hands it to
      * {@link #explain(String, QueryTiming)}; a handler that reads the numbers overrides this one.

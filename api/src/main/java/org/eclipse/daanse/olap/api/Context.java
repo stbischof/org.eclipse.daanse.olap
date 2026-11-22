@@ -121,6 +121,9 @@ public interface Context<C extends Connection> {
 
     void removeStatement(Statement internalStatement);
 
+    /** Profiling of this context's statements from the inside: scopes per connection, the sink, the decision. */
+    org.eclipse.daanse.olap.api.calc.profile.ProfilingControl getProfilingControl();
+
     EventBus getMonitor();
 
     List<Statement> getStatements(C connection);
@@ -169,7 +172,8 @@ public interface Context<C extends Connection> {
      */
     Evaluator createDummyEvaluator(Statement statement);
 
-    ExpressionCompiler createProfilingCompiler(ExpressionCompiler compiler);
+    ExpressionCompiler createProfilingCompiler(ExpressionCompiler compiler,
+            org.eclipse.daanse.olap.api.calc.profile.ProfileCounters counters);
 
     ExpressionCompiler createDependencyTestingCompiler(ExpressionCompiler compiler);
 

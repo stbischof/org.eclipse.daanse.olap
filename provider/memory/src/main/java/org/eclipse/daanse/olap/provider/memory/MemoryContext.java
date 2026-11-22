@@ -159,11 +159,6 @@ public class MemoryContext extends AbstractBasicContext<Connection> implements A
     }
 
     @Override
-    public ExpressionCompiler createProfilingCompiler(ExpressionCompiler compiler) {
-        return compiler;
-    }
-
-    @Override
     public ExpressionCompiler createDependencyTestingCompiler(ExpressionCompiler compiler) {
         return compiler;
     }

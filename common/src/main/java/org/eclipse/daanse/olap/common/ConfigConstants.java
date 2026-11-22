@@ -73,6 +73,11 @@ public class ConfigConstants {
     public static final String MEMBER_LIST_CACHE_MAX_WEIGHT = "memberListCacheMaxWeight";
     public static final String NATIVE_TUPLE_CACHE_MAX_TUPLES = "nativeTupleCacheMaxTuples";
     public static final String TEST_EXP_DEPENDENCIES = "testExpDependencies";
+    public static final String PROFILE_MODE = "profileMode";
+    public static final String PROFILE_SAMPLE_EVERY = "profileSampleEvery";
+    public static final String PROFILE_SINK = "profileSink";
+    public static final String PROFILE_DETAIL = "profileDetail";
+    public static final String PROFILE_TOP_N = "profileTopN";
     public static final String READ_AGGREGATES = "readAggregates";
     public static final String ALERT_NATIVE_EVALUATION_UNSUPPORTED = "alertNativeEvaluationUnsupported";
     public static final String CROSS_JOIN_OPTIMIZER_SIZE = "crossJoinOptimizerSize";
@@ -125,6 +130,11 @@ public class ConfigConstants {
     public static final int LEVEL_PRE_CACHE_THRESHOLD_DEFAULT_VALUE = 300;
     public static final int MAX_CONSTRAINTS_DEFAULT_VALUE = 1000;
     public static final int TEST_EXP_DEPENDENCIES_DEFAULT_VALUE = 0;
+    public static final String PROFILE_MODE_DEFAULT_VALUE = "off";
+    public static final int PROFILE_SAMPLE_EVERY_DEFAULT_VALUE = 100;
+    public static final String PROFILE_SINK_DEFAULT_VALUE = "log";
+    public static final String PROFILE_DETAIL_DEFAULT_VALUE = "full";
+    public static final int PROFILE_TOP_N_DEFAULT_VALUE = 20;
     public static final boolean READ_AGGREGATES_DEFAULT_VALUE = false;
     public static final String ALERT_NATIVE_EVALUATION_UNSUPPORTED_DEFAULT_VALUE = "OFF";
     public static final int CROSS_JOIN_OPTIMIZER_SIZE_DEFAULT_VALUE = 0;

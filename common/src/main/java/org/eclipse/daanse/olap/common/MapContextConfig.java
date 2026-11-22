@@ -432,6 +432,32 @@ public class MapContextConfig implements ContextConfig {
                 Integer.class);
     }
 
+    @Override
+    public String profileMode() {
+        return value(ConfigConstants.PROFILE_MODE, ConfigConstants.PROFILE_MODE_DEFAULT_VALUE, String.class);
+    }
+
+    @Override
+    public int profileSampleEvery() {
+        return value(ConfigConstants.PROFILE_SAMPLE_EVERY, ConfigConstants.PROFILE_SAMPLE_EVERY_DEFAULT_VALUE,
+                Integer.class);
+    }
+
+    @Override
+    public String profileSink() {
+        return value(ConfigConstants.PROFILE_SINK, ConfigConstants.PROFILE_SINK_DEFAULT_VALUE, String.class);
+    }
+
+    @Override
+    public String profileDetail() {
+        return value(ConfigConstants.PROFILE_DETAIL, ConfigConstants.PROFILE_DETAIL_DEFAULT_VALUE, String.class);
+    }
+
+    @Override
+    public int profileTopN() {
+        return value(ConfigConstants.PROFILE_TOP_N, ConfigConstants.PROFILE_TOP_N_DEFAULT_VALUE, Integer.class);
+    }
+
     // --- naming, ordering and result shape -----------------------------
 
     @Override

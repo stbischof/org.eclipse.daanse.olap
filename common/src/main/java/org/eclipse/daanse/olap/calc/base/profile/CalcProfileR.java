@@ -22,6 +22,6 @@ import org.eclipse.daanse.olap.api.calc.profile.CalculationProfile;
 import org.eclipse.daanse.olap.api.type.Type;
 
 public record CalcProfileR(Class<?> clazz, Optional<String> name, Type type, ResultStyle resultStyle,
-		long nanos, long elements, long elementsSquared,
+		long nanos, long ownNanos, long elements, long elementsSquared,
 		Map<String, Object> additionalValues, List<CalculationProfile> childProfiles) implements CalculationProfile {
 }

@@ -35,10 +35,14 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleCursor;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.execution.Execution;
+import org.eclipse.daanse.olap.api.monitor.event.NonEmptyEndEvent;
+import org.eclipse.daanse.olap.api.monitor.event.NonEmptyStartEvent;
+import org.eclipse.daanse.olap.api.query.component.QueryAxis;
 import org.eclipse.daanse.olap.api.result.Cell;
 import org.eclipse.daanse.olap.api.result.Position;
 import org.eclipse.daanse.olap.api.result.Result;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
+import org.eclipse.daanse.olap.execution.ExecutionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +53,36 @@ import org.slf4j.LoggerFactory;
   public class NonEmptyResult extends ResultBase {
 
   private static final Logger LOGGER = LoggerFactory.getLogger( NonEmptyResult.class );
+
+    /**
+     * The result with the empty positions taken off every axis the query runs NON EMPTY, the result itself when it
+     * runs none. The step is one for the execution, as Analysis Services counts it (one Calculate Non Empty Begin and
+     * End for a query, however many of its axes are NON EMPTY): a {@link NonEmptyStartEvent} before the first axis and
+     * a {@link NonEmptyEndEvent} after the last, on the execution's context.
+     *
+     * @param axes the axes of the query, in their order
+     */
+    public static Result ofAxes( Result result, Execution execution, QueryAxis[] axes ) {
+      if ( java.util.Arrays.stream( axes ).noneMatch( QueryAxis::isNonEmpty ) ) {
+        return result;
+      }
+      final ExecutionImpl reporting = execution instanceof ExecutionImpl own ? own : null;
+      if ( reporting != null ) {
+        reporting.report( new NonEmptyStartEvent( reporting.eventCommon() ) );
+      }
+      Result filtered = result;
+      int count = 0;
+      for ( int i = 0; i < axes.length; i++ ) {
+        if ( axes[ i ].isNonEmpty() ) {
+          filtered = new NonEmptyResult( filtered, execution, i );
+          count++;
+        }
+      }
+      if ( reporting != null ) {
+        reporting.report( new NonEmptyEndEvent( reporting.eventCommon(), count ) );
+      }
+      return filtered;
+    }
 
     public final Result underlying;
     private final int axis;
