@@ -188,6 +188,9 @@ public class QueryImpl extends AbstractQueryPart implements Query {
     private Subcube subcube;
 
     private final Statement statement;
+
+    /** The handler the profiling scopes chose for this query, or null; see {@link #getProfileHandler()}. */
+    private ProfileHandler scopeProfileHandler;
     public Calc<?>[] axisCalcs;
     public Calc<?> slicerCalc;
 
@@ -335,23 +338,19 @@ public class QueryImpl extends AbstractQueryPart implements Query {
         this.strictValidation = strictValidation;
         this.alertedNonNativeFunDefs = new HashSet<>();
         statement.setQuery(this);
-        resolve();
-
-        if (Util.PROFILE_LOGGER.isDebugEnabled()
-            && statement.getProfileHandler() == null)
-        {
-            statement.enableProfiling(
-                new ProfileHandler() {
-                    @Override
-					public void explain(String plan, QueryTiming timing) {
-                        if (timing != null) {
-                            plan += "\n" + timing;
-                        }
-                        Util.PROFILE_LOGGER.debug(plan);
-                    }
-                }
-            );
+        // decided once, before the query compiles in resolve(): a statement without its own handler is profiled
+        // when its connection, its cube or the context says so (profiling scopes); the profile logger at DEBUG
+        // profiles every statement as before
+        if (statement.getProfileHandler() == null) {
+            this.scopeProfileHandler = getConnection().getContext().getProfilingControl()
+                    .handlerFor(getConnection(), mdxCube);
         }
+        resolve();
+    }
+
+    @Override
+    public ProfileHandler getProfileHandler() {
+        return scopeProfileHandler;
     }
 
     public QueryImpl(QueryImpl query) {
@@ -1512,7 +1511,7 @@ public class QueryImpl extends AbstractQueryPart implements Query {
         if (profileHandler != null) {
             // Cannot test dependencies and profile at the same time. Profiling
             // trumps.
-            compiler = getConnection().getContext().createProfilingCompiler(compiler);
+            compiler = getConnection().getContext().createProfilingCompiler(compiler, profileHandler.counters());
         } else if (expDeps > 0) {
             compiler = getConnection().getContext().createDependencyTestingCompiler(compiler);
         }

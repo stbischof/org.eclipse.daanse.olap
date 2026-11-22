@@ -39,6 +39,12 @@ public interface CalculationProfile {
     /** The time of all evaluations together, in nanoseconds: the pauses between them do not count. */
     long nanos();
 
+    /**
+     * The time of all evaluations without the time of the profiled calcs they called, in nanoseconds: where the time
+     * went. 0 for a calc that was not profiled.
+     */
+    long ownNanos();
+
     /** The elements of the sets the calc returned, summed over its evaluations; 0 for a calc of one value. */
     long elements();
 

@@ -693,6 +693,32 @@ public interface ContextConfig {
      */
     int testExpDependencies();
 
+    /**
+     * Whether the statements of the context are profiled: {@code off} (default), {@code on}, or {@code sample} for
+     * every {@link #profileSampleEvery()}-th statement. A cube's tag {@code daanse:profile.mode} and a connection's
+     * policy ({@code Context.getProfilingControl()}) override it; EXPLAIN always profiles.
+     */
+    String profileMode();
+
+    /** For {@code profileMode=sample}: every how-many-th statement is profiled. Default 100. */
+    int profileSampleEvery();
+
+    /**
+     * Where the plans of a profiled statement go: {@code log} (default; INFO on {@code daanse.profile}) or
+     * {@code handler} (the sink of {@code Context.getProfilingControl()}).
+     */
+    String profileSink();
+
+    /**
+     * How much of a plan is handed on: {@code full} (default, the whole tree of calcs) or {@code top} (the
+     * {@link #profileTopN()} calcs that took the most time of their own). A cube's tag {@code daanse:profile.detail}
+     * overrides it.
+     */
+    String profileDetail();
+
+    /** For {@code profileDetail=top}: how many calcs. Default 20; a cube's tag {@code daanse:profile.top}. */
+    int profileTopN();
+
     // ------------------------------------------------------------------
     // Naming, ordering and result shape
     //

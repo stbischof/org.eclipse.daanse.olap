@@ -111,4 +111,12 @@ public non-sealed interface Query extends QueryComponent {
     Hierarchy[] getMdxHierarchiesOnAxis(AxisOrdinal forLogicalOrdinal);
 
     void setParameter(String string, Object object);
+
+    /**
+     * The handler the profiling scopes chose for this query (context, cube, connection), or {@code null}. The
+     * statement falls back to it when it has no handler of its own, so the choice holds for this query only.
+     */
+    default org.eclipse.daanse.olap.api.calc.profile.ProfileHandler getProfileHandler() {
+        return null;
+    }
 }

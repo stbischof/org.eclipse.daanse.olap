@@ -451,6 +451,21 @@ public class ExecutionImpl implements Execution {
         context.getMonitor().accept(endEvent);
     }
 
+    /**
+     * What every event of this execution carries -- the context, the connection, the statement and this execution --
+     * stamped now.
+     */
+    public ExecutionEventCommon eventCommon() {
+        final Connection connection = statement.getDaanseConnection();
+        return new ExecutionEventCommon(new MdxStatementEventCommon(new ConnectionEventCommon(new ServertEventCommon(
+                EventCommon.ofNow(), connection.getContext().getName()), connection.getId()), statement.getId()), id);
+    }
+
+    /** Hands an event of this execution to its context's monitor. */
+    public void report(org.eclipse.daanse.olap.api.monitor.event.ExecutionEvent event) {
+        statement.getDaanseConnection().getContext().getMonitor().accept(event);
+    }
+
     private void fireExecutionStartEvent() {
         final Connection connection = statement.getDaanseConnection();
         final Context context = connection.getContext();

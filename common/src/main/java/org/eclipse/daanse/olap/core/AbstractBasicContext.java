@@ -121,6 +121,10 @@ public abstract class AbstractBasicContext<C extends Connection> implements Cont
 	 */
 	private final ContextConfig config = new MapContextConfig(() -> configuration);
 
+	/** The profiling scopes of this context, read through the live configuration. */
+	private final org.eclipse.daanse.olap.calc.base.profile.ProfilingScopes profilingScopes =
+			new org.eclipse.daanse.olap.calc.base.profile.ProfilingScopes(this::getConfig);
+
 
 	protected void updateConfiguration(Map<String, Object> configuration) {
 		this.configuration = configuration;
@@ -148,8 +152,9 @@ public abstract class AbstractBasicContext<C extends Connection> implements Cont
 	 */
 	@Override
 	public org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler createProfilingCompiler(
-			org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler compiler) {
-		return new org.eclipse.daanse.olap.calc.base.profile.ProfilingCompiler(compiler);
+			org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler compiler,
+			org.eclipse.daanse.olap.api.calc.profile.ProfileCounters counters) {
+		return new org.eclipse.daanse.olap.calc.base.profile.ProfilingCompiler(compiler, counters);
 	}
 
 	@Override
@@ -220,6 +225,7 @@ public abstract class AbstractBasicContext<C extends Connection> implements Cont
 			throw new OlapRuntimeException(SERVER_ALREADY_SHUTDOWN);
 		}
 		connections.remove(connection);
+		profilingScopes.clear(connection.getId());
 
 		ConnectionEndEvent connectionEndEvent = new ConnectionEndEvent(
 				new ConnectionEventCommon(
@@ -285,6 +291,11 @@ public abstract class AbstractBasicContext<C extends Connection> implements Cont
 				.toList();
 	}
 
+
+	@Override
+	public org.eclipse.daanse.olap.api.calc.profile.ProfilingControl getProfilingControl() {
+		return profilingScopes;
+	}
 
 	@Override
 	public CatalogCache getCatalogCache() {

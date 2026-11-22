@@ -13,6 +13,7 @@
 package org.eclipse.daanse.olap.api.monitor.event;
 
 public sealed interface ExecutionEvent extends OlapEvent
-        permits CellCacheEvent, ExecutionStartEvent, ExecutionPhaseEvent, ExecutionEndEvent {
+        permits CellCacheEvent, ExecutionStartEvent, ExecutionPhaseEvent, NonEmptyStartEvent, NonEmptyEndEvent,
+        ExecutionEndEvent {
 
 }
