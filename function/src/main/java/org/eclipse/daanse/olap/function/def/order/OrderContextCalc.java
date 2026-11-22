@@ -20,11 +20,11 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.function.def.order.OrderFunDef.CalcWithDual;
 
-public class OrderContextCalc extends AbstractProfilingNestedTupleListCalc {
+public class OrderContextCalc extends AbstractNestedTupleListCalc {
     private final MemberCalc[] memberCalcs;
     private final CalcWithDual calc;
     private final Member[] members; // workspace

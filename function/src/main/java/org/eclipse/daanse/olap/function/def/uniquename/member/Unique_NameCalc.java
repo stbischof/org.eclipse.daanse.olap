@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class Unique_NameCalc extends AbstractProfilingNestedStringCalc {
+public class Unique_NameCalc extends AbstractNestedStringCalc {
 
     protected Unique_NameCalc(Type type, final MemberCalc memberCalc) {
         super(type, memberCalc);

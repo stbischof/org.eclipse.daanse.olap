@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDateTimeCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDateTimeCalc;
 
-public class NowCalc extends AbstractProfilingNestedDateTimeCalc {
+public class NowCalc extends AbstractNestedDateTimeCalc {
 
     protected NowCalc(Type type) {
         super(type);

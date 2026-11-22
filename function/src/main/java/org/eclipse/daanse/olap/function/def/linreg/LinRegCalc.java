@@ -21,12 +21,12 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.fun.FunUtil.SetWrapper;
 
-public class LinRegCalc extends AbstractProfilingNestedDoubleCalc {
+public class LinRegCalc extends AbstractNestedDoubleCalc {
 
     private final TupleListCalc tupleListCalc;
     private final DoubleCalc yCalc;

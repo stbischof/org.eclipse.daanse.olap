@@ -21,7 +21,7 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.function.FunctionMetaData;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.calc.base.value.CurrentValueUnknownCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
@@ -41,7 +41,7 @@ public class VarPFunDef extends AbstractAggregateFunDef {
                 call.getArgCount() > 1
                 ? compiler.compileScalar(call.getArg(1), true)
                 : new CurrentValueUnknownCalc(call.getType());
-            return new AbstractProfilingNestedDoubleCalc(call.getType(), new Calc[] {tupleListCalc, calc}) {
+            return new AbstractNestedDoubleCalc(call.getType(), new Calc[] {tupleListCalc, calc}) {
                 @Override
                 public Double evaluateInternal(Evaluator evaluator) {
                     TupleList memberList = AbstractAggregateFunDef.evaluateCurrentList(tupleListCalc, evaluator);

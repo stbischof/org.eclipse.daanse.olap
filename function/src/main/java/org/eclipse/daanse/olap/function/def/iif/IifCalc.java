@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
-public class IifCalc extends AbstractProfilingNestedUnknownCalc {
+public class IifCalc extends AbstractNestedUnknownCalc {
 
     private final BooleanCalc booleanCalc;
     private final Calc<?> calc1;

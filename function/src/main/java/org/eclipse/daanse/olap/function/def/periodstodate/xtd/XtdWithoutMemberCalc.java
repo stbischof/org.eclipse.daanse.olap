@@ -19,7 +19,7 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
@@ -36,7 +36,7 @@ import org.eclipse.daanse.olap.fun.FunUtil;
 *   SmartCity Jena - initial
 *   Stefan Bischof (bipolis.org) - initial
 */
-public class XtdWithoutMemberCalc extends AbstractProfilingNestedTupleListCalc {
+public class XtdWithoutMemberCalc extends AbstractNestedTupleListCalc {
 	private static final String TIMING_NAME = XtdWithoutMemberCalc.class.getSimpleName();
 
 	private final Level level;

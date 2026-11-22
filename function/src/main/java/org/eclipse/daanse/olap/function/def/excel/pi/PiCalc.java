@@ -15,9 +15,9 @@ package org.eclipse.daanse.olap.function.def.excel.pi;
 
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class PiCalc extends AbstractProfilingNestedDoubleCalc {
+public class PiCalc extends AbstractNestedDoubleCalc {
 
     protected PiCalc(Type type) {
         super(type);

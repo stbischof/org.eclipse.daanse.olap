@@ -18,9 +18,9 @@ import java.util.Locale;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class UCaseCalc extends AbstractProfilingNestedStringCalc {
+public class UCaseCalc extends AbstractNestedStringCalc {
 
     private Locale locale;
 

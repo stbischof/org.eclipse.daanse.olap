@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.calc.base.constant;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.NullType;
 import org.eclipse.daanse.olap.api.type.StringType;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingConstantCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractConstantCalc;
 
-public class ConstantStringCalc extends AbstractProfilingConstantCalc<String> implements StringCalc {
+public class ConstantStringCalc extends AbstractConstantCalc<String> implements StringCalc {
 
 	public ConstantStringCalc(StringType type, String value) {
 		super(value, type);

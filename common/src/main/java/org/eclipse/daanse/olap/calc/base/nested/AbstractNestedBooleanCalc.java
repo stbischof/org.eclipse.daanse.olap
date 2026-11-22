@@ -11,30 +11,28 @@
 *   SmartCity Jena - initial
 *   Stefan Bischof (bipolis.org) - initial
 */
-
 package org.eclipse.daanse.olap.calc.base.nested;
 
+import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.calc.Calc;
-import org.eclipse.daanse.olap.api.calc.FloatCalc;
-import org.eclipse.daanse.olap.api.type.NumericType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
 /**
  * Abstract implementation of the
- * {@link org.eclipse.daanse.olap.api.calc.IntegerCalc} interface.
+ * {@link org.eclipse.daanse.olap.api.calc.BooleanCalc} interface.
  * 
  * Handles nested child and profiling
  *
  */
-public abstract class AbstractProfilingNestedFloatCalc extends AbstractProfilingNestedCalc<Float>
-		implements FloatCalc {
+public abstract class AbstractNestedBooleanCalc extends AbstractNestedCalc<Boolean>
+		implements BooleanCalc {
 	/**
 	 * {@inheritDoc}
 	 *
 	 */
-	protected AbstractProfilingNestedFloatCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedBooleanCalc(Type type, Calc<?>... calcs) {
 		super(type, calcs);
-		requiresType(NumericType.class);
 	}
+
 }

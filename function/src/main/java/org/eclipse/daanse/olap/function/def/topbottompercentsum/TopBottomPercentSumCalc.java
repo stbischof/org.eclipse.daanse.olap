@@ -26,13 +26,13 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.NullSemantics;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.fun.sort.Sorter;
 
-public class TopBottomPercentSumCalc extends AbstractProfilingNestedTupleListCalc {
+public class TopBottomPercentSumCalc extends AbstractNestedTupleListCalc {
     private boolean top;
     private boolean percent;
 

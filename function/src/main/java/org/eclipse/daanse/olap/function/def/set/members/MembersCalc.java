@@ -18,10 +18,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class MembersCalc extends AbstractProfilingNestedTupleListCalc {
+public class MembersCalc extends AbstractNestedTupleListCalc {
 
     protected MembersCalc(Type type, final HierarchyCalc hierarchyCalc) {
         super(type, hierarchyCalc);

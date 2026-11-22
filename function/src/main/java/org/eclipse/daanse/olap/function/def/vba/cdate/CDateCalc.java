@@ -25,10 +25,10 @@ import java.util.Locale;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDateTimeCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDateTimeCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 
-public class CDateCalc extends AbstractProfilingNestedDateTimeCalc {
+public class CDateCalc extends AbstractNestedDateTimeCalc {
 
     private static final List<DateTimeFormatter> TIME_FORMATTERS = List.of(
             DateTimeFormatter.ofPattern("HH:mm:ss"),

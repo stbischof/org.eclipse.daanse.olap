@@ -16,7 +16,7 @@ package org.eclipse.daanse.olap.calc.base.nested;
 import org.eclipse.daanse.olap.api.calc.ByteCalc;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
 /**
  * Abstract implementation of the
@@ -25,13 +25,13 @@ import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
  * Handles nested child and profiling
  *
  */
-public abstract class AbstractProfilingNestedByteCalc extends AbstractProfilingNestedCalc<Byte>
+public abstract class AbstractNestedByteCalc extends AbstractNestedCalc<Byte>
 		implements ByteCalc {
 	/**
 	 * {@inheritDoc}
 	 *
 	 */
-	protected AbstractProfilingNestedByteCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedByteCalc(Type type, Calc<?>... calcs) {
 		super(type, calcs);
 	}
 

@@ -21,9 +21,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class FormatDateTimeCalc extends AbstractProfilingNestedStringCalc {
+public class FormatDateTimeCalc extends AbstractNestedStringCalc {
 
     private static final DateTimeFormatter LONG_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static final DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");

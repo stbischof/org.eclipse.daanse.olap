@@ -23,11 +23,11 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.element.ParentChildMember;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.function.def.set.level.LevelMembersCalc;
 
-public class DrilldownMemberCalc extends AbstractProfilingNestedTupleListCalc {
+public class DrilldownMemberCalc extends AbstractNestedTupleListCalc {
 
     private final boolean recursive;
 

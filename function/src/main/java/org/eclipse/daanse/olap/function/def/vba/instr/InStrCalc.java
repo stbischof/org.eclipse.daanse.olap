@@ -17,10 +17,10 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 
-public class InStrCalc extends AbstractProfilingNestedIntegerCalc {
+public class InStrCalc extends AbstractNestedIntegerCalc {
     protected InStrCalc(Type type, final IntegerCalc startCalc, final StringCalc stringCheckCalc, final StringCalc stringMatchCalc, final IntegerCalc compareCalc) {
         super(type, startCalc, stringCheckCalc, stringMatchCalc, compareCalc);
     }

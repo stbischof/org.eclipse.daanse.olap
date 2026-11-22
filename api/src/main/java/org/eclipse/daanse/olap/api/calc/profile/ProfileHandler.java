@@ -25,6 +25,9 @@
 
 package org.eclipse.daanse.olap.api.calc.profile;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.daanse.olap.api.execution.QueryTiming;
 
 /**
@@ -38,4 +41,24 @@ public interface ProfileHandler {
      * @param timing Query timings
      */
     public void explain(String plan, QueryTiming timing);
+
+    /**
+     * Called for each part of a statement that has finished executing, a named set, an axis, the slicer or the
+     * query body, with the part's profile tree. The default renders the tree as text and hands it to
+     * {@link #explain(String, QueryTiming)}; a handler that reads the numbers overrides this one.
+     *
+     * @param title   the part, such as {@code Axis (ROWS):}
+     * @param profile the profile of the part's calc, or {@code null} for a part without one
+     * @param timing  query timings
+     */
+    default void explain(String title, CalculationProfile profile, QueryTiming timing) {
+        StringWriter text = new StringWriter();
+        PrintWriter out = new PrintWriter(text);
+        out.println(title);
+        if (profile != null) {
+            new SimpleCalculationProfileWriter(out).write(profile);
+        }
+        out.close();
+        explain(text.toString(), timing);
+    }
 }

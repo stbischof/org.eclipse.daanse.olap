@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 
-public class MatchesCalc extends AbstractProfilingNestedBooleanCalc {
+public class MatchesCalc extends AbstractNestedBooleanCalc {
 
     protected MatchesCalc(Type type, StringCalc stringCalc, StringCalc regexCalc) {
         super(type, stringCalc, regexCalc);

@@ -23,13 +23,13 @@ import org.eclipse.daanse.olap.api.calc.HierarchyCalc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.calc.base.value.CurrentValueUnknownCalc;
 import org.eclipse.daanse.olap.common.StandardProperty;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class AggregateChildrenCalc extends AbstractProfilingNestedUnknownCalc {
+public class AggregateChildrenCalc extends AbstractNestedUnknownCalc {
 
     protected AggregateChildrenCalc(Type type, HierarchyCalc hierarchyCalc, CurrentValueUnknownCalc valueCalc) {
         super(type, hierarchyCalc, valueCalc);

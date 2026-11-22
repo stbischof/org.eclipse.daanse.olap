@@ -24,7 +24,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.function.FunctionInterface;
 import org.eclipse.daanse.olap.api.function.FunctionMetaData;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 import org.eclipse.daanse.olap.function.core.FunctionMetaDataR;
 import org.eclipse.daanse.olap.function.core.FunctionParameterR;
 import org.eclipse.daanse.olap.function.core.AbstractFunctionDefinition;
@@ -43,7 +43,7 @@ public class DataMemberFunDef extends AbstractFunctionDefinition {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final MemberCalc memberCalc = compiler.compileMember(call.getArg(0));
-        return new AbstractProfilingNestedMemberCalc(call.getType(), new Calc[] { memberCalc }) {
+        return new AbstractNestedMemberCalc(call.getType(), new Calc[] { memberCalc }) {
             @Override
             public Member evaluateInternal(Evaluator evaluator) {
                 Member member = memberCalc.evaluate(evaluator);

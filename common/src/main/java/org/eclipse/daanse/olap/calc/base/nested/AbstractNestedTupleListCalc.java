@@ -19,17 +19,17 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
-public abstract class AbstractProfilingNestedTupleListCalc extends AbstractProfilingNestedCalc<TupleList>
+public abstract class AbstractNestedTupleListCalc extends AbstractNestedCalc<TupleList>
 		implements TupleListCalc {
 	private final boolean mutable;
 
-	protected AbstractProfilingNestedTupleListCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedTupleListCalc(Type type, Calc<?>... calcs) {
 		this(type, true, calcs);
 	}
 
-	protected AbstractProfilingNestedTupleListCalc(Type type, boolean mutable, Calc<?>... calcs) {
+	protected AbstractNestedTupleListCalc(Type type, boolean mutable, Calc<?>... calcs) {
 		super(type, calcs);
 		this.mutable = mutable;
 		requiresType(SetType.class);

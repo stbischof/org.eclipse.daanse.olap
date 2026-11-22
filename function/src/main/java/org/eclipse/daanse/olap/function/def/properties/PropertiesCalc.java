@@ -19,12 +19,12 @@ import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.common.ExecutionConfig;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.DaanseEvaluationException;
 
-public class PropertiesCalc extends AbstractProfilingNestedUnknownCalc {
+public class PropertiesCalc extends AbstractNestedUnknownCalc {
 
     private MemberCalc memberCalc;
     private StringCalc stringCalc;

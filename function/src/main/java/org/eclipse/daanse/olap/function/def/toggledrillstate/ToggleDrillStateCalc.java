@@ -22,10 +22,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class ToggleDrillStateCalc extends AbstractProfilingNestedTupleListCalc{
+public class ToggleDrillStateCalc extends AbstractNestedTupleListCalc{
 
     public ToggleDrillStateCalc(Type type, TupleListCalc listCalc0, TupleListCalc listCalc1) {
         super(type, listCalc0, listCalc1);

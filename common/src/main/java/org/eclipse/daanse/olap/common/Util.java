@@ -125,7 +125,6 @@ import org.eclipse.daanse.olap.api.query.component.QueryAxis;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
 import org.eclipse.daanse.olap.api.result.CellSet;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.profile.SimpleCalculationProfileWriter;
 import org.eclipse.daanse.olap.exceptions.MdxCantFindMemberException;
 import org.eclipse.daanse.olap.exceptions.MdxChildObjectNotFoundException;
 import org.eclipse.daanse.olap.exceptions.MemberNotFoundException;
@@ -2706,26 +2705,8 @@ public class Util {
     if ( handler == null ) {
       return;
     }
-    final StringWriter stringWriter = new StringWriter();
-    final PrintWriter printWriter = new PrintWriter( stringWriter );
-
-	SimpleCalculationProfileWriter spw = new SimpleCalculationProfileWriter(printWriter);
-
-    printWriter.println( title );
-    if ( calc != null ) {
-
-    	if (calc instanceof Calc pc) {
-
-			CalculationProfile calcProfile = pc.getCalculationProfile();
-			spw.write(calcProfile);
-
-		} else {
-			printWriter.println("UNPROFILED: " + calc.getClass().getName());
-
-		}
-    }
-    printWriter.close();
-    handler.explain( stringWriter.toString(), timing );
+    // the tree; a handler that only reads text gets it rendered by the default method
+    handler.explain( title, calc == null ? null : calc.getCalculationProfile(), timing );
   }
 
   /**

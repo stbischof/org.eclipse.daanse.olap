@@ -19,10 +19,10 @@ import org.eclipse.daanse.olap.api.calc.DimensionCalc;
 import org.eclipse.daanse.olap.api.element.Dimension;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedHierarchyCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedHierarchyCalc;
 import org.eclipse.daanse.olap.calc.base.util.DimensionUtil;
 
-public class DimensionDefaultHierarchyCalc extends AbstractProfilingNestedHierarchyCalc {
+public class DimensionDefaultHierarchyCalc extends AbstractNestedHierarchyCalc {
 
 	public DimensionDefaultHierarchyCalc(Type type, DimensionCalc dimensionCalc) {
 		super(type, dimensionCalc);

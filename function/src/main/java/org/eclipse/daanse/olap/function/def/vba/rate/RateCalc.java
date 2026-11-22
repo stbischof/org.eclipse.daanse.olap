@@ -17,11 +17,11 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 import org.eclipse.daanse.olap.function.def.vba.fv.FVCalc;
 
-public class RateCalc extends AbstractProfilingNestedDoubleCalc {
+public class RateCalc extends AbstractNestedDoubleCalc {
     protected RateCalc(Type type, DoubleCalc nPerCalc, DoubleCalc pmtCalc, DoubleCalc pvCalc, DoubleCalc fvCalc,
             BooleanCalc typeCalc, DoubleCalc guessCalc) {
         super(type, nPerCalc, pmtCalc, pvCalc, fvCalc, typeCalc);

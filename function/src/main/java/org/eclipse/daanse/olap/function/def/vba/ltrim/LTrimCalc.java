@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.ltrim;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class LTrimCalc extends AbstractProfilingNestedStringCalc {
+public class LTrimCalc extends AbstractNestedStringCalc {
 
     protected LTrimCalc(Type type, final StringCalc strCalc) {
         super(type, strCalc);

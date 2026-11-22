@@ -19,12 +19,12 @@ import org.eclipse.daanse.olap.api.calc.HierarchyCalc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.type.HierarchyType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
-public abstract class AbstractProfilingNestedHierarchyCalc extends AbstractProfilingNestedCalc<Hierarchy>
+public abstract class AbstractNestedHierarchyCalc extends AbstractNestedCalc<Hierarchy>
 		implements HierarchyCalc {
 
-	protected AbstractProfilingNestedHierarchyCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedHierarchyCalc(Type type, Calc<?>... calcs) {
 		super(type, calcs);
 		requiresType(HierarchyType.class);
 	}

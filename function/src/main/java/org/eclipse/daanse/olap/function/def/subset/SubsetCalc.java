@@ -18,10 +18,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 
-public class SubsetCalc extends AbstractProfilingNestedTupleListCalc{
+public class SubsetCalc extends AbstractNestedTupleListCalc{
 
     public SubsetCalc(Type type, TupleListCalc tupleListCalc, IntegerCalc startCalc, IntegerCalc countCalc) {
         super(type, tupleListCalc, startCalc, countCalc);

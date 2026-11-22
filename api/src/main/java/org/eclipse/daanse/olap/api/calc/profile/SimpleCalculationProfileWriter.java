@@ -12,15 +12,16 @@
 *   Stefan Bischof (bipolis.org) - initial
 */
 
-package org.eclipse.daanse.olap.calc.base.profile;
+package org.eclipse.daanse.olap.api.calc.profile;
 
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.daanse.olap.api.calc.profile.CalcEvaluationProfile;
-import org.eclipse.daanse.olap.api.calc.profile.CalculationProfile;
-
+/**
+ * The text view of a profile tree: one line per calc, {@code Class(name=..., type=..., resultStyle=..., callCount=...,
+ * callMillis=...[, elements=..., elementsSquared=...][, property=...])}, children indented below. In the api so that
+ * {@link ProfileHandler} can render its default text.
+ */
 public class SimpleCalculationProfileWriter {
 	private static final String SPACE = " ";
 	private static final int DEFAULT_INDENT = 4;
@@ -53,10 +54,12 @@ public class SimpleCalculationProfileWriter {
 	private void printCalculationProfile(CalculationProfile profile) {
 		printName(profile);
 		printOpen();
+		printFunctionName(profile);
 		printType(profile);
 		printResultStyle(profile);
 		printSubProfiles(profile);
 		printCallTime(profile);
+		printElements(profile);
 		printAdditionalValues(profile);
 		printClose();
 		printChilds(profile);
@@ -91,7 +94,8 @@ public class SimpleCalculationProfileWriter {
 	}
 
 	private void printAdditionalValues(CalculationProfile profile) {
-		profile.additionalValues().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> {
+		profile.additionalValues().entrySet().stream().filter(entry -> !"callCount".equals(entry.getKey()))
+				.sorted(Map.Entry.comparingByKey()).forEach(entry -> {
 			printWriter.print(", ");
 			printWriter.print(entry.getKey());
 			printWriter.print("=");
@@ -106,11 +110,31 @@ public class SimpleCalculationProfileWriter {
 	}
 
 	private void printSubProfiles(CalculationProfile profile) {
-		List<CalcEvaluationProfile> evaluationProfiles = profile.evaluationProfiles();
+		// the calc's own count where it carries one, else 0; in the same place either way, so the
+		// line keeps its shape
+		Object counted = profile.additionalValues().get("callCount");
 		printWriter.print("callCount");
 		printWriter.print("=");
-		printWriter.print(evaluationProfiles.size());
+		printWriter.print(counted != null ? counted : 0);
 		printWriter.print(", ");
+	}
+
+	private void printFunctionName(CalculationProfile profile) {
+		profile.name().ifPresent(name -> {
+			printWriter.print("name=");
+			printWriter.print(name);
+			printWriter.print(", ");
+		});
+	}
+
+	/** Only for a calc that returned sets: a line of a scalar calc keeps the shape it had. */
+	private void printElements(CalculationProfile profile) {
+		if (profile.elements() > 0) {
+			printWriter.print(", elements=");
+			printWriter.print(profile.elements());
+			printWriter.print(", elementsSquared=");
+			printWriter.print(profile.elementsSquared());
+		}
 	}
 
 	private void printResultStyle(CalculationProfile profile) {

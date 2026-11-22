@@ -17,10 +17,10 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.TupleCalc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class IsCalcForTuple extends AbstractProfilingNestedBooleanCalc{
+public class IsCalcForTuple extends AbstractNestedBooleanCalc{
 
     protected IsCalcForTuple(Type type, final TupleCalc tupleCalc0, final TupleCalc tupleCalc1) {
         super(type, tupleCalc0, tupleCalc1);

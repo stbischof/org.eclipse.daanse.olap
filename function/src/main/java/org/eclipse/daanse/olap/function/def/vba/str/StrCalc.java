@@ -16,10 +16,10 @@ package org.eclipse.daanse.olap.function.def.vba.str;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 import org.eclipse.daanse.olap.exceptions.InvalidArgumentException;
 
-public class StrCalc extends AbstractProfilingNestedStringCalc {
+public class StrCalc extends AbstractNestedStringCalc {
 
     protected StrCalc(Type type, Calc<?> doubleCalc) {
         super(type, doubleCalc);

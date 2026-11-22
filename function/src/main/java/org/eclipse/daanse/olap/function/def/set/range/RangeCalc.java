@@ -18,12 +18,12 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class RangeCalc extends AbstractProfilingNestedTupleListCalc {
+public class RangeCalc extends AbstractNestedTupleListCalc {
 
     protected RangeCalc(Type type, MemberCalc... calcs) {
         super(type, calcs);

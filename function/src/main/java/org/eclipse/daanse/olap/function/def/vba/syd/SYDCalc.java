@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.syd;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class SYDCalc extends AbstractProfilingNestedDoubleCalc {
+public class SYDCalc extends AbstractNestedDoubleCalc {
 
     protected SYDCalc(Type type, final DoubleCalc costCalc, final DoubleCalc salvageCalc, final DoubleCalc lifeCalc, final DoubleCalc periodCalc) {
         super(type, costCalc, salvageCalc, lifeCalc, periodCalc);

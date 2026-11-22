@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class NPVCalc extends AbstractProfilingNestedDoubleCalc {
+public class NPVCalc extends AbstractNestedDoubleCalc {
 
     protected NPVCalc(Type type, final DoubleCalc rCalc, final Calc<?> cfsCalc) {
         super(type, rCalc, cfsCalc);

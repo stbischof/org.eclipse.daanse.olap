@@ -29,7 +29,8 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
+import org.eclipse.daanse.olap.calc.base.profile.ProfilingCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.MemberArrayValueCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.MemberValueCalc;
 import org.eclipse.daanse.olap.calc.base.value.CurrentValueUnknownCalc;
@@ -63,11 +64,13 @@ public Calc<?> compileCall( ResolvedFunCall call, ExpressionCompiler compiler ) 
     assert keySpecCount >= 1;
     final Calc<?> expCalc = keySpecList.get( 0 ).getKey();
     calcList[1] = expCalc;
+    // the calc itself, not the hull a profiled statement puts around it
+    final Calc<?> bareExpCalc = ProfilingCalc.unwrap( expCalc );
 
-    if (keySpecCount == 1 && ( expCalc instanceof MemberValueCalc ) ||( expCalc instanceof MemberArrayValueCalc ) ) {
+    if (keySpecCount == 1 && ( bareExpCalc instanceof MemberValueCalc ) ||( bareExpCalc instanceof MemberArrayValueCalc ) ) {
         List<MemberCalc> constantList = new ArrayList<>();
         List<MemberCalc> variableList = new ArrayList<>();
-        final MemberCalc[] calcs = (MemberCalc[]) ( (AbstractProfilingNestedCalc) expCalc ).getChildCalcs();
+        final MemberCalc[] calcs = (MemberCalc[]) ( (AbstractNestedCalc) bareExpCalc ).getChildCalcs();
         for ( MemberCalc memberCalc : calcs ) {
             if ((memberCalc instanceof ConstantCalc) && !listCalc.dependsOn(memberCalc.getType().getHierarchy())) {
             constantList.add( memberCalc );

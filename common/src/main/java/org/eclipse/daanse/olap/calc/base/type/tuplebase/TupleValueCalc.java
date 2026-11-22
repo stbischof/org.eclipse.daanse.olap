@@ -32,7 +32,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.TupleType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
 /**
  * Expression which evaluates a tuple expression,
@@ -48,7 +48,7 @@ import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCa
  * @author jhyde
  * @since Sep 27, 2005
  */
-public class TupleValueCalc extends AbstractProfilingNestedUnknownCalc {
+public class TupleValueCalc extends AbstractNestedUnknownCalc {
     private final TupleCalc tupleCalc;
     private final boolean nullCheck;
 

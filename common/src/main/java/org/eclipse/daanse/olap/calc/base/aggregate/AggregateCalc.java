@@ -38,7 +38,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.common.StandardProperty;
@@ -47,7 +47,7 @@ import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.function.core.AbstractAggregateFunDef;
 import org.eclipse.daanse.olap.api.relational.RelationalContext;
 
-public class AggregateCalc  extends AbstractProfilingNestedUnknownCalc {
+public class AggregateCalc  extends AbstractNestedUnknownCalc {
     private static final String TIMING_NAME = "AggregateFunDef";
     private final TupleListCalc tupleListCalc;
     private final Calc<?> calc;

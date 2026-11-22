@@ -17,9 +17,9 @@ import java.util.Calendar;
 
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedFloatCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedFloatCalc;
 
-public class TimerCalc extends AbstractProfilingNestedFloatCalc {
+public class TimerCalc extends AbstractNestedFloatCalc {
 
     protected TimerCalc(Type type) {
         super(type);

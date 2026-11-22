@@ -38,7 +38,7 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
  * @author jhyde
  * @since Oct 23, 2008
  */
-public class IterableListCalc extends AbstractProfilingNestedTupleListCalc {
+public class IterableListCalc extends AbstractNestedTupleListCalc {
     private final TupleIteratorCalc<?> tupleIteratorCalc;
 
     /**

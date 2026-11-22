@@ -40,7 +40,7 @@ import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.query.component.NamedSetExpression;
 import org.eclipse.daanse.olap.api.query.component.visit.QueryComponentVisitor;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleIteratorCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleIteratorCalc;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.query.component.expression.AbstractExpression;
 
@@ -121,7 +121,7 @@ public class NamedSetExpressionImpl extends AbstractExpression implements Expres
             return null;
         }
 
-        return new AbstractProfilingNestedTupleIteratorCalc(getType(),
+        return new AbstractNestedTupleIteratorCalc(getType(),
             new Calc[]{/* todo: compile namedSet.getExp() */})
         {
             @Override

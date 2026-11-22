@@ -25,7 +25,7 @@ import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.function.FunctionInterface;
 import org.eclipse.daanse.olap.api.function.FunctionMetaData;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 import org.eclipse.daanse.olap.function.core.FunctionMetaDataR;
 import org.eclipse.daanse.olap.function.core.FunctionParameterR;
 import org.eclipse.daanse.olap.function.core.AbstractFunctionDefinition;
@@ -43,7 +43,7 @@ public class DefaultMemberFunDef extends AbstractFunctionDefinition {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final HierarchyCalc hierarchyCalc = compiler.compileHierarchy(call.getArg(0));
-        return new AbstractProfilingNestedMemberCalc(call.getType(), new Calc[] { hierarchyCalc }) {
+        return new AbstractNestedMemberCalc(call.getType(), new Calc[] { hierarchyCalc }) {
             @Override
             public Member evaluateInternal(Evaluator evaluator) {
                 Hierarchy hierarchy = hierarchyCalc.evaluate(evaluator);

@@ -23,10 +23,10 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedMemberCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedMemberCalc;
 import org.eclipse.daanse.olap.common.Util;
 
-public class LastNonEmptyCalc extends AbstractProfilingNestedMemberCalc {
+public class LastNonEmptyCalc extends AbstractNestedMemberCalc {
 
     protected LastNonEmptyCalc(Type type, TupleListCalc tupleListCalc, Calc<?> memberCalc) {
         super(type, tupleListCalc, memberCalc);

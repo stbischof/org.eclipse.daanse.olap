@@ -16,10 +16,10 @@ package org.eclipse.daanse.olap.function.def.vba.cbyte;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedByteCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedByteCalc;
 import org.eclipse.daanse.olap.function.def.vba.cint.CIntCalc;
 
-public class CByteCalc extends AbstractProfilingNestedByteCalc {
+public class CByteCalc extends AbstractNestedByteCalc {
 
     protected CByteCalc(Type type, Calc<?> doubleCalc) {
         super(type, doubleCalc);

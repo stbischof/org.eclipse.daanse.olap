@@ -27,12 +27,12 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class SortedListCalc extends AbstractProfilingNestedCalc {
+public class SortedListCalc extends AbstractNestedCalc {
     private final TupleListCalc tupleListCalc;
 
     private static final Integer ONE = 1;

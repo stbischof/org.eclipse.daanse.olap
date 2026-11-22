@@ -28,12 +28,12 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.execution.Execution;
 import org.eclipse.daanse.olap.api.execution.ExecutionContext;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.util.CancellationChecker;
 
-public class GenerateListCalc extends AbstractProfilingNestedTupleListCalc {
+public class GenerateListCalc extends AbstractNestedTupleListCalc {
     private final int arityOut;
     private final boolean all;
 

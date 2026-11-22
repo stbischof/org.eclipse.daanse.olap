@@ -108,7 +108,10 @@ public class DelegatingExpressionCompiler implements ExpressionCompiler {
 
     @Override
     public Calc<?> compileAs(Expression exp, Type resultType, List<ResultStyle> preferredResultTypes) {
-        return parent.compileAs(wrap(exp), resultType, preferredResultTypes);
+        // through afterCompile like every other compile: Filter compiles its set this way, and without it the
+        // profiling hull and the dependency check never saw that calc
+        final Calc<?> calc = parent.compileAs(wrap(exp), resultType, preferredResultTypes);
+        return afterCompile(exp, calc, false);
     }
 
     @Override

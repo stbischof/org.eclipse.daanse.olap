@@ -15,9 +15,9 @@ package org.eclipse.daanse.olap.calc.base.constant;
 
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.NumericType;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingConstantCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractConstantCalc;
 
-public class ConstantIntegerCalc extends AbstractProfilingConstantCalc<Integer> implements IntegerCalc {
+public class ConstantIntegerCalc extends AbstractConstantCalc<Integer> implements IntegerCalc {
 
 	public ConstantIntegerCalc(NumericType type, Integer value) {
 		super(value, type);

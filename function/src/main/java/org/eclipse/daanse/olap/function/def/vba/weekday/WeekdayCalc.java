@@ -19,9 +19,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 
-public class WeekdayCalc extends AbstractProfilingNestedIntegerCalc {
+public class WeekdayCalc extends AbstractNestedIntegerCalc {
     protected WeekdayCalc(Type type, DateTimeCalc dateTimeCalc,
             IntegerCalc firstDayOfWeek) {
         super(type, dateTimeCalc, firstDayOfWeek);

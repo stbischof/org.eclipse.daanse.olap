@@ -23,10 +23,10 @@ import org.eclipse.daanse.olap.api.catalog.CatalogReader;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 
-public class DrilldownLevelWithIndexCalc extends AbstractProfilingNestedTupleListCalc {
+public class DrilldownLevelWithIndexCalc extends AbstractNestedTupleListCalc {
 
     private final int arity;
     private final boolean includeCalcMembers;

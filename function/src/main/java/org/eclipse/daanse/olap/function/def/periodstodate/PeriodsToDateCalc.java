@@ -21,11 +21,11 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class PeriodsToDateCalc extends AbstractProfilingNestedTupleListCalc {
+public class PeriodsToDateCalc extends AbstractNestedTupleListCalc {
 
     private static final String TIMING_NAME = PeriodsToDateFunDef.class.getSimpleName();
 

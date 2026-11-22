@@ -24,12 +24,12 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.evaluator.NativeEvaluator;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.function.def.crossjoin.CrossJoinFunDef;
 
 
 
-public class NonEmptyCrossJoinCalc extends AbstractProfilingNestedTupleListCalc{
+public class NonEmptyCrossJoinCalc extends AbstractNestedTupleListCalc{
     private ResolvedFunCall call;
     private int ctag;
     

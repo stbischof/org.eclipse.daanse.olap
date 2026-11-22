@@ -17,10 +17,10 @@ package org.eclipse.daanse.olap.function.def.operators.less;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class LessOrEqualStringCalc extends AbstractProfilingNestedBooleanCalc {
+public class LessOrEqualStringCalc extends AbstractNestedBooleanCalc {
 
     protected LessOrEqualStringCalc(Type type, final StringCalc calc0, final StringCalc calc1) {
         super(type, calc0, calc1);

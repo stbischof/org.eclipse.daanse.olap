@@ -13,30 +13,20 @@
 */
 package org.eclipse.daanse.olap.calc.base;
 
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.daanse.olap.api.calc.Calc;
-import org.eclipse.daanse.olap.api.calc.profile.CalcEvaluationProfile;
 import org.eclipse.daanse.olap.api.calc.profile.CalculationProfile;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.api.execution.Statement;
-import org.eclipse.daanse.olap.api.query.component.Query;
 import org.eclipse.daanse.olap.api.type.Type;
 import org.eclipse.daanse.olap.calc.base.profile.CalcProfileR;
 
-public abstract class AbstractProfilingCalc<T> implements Calc<T> {
+public abstract class AbstractCalc<T> implements Calc<T> {
 
 	private Type type;
-
-	private Instant firstEvalStart = null;
-	private Instant lastEvalEnd = null;
-
-	private final List<CalcEvaluationProfile> evaluations = new ArrayList<>();
 
 	/**
 	 * Abstract Implementation of {@link Calc} that generated a
@@ -45,51 +35,21 @@ public abstract class AbstractProfilingCalc<T> implements Calc<T> {
 	 *
 	 * @param type type 
 	 */
-	public AbstractProfilingCalc(Type type) {
+	public AbstractCalc(Type type) {
 		this.type = type;
 	}
 
+	/**
+	 * The body, called directly: the calc measures nothing. A profiled statement compiles each calc into a
+	 * {@code ProfilingCalc} hull that counts and times it (ProfilingCompiler), so a statement without profiling pays
+	 * nothing per evaluation.
+	 */
 	@Override
 	public final T evaluate(Evaluator evaluator) {
-		// reading the clock costs per evaluation, up to microseconds where the
-		// clock source is slow: only for a statement being profiled
-		if (!isProfiling(evaluator)) {
-			return evaluateInternal(evaluator);
-		}
-		Instant startEval = Instant.now();
-		if (firstEvalStart == null) {
-			firstEvalStart = startEval;
-		}
-		final T evalResult = evaluateInternal(evaluator);
-
-		Instant endEval = Instant.now();
-		lastEvalEnd = endEval;
-
-		profileEvaluation(startEval, endEval, evalResult);
-		return evalResult;
+		return evaluateInternal(evaluator);
 	}
 
 	protected abstract T evaluateInternal(Evaluator evaluator);
-
-	private static boolean isProfiling(Evaluator evaluator) {
-		if (evaluator == null) {
-			return false;
-		}
-		Query query = evaluator.getQuery();
-		if (query == null) {
-			return false;
-		}
-		Statement statement = query.getStatement();
-		return statement != null && statement.getProfileHandler() != null;
-	}
-
-    protected void profileEvaluation(Instant evaluationStart, Instant evaluationEnd, T evaluationResult) {
-
-//		CalcEvaluationProfile evaluationProfile = new CalcEvaluationProfileR(evaluationStart, evaluationEnd,
-//				evaluationResult, Map.of());
-//		evaluations.add(evaluationProfile);
-
-	}
 
 	protected Map<String, Object> profilingProperties(Map<String, Object> properties) {
 		return properties;
@@ -98,8 +58,8 @@ public abstract class AbstractProfilingCalc<T> implements Calc<T> {
 	public CalculationProfile getCalculationProfile() {
 		final List<CalculationProfile> childProfiles = getChildProfiles();
 		Map<String, Object> profilingProperties = profilingProperties(new HashMap<String, Object>());
-		return new CalcProfileR(this.getClass(), getType(), getResultStyle(), Optional.ofNullable(firstEvalStart),
-				Optional.ofNullable(lastEvalEnd), profilingProperties, evaluations, childProfiles);
+		return new CalcProfileR(this.getClass(), Optional.empty(), getType(), getResultStyle(), 0, 0, 0,
+				profilingProperties, childProfiles);
 	}
 
 	List<CalculationProfile> getChildProfiles() {

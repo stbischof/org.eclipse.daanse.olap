@@ -28,10 +28,10 @@ import org.eclipse.daanse.olap.api.type.MemberType;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.TupleType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 
-public class CachedExistsCalc extends AbstractProfilingNestedTupleListCalc {
+public class CachedExistsCalc extends AbstractNestedTupleListCalc {
 
     private static final String TIMING_NAME = CachedExistsFunDef.class.getSimpleName();
 

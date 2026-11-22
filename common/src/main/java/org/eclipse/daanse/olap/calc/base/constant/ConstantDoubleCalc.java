@@ -15,9 +15,9 @@ package org.eclipse.daanse.olap.calc.base.constant;
 
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.NumericType;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingConstantCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractConstantCalc;
 
-public class ConstantDoubleCalc extends AbstractProfilingConstantCalc<Double> implements DoubleCalc {
+public class ConstantDoubleCalc extends AbstractConstantCalc<Double> implements DoubleCalc {
 
 	public ConstantDoubleCalc(NumericType type, Double value) {
 		super(value, type);

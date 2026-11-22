@@ -17,10 +17,10 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedIntegerCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedIntegerCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class CountCalc extends AbstractProfilingNestedIntegerCalc {
+public class CountCalc extends AbstractNestedIntegerCalc {
 
     protected CountCalc(Type type, final TupleListCalc tupleListCalc) {
         super(type, tupleListCalc);

@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.calc.base.constant;
 import org.eclipse.daanse.olap.api.calc.LevelCalc;
 import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.type.LevelType;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingConstantCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractConstantCalc;
 
-public class ConstantLevelCalc extends AbstractProfilingConstantCalc<Level> implements LevelCalc {
+public class ConstantLevelCalc extends AbstractConstantCalc<Level> implements LevelCalc {
 
 	public ConstantLevelCalc(LevelType type, Level value) {
 		super(value, type);

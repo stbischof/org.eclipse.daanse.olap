@@ -27,6 +27,7 @@
 
 package org.eclipse.daanse.olap.fun.sort;
 
+import org.eclipse.daanse.olap.calc.base.profile.ProfilingCalc;
 import org.eclipse.daanse.olap.common.ExecutionConfig;
 
 import java.util.AbstractList;
@@ -437,7 +438,7 @@ public class Sorter {
   static Comparator<List<Member>> applySortSpecToComparator( Evaluator evaluator, int arity, Comparator<List<Member>> chain,
                                          SortKeySpec key ) {
     boolean brk = key.getDirection().brk;
-	boolean orderByKey = key.getKey() instanceof MemberOrderKeyCalc;
+	boolean orderByKey = ProfilingCalc.unwrap(key.getKey()) instanceof MemberOrderKeyCalc;
     boolean direction = key.getDirection().descending;
     if ( brk ) {
     	Comparator<List<Member>> comp =

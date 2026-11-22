@@ -13,32 +13,42 @@
 */
 package org.eclipse.daanse.olap.calc.base;
 
+import java.util.List;
+
+import org.eclipse.daanse.olap.api.calc.ConstantCalc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
+import org.eclipse.daanse.olap.api.calc.profile.CalculationProfile;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
 
-public abstract class AbstractProfilingValueCalc<T> extends AbstractProfilingCalc<T> {
+public abstract class AbstractConstantCalc<T> extends AbstractCalc<T> implements ConstantCalc<T> {
 
-	public AbstractProfilingValueCalc(Type type) {
+	private T value;
+
+	public AbstractConstantCalc(T value, Type type) {
 		super(type);
+		this.value = value;
 	}
 
 	@Override
 	public T evaluateInternal(Evaluator evaluator) {
-		return convertCurrentValue(evaluator.evaluateCurrent());
+		return value;
 	}
-
-	protected abstract T convertCurrentValue(Object evaluateCurrent);
 
 	@Override
 	public boolean dependsOn(Hierarchy hierarchy) {
-		return true;
+		return false;
 	}
 
 	@Override
 	public ResultStyle getResultStyle() {
-		return ResultStyle.VALUE;
+		return value == null ? ResultStyle.VALUE : ResultStyle.VALUE_NOT_NULL;
+	}
+
+	@Override
+	List<CalculationProfile> getChildProfiles() {
+		return List.of();
 	}
 
 }

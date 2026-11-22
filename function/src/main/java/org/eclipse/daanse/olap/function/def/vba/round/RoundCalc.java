@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class RoundCalc extends AbstractProfilingNestedDoubleCalc {
+public class RoundCalc extends AbstractNestedDoubleCalc {
     protected RoundCalc(Type type, DoubleCalc numberCalc, final IntegerCalc numDigitsAfterDecimalCalc) {
         super(type, numberCalc, numDigitsAfterDecimalCalc);
     }

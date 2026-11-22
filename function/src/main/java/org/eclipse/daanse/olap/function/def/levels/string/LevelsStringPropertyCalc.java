@@ -19,10 +19,10 @@ import org.eclipse.daanse.olap.api.calc.StringCalc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedLevelCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedLevelCalc;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class LevelsStringPropertyCalc extends AbstractProfilingNestedLevelCalc {
+public class LevelsStringPropertyCalc extends AbstractNestedLevelCalc {
 
     protected LevelsStringPropertyCalc(Type type, final HierarchyCalc hierarchyCalc, final StringCalc nameCalc) {
         super(type, hierarchyCalc, nameCalc);

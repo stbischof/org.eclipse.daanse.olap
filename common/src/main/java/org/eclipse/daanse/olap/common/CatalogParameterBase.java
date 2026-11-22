@@ -24,7 +24,7 @@ import org.eclipse.daanse.olap.api.exception.OlapRuntimeException;
 import org.eclipse.daanse.olap.exceptions.ParameterIsNotModifiableException;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 
 /**
  * A parameter a catalog declares, as opposed to one a query declares.
@@ -126,7 +126,7 @@ public class CatalogParameterBase implements Parameter, CompilableParameter {
     @Override
     public Calc<?> compile(ExpressionCompiler compiler) {
         if (defaultExpression == null) {
-            return new AbstractProfilingNestedUnknownCalc(type, new Calc[0]) {
+            return new AbstractNestedUnknownCalc(type, new Calc[0]) {
                 @Override
                 public Object evaluateInternal(Evaluator evaluator) {
                     if (value == null && !assigned) {
@@ -140,7 +140,7 @@ public class CatalogParameterBase implements Parameter, CompilableParameter {
         Expression parsed = compiler.getValidator().getQuery().getConnection().parseExpression(defaultExpression);
         Expression defaultExp = compiler.getValidator().validate(parsed, true);
         Calc<?> defaultCalc = defaultExp.accept(compiler);
-        return new AbstractProfilingNestedUnknownCalc(defaultExp.getType(), new Calc[] { defaultCalc }) {
+        return new AbstractNestedUnknownCalc(defaultExp.getType(), new Calc[] { defaultCalc }) {
             @Override
             public Object evaluateInternal(Evaluator evaluator) {
                 if (value != null) {

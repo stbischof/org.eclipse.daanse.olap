@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.vba.isnull;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 
-public class IsNullCalc extends AbstractProfilingNestedBooleanCalc {
+public class IsNullCalc extends AbstractNestedBooleanCalc {
 
     protected IsNullCalc(Type type, final Calc<?> varNameCalc) {
         super(type, varNameCalc);

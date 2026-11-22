@@ -30,12 +30,12 @@ import java.time.LocalDateTime;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.DateTimeCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
-public abstract class AbstractProfilingNestedDateTimeCalc extends AbstractProfilingNestedCalc<LocalDateTime>
+public abstract class AbstractNestedDateTimeCalc extends AbstractNestedCalc<LocalDateTime>
 		implements DateTimeCalc {
 
-	protected AbstractProfilingNestedDateTimeCalc(Type type, Calc<?>... calcs) {
+	protected AbstractNestedDateTimeCalc(Type type, Calc<?>... calcs) {
 		super(type, calcs);
 	}
 

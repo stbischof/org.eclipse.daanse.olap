@@ -46,9 +46,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.calc.base.compiler.DelegatingExpressionCompiler;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleIterableCalc;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleListCalc;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedUnknownCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleIterableCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedUnknownCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.common.Util;
 import org.eclipse.daanse.olap.result.ResultEvaluatorRoot;
@@ -315,7 +315,7 @@ public class DependencyTestingEvaluator extends EvaluatorImpl {
     /**
      * Expression which checks dependencies of an underlying scalar expression.
      */
-    private static class DteScalarCalcImpl extends AbstractProfilingNestedUnknownCalc {
+    private static class DteScalarCalcImpl extends AbstractNestedUnknownCalc {
         private final Calc calc;
         private final Hierarchy[] independentHierarchies;
         private final String mdxString;
@@ -353,7 +353,7 @@ public class DependencyTestingEvaluator extends EvaluatorImpl {
      * Expression which checks dependencies and list immutability of an
      * underlying list or iterable expression.
      */
-    private static class DteIterCalcImpl extends AbstractProfilingNestedTupleIterableCalc {
+    private static class DteIterCalcImpl extends AbstractNestedTupleIterableCalc {
         private final Calc calc;
         private final Hierarchy[] independentHierarchies;
         private final boolean mutableList;
@@ -395,7 +395,7 @@ public class DependencyTestingEvaluator extends EvaluatorImpl {
      * Expression which checks dependencies and list immutability of an
      * underlying list or iterable expression.
      */
-    private static class DteListCalcImpl extends AbstractProfilingNestedTupleListCalc {
+    private static class DteListCalcImpl extends AbstractNestedTupleListCalc {
         private final Calc calc;
         private final Hierarchy[] independentHierarchies;
         private final boolean mutableList;

@@ -30,7 +30,7 @@ import org.eclipse.daanse.olap.api.calc.tuple.TupleIterable;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleIteratorCalc;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 
 /**
  * Abstract implementation of the
@@ -42,12 +42,12 @@ import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
  * the evaluate(org.eclipse.daanse.olap.api.Evaluator) method will call
  * it.
  *
- * @see org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc
+ * @see org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc
  *
  * @author jhyde
  * @since Oct 24, 2008
  */
-public abstract class AbstractProfilingNestedTupleIteratorCalc extends AbstractProfilingNestedCalc<TupleIterable> implements TupleIteratorCalc<TupleIterable> {
+public abstract class AbstractNestedTupleIteratorCalc extends AbstractNestedCalc<TupleIterable> implements TupleIteratorCalc<TupleIterable> {
     /**
      * Creates an abstract implementation of a compiled expression which returns a
      * {@link TupleIterable}.
@@ -55,7 +55,7 @@ public abstract class AbstractProfilingNestedTupleIteratorCalc extends AbstractP
      * @param type  type
      * @param calcs List of child compiled expressions (for dependency analysis)
      */
-    protected AbstractProfilingNestedTupleIteratorCalc(Type type, Calc<?>... calcs) {
+    protected AbstractNestedTupleIteratorCalc(Type type, Calc<?>... calcs) {
         super(type, calcs);
     }
 

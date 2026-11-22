@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.function.def.excel.atan2;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.DoubleCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class AtanhCalc extends AbstractProfilingNestedDoubleCalc {
+public class AtanhCalc extends AbstractNestedDoubleCalc {
 
     protected AtanhCalc(Type type, DoubleCalc calc0) {
         super(type, calc0);

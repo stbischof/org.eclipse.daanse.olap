@@ -21,11 +21,11 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.execution.Execution;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.util.CancellationChecker;
 
-public class GenerateStringCalc extends AbstractProfilingNestedStringCalc {
+public class GenerateStringCalc extends AbstractNestedStringCalc {
     private final StringCalc sepCalc;
 
     public GenerateStringCalc(Type type, TupleIteratorCalc tupleIteratorCalc, StringCalc stringCalc,

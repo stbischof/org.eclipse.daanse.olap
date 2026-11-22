@@ -30,8 +30,8 @@ import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.type.MemberType;
 import org.eclipse.daanse.olap.api.type.SetType;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedVoidCalc;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedVoidCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.TupleCollections;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
@@ -46,7 +46,7 @@ import org.eclipse.daanse.olap.fun.FunUtil;
  *
  * Also, does not process high-cardinality dimensions specially.
  */
-public class SetListCalc  extends AbstractProfilingNestedTupleListCalc {
+public class SetListCalc  extends AbstractNestedTupleListCalc {
     private TupleList result;
     private final VoidCalc[] voidCalcs;
 
@@ -87,7 +87,7 @@ public class SetListCalc  extends AbstractProfilingNestedTupleListCalc {
         if (type instanceof SetType) {
             // TODO use resultStyles
             final TupleListCalc tupleListCalc = compiler.compileList(arg);
-            return new AbstractProfilingNestedVoidCalc<>(type, new Calc[] {tupleListCalc}) {
+            return new AbstractNestedVoidCalc<>(type, new Calc[] {tupleListCalc}) {
                 // name "Sublist..."
                 @Override
                 public Void evaluateInternal(Evaluator evaluator) {
@@ -113,7 +113,7 @@ public class SetListCalc  extends AbstractProfilingNestedTupleListCalc {
                     new PlainPropertyOperationAtom("Members"),
                     new Expression[] {arg});
             final TupleListCalc tupleListCalc = compiler.compileList(unresolvedFunCall.accept(compiler.getValidator()));
-            return new AbstractProfilingNestedVoidCalc<>(type, new Calc[] {tupleListCalc}) {
+            return new AbstractNestedVoidCalc<>(type, new Calc[] {tupleListCalc}) {
                 @Override
                 public Void evaluateInternal(Evaluator evaluator) {
                     TupleList list =
@@ -124,7 +124,7 @@ public class SetListCalc  extends AbstractProfilingNestedTupleListCalc {
             };
         } else if (type.getArity() == 1 && arg instanceof MemberType) {
             final MemberCalc memberCalc = compiler.compileMember(arg);
-            return new AbstractProfilingNestedVoidCalc<>(type, new Calc[]{memberCalc}) {
+            return new AbstractNestedVoidCalc<>(type, new Calc[]{memberCalc}) {
                 final Member[] members = {null};
                 @Override
                 public Void evaluateInternal(Evaluator evaluator) {
@@ -140,7 +140,7 @@ public class SetListCalc  extends AbstractProfilingNestedTupleListCalc {
             };
         } else {
             final TupleCalc tupleCalc = compiler.compileTuple(arg);
-            return new AbstractProfilingNestedVoidCalc<>(type, new Calc[]{tupleCalc}) {
+            return new AbstractNestedVoidCalc<>(type, new Calc[]{tupleCalc}) {
                 @Override
                 public Void evaluateInternal(Evaluator evaluator) {
                     // Don't add null or partially null tuple to result.

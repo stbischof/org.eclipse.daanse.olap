@@ -31,13 +31,13 @@ import org.eclipse.daanse.olap.api.evaluator.NativeEvaluator;
 import org.eclipse.daanse.olap.api.function.FunctionMetaData;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.calc.base.util.HierarchyDependsChecker;
 import org.eclipse.daanse.olap.fun.FunUtil;
 import org.eclipse.daanse.olap.fun.sort.Sorter;
 
-public class DrilldownLevelTopBottomCalc extends AbstractProfilingNestedTupleListCalc {
+public class DrilldownLevelTopBottomCalc extends AbstractNestedTupleListCalc {
 
     private final boolean top;
     private final ResolvedFunCall call;

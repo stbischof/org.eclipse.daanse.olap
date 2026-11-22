@@ -17,9 +17,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.HierarchyCalc;
 import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedStringCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedStringCalc;
 
-public class UniqueNameCalc extends AbstractProfilingNestedStringCalc {
+public class UniqueNameCalc extends AbstractNestedStringCalc {
 
     protected UniqueNameCalc(Type type, final HierarchyCalc hierarchyCalc) {
         super(type, hierarchyCalc);

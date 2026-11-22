@@ -26,11 +26,11 @@ import org.eclipse.daanse.olap.api.element.Level;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.fun.FunUtil;
 
-public class DrilldownLevelCalc extends AbstractProfilingNestedTupleListCalc{
+public class DrilldownLevelCalc extends AbstractNestedTupleListCalc{
     private final boolean includeCalcMembers;
     
     public DrilldownLevelCalc(Type type, TupleListCalc tupleListCalc, LevelCalc levelCalc, final boolean includeCalcMembers) {

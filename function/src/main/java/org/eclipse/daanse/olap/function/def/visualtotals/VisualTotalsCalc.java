@@ -28,12 +28,12 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.Validator;
 import org.eclipse.daanse.olap.api.query.component.Expression;
 import org.eclipse.daanse.olap.api.query.component.ResolvedFunCall;
-import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.type.tuplebase.AbstractNestedTupleListCalc;
 import org.eclipse.daanse.olap.calc.base.type.tuplebase.UnaryTupleList;
 import org.eclipse.daanse.olap.query.component.MemberExpressionImpl;
 import org.eclipse.daanse.olap.query.component.UnresolvedFunCallImpl;
 
-public class VisualTotalsCalc extends AbstractProfilingNestedTupleListCalc {
+public class VisualTotalsCalc extends AbstractNestedTupleListCalc {
     private final TupleListCalc tupleListCalc;
     private final StringCalc stringCalc;
 

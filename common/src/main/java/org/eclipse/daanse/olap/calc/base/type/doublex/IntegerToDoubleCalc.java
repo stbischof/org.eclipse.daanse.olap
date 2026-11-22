@@ -16,9 +16,9 @@ package org.eclipse.daanse.olap.calc.base.type.doublex;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.IntegerCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedDoubleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedDoubleCalc;
 
-public class IntegerToDoubleCalc extends AbstractProfilingNestedDoubleCalc {
+public class IntegerToDoubleCalc extends AbstractNestedDoubleCalc {
 
 	public IntegerToDoubleCalc(Type type, IntegerCalc integerCalc) {
 		super(type, integerCalc);

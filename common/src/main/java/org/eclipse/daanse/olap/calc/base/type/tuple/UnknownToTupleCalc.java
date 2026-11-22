@@ -18,9 +18,9 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleCalc;
 
-public class UnknownToTupleCalc extends AbstractProfilingNestedTupleCalc {
+public class UnknownToTupleCalc extends AbstractNestedTupleCalc {
 
 	public UnknownToTupleCalc(Type type, Calc<?> childCalc) {
 		super(type, childCalc);

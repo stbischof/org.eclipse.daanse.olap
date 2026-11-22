@@ -47,7 +47,7 @@ import org.eclipse.daanse.olap.function.def.dimensions.string.DimensionsStringFu
  *
  * <p>DEPENDENCIES: the sole argument is a plain scalar ({@code Integer} or {@code String})
  * literal — its compiled {@code IntegerCalc}/{@code StringCalc} carries no hierarchy of its
- * own, so (per {@code AbstractProfilingNestedCalc.dependsOn}'s child-delegation default) the
+ * own, so (per {@code AbstractNestedCalc.dependsOn}'s child-delegation default) the
  * wrapping {@code DimensionNumericCalc}/{@code DimensionsStringCalc} depends on no hierarchy at
  * all — unlike {@link DimensionContract}'s property form, whose argument is itself
  * hierarchy-typed.

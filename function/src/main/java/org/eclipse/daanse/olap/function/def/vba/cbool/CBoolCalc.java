@@ -16,10 +16,10 @@ package org.eclipse.daanse.olap.function.def.vba.cbool;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedBooleanCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedBooleanCalc;
 import org.eclipse.daanse.olap.function.def.vba.cint.CIntCalc;
 
-public class CBoolCalc extends AbstractProfilingNestedBooleanCalc {
+public class CBoolCalc extends AbstractNestedBooleanCalc {
 
     protected CBoolCalc(Type type, Calc<?> doubleCalc) {
         super(type, doubleCalc);

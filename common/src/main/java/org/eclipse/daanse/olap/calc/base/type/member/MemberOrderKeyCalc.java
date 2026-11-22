@@ -16,10 +16,10 @@ package org.eclipse.daanse.olap.calc.base.type.member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.calc.MemberCalc;
 import org.eclipse.daanse.olap.api.type.Type;
-import org.eclipse.daanse.olap.calc.base.AbstractProfilingNestedCalc;
+import org.eclipse.daanse.olap.calc.base.AbstractNestedCalc;
 import org.eclipse.daanse.olap.fun.sort.OrderKey;
 
-public class MemberOrderKeyCalc extends AbstractProfilingNestedCalc<OrderKey> {
+public class MemberOrderKeyCalc extends AbstractNestedCalc<OrderKey> {
     /**
      * Creates a Calc
      *

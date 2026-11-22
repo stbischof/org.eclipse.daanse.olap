@@ -17,9 +17,9 @@ package org.eclipse.daanse.olap.calc.base.type.tuplelist;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleList;
 import org.eclipse.daanse.olap.api.calc.tuple.TupleListCalc;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
-import org.eclipse.daanse.olap.calc.base.nested.AbstractProfilingNestedTupleListCalc;
+import org.eclipse.daanse.olap.calc.base.nested.AbstractNestedTupleListCalc;
 
-public class CopyOfTupleListCalc extends AbstractProfilingNestedTupleListCalc {
+public class CopyOfTupleListCalc extends AbstractNestedTupleListCalc {
 
 	public CopyOfTupleListCalc(TupleListCalc tupleListCalc) {
 		super(tupleListCalc.getType(), tupleListCalc);
