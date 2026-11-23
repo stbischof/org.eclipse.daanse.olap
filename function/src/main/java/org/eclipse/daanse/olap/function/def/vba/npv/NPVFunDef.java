@@ -43,7 +43,7 @@ public class NPVFunDef  extends AbstractFunctionDefinition {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final DoubleCalc rCalc = compiler.compileDouble(call.getArg(0));
-        final Calc<?> cfsCalc = compiler.compileScalar(call.getArg(1), false);
+        final Calc<?> cfsCalc = compiler.compileScalar(call.getArg(1));
         return new NPVCalc(call.getType(), rCalc, cfsCalc);
     }
 

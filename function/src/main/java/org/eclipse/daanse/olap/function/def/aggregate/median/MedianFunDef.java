@@ -32,7 +32,7 @@ public class MedianFunDef extends AbstractAggregateFunDef {
             final TupleListCalc tupleListCalc =
                     compiler.compileList(call.getArg(0));
             final Calc calc = call.getArgCount() > 1
-                ? compiler.compileScalar(call.getArg(1), true)
+                ? compiler.compileExactScalar(call.getArg(1))
                 : new CurrentValueUnknownCalc(call.getType());
             return new MedianCalc(call.getType(), tupleListCalc, calc);
         }

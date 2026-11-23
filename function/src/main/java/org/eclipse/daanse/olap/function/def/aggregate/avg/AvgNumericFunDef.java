@@ -38,7 +38,7 @@ class AvgNumericFunDef extends AbstractAggregateFunDef {
 	@Override
 	public Calc<Double> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
 		final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0));
-		final Calc<?> calc = compiler.compileScalar(call.getArg(1), true);
+		final Calc<?> calc = compiler.compileExactScalar(call.getArg(1));
 		return new AvgCalc(call.getType(), tupleListCalc, calc, AvgNumericFunDef.class.getSimpleName());
 	}
 }

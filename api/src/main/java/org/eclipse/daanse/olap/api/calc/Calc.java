@@ -145,8 +145,7 @@ public interface Calc<E> {
      * compiled expression is returning a mutable list. If a mutable list is
      * required, the compiler can create a mutable copy.
      *
-     * @see ExpressionCompiler#compileList(org.eclipse.daanse.olap.api.query.component.Expression,
-     *      boolean)
+     * @see ExpressionCompiler#compileMutableList(org.eclipse.daanse.olap.api.query.component.Expression)
      */
     ResultStyle getResultStyle();
 

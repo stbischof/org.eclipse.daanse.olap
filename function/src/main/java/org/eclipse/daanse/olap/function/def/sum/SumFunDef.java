@@ -68,12 +68,12 @@ public class SumFunDef extends AbstractAggregateFunDef {
         }
 
         protected Calc<?> compileCall( final ResolvedFunCall call, ExpressionCompiler compiler, ResultStyle resultStyle ) {
-          final Calc<?> ncalc = compiler.compileIter( call.getArg( 0 ) );
+          final Calc<?> ncalc = compiler.compileIterable(call.getArg( 0 ));
           if ( ncalc == null ) {
             return null;
           }
           final Calc<?> calc =
-              call.getArgCount() > 1 ? compiler.compileScalar( call.getArg( 1 ), true ) : new CurrentValueUnknownCalc( call.getType() );
+              call.getArgCount() > 1 ? compiler.compileExactScalar(call.getArg( 1 )) : new CurrentValueUnknownCalc( call.getType() );
           // we may have asked for one sort of Calc, but here's what we got.
           if ( ncalc instanceof TupleListCalc ) {
             return genListCalc( call, (TupleListCalc) ncalc, calc );

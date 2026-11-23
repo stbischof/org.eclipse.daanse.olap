@@ -49,7 +49,7 @@ import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.type.Type;
 
 /**
- * The hull the {@link ProfilingCompiler} puts around each compiled calc of a profiled statement: it counts the
+ * The hull the {@link ProfilingHook} puts around each compiled calc of a profiled statement: it counts the
  * evaluations, sums their nanoseconds and, for a calc of sets, the elements and their squares, and passes type, result
  * style, {@code dependsOn} and children through. In the plan it does not appear; its numbers stand at the calc it
  * holds. One subclass per typed calc interface, so that a function that asks for a {@code DoubleCalc} still gets one.

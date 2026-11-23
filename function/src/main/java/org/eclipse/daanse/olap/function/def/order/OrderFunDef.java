@@ -54,7 +54,7 @@ public class OrderFunDef  extends AbstractFunctionDefinition {
 
   @Override
 public Calc<?> compileCall( ResolvedFunCall call, ExpressionCompiler compiler ) {
-    final TupleIteratorCalc listCalc = compiler.compileIter( call.getArg( 0 ) );
+    final TupleIteratorCalc listCalc = compiler.compileIterable(call.getArg( 0 ));
     List<SortKeySpec> keySpecList = new ArrayList<>();
     buildKeySpecList( keySpecList, call, compiler );
     final int keySpecCount = keySpecList.size();
@@ -111,7 +111,7 @@ public Calc<?> compileCall( ResolvedFunCall call, ExpressionCompiler compiler ) 
     Expression arg;
     while ( j < argCount ) {
       arg = call.getArg( j );
-      key = compiler.compileScalar( arg, true );
+      key = compiler.compileExactScalar(arg);
       j++;
       if ( ( j >= argCount ) || ( call.getArg( j ).getCategory() != DataType.SYMBOL) ) {
         dir = SorterFlag.ASC;

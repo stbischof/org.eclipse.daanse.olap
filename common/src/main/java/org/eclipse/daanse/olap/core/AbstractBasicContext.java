@@ -146,17 +146,6 @@ public abstract class AbstractBasicContext<C extends Connection> implements Cont
 		return id;
 	}
 
-	/**
-	 * Every compiled calc of a profiled statement in a hull that measures it. Shared by every art, so a query
-	 * profiles the same whichever answers it.
-	 */
-	@Override
-	public org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler createProfilingCompiler(
-			org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler compiler,
-			org.eclipse.daanse.olap.api.calc.profile.ProfileCounters counters) {
-		return new org.eclipse.daanse.olap.calc.base.profile.ProfilingCompiler(compiler, counters);
-	}
-
 	@Override
 	public ResultShepherd getResultShepherd() {
 		if (shutdown) {

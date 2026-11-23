@@ -42,7 +42,7 @@ public class DrilldownLevelTopBottomFunDef extends AbstractFunctionDefinition {
       // Compile the member list expression. Ask for a mutable list, because
       // we're going to insert members into it later.
       final TupleListCalc tupleListCalc =
-        compiler.compileList( call.getArg( 0 ), true );
+        compiler.compileMutableList(call.getArg( 0 ));
       final IntegerCalc integerCalc =
         compiler.compileInteger( call.getArg( 1 ) );
       final LevelCalc levelCalc =
@@ -52,7 +52,7 @@ public class DrilldownLevelTopBottomFunDef extends AbstractFunctionDefinition {
           : null;
       final Calc<?> orderCalc =
         call.getArgCount() > 3
-          ? compiler.compileScalar( call.getArg( 3 ), true )
+          ? compiler.compileExactScalar(call.getArg( 3 ))
           : new CurrentValueUnknownCalc(
                  ScalarType.INSTANCE  );
       return new DrilldownLevelTopBottomCalc(

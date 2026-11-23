@@ -33,7 +33,7 @@ public class MinMaxFunDef extends AbstractAggregateFunDef {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0));
-        final Calc<?> calc = call.getArgCount() > 1 ? compiler.compileScalar(call.getArg(1), true)
+        final Calc<?> calc = call.getArgCount() > 1 ? compiler.compileExactScalar(call.getArg(1))
                 : new CurrentValueUnknownCalc(call.getType());
         return new MinMaxCalc(call.getType(), tupleListCalc, calc, max);
     }

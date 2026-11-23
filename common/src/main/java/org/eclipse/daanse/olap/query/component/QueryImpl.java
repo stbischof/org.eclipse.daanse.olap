@@ -1477,7 +1477,7 @@ public class QueryImpl extends AbstractQueryPart implements Query {
             createCompiler(
                 evaluator, validator, resultStyleList);
         if (scalar) {
-            return compiler.compileScalar(exp, false);
+            return compiler.compileScalar(exp);
         } else {
             return compiler.compile(exp);
         }
@@ -1503,19 +1503,18 @@ public class QueryImpl extends AbstractQueryPart implements Query {
 
 		ExpressionCompilerFactory factory = statement.getDaanseConnection().getContext()
 				.getExpressionCompilerFactory();
-		ExpressionCompiler compiler = factory.createExpressionCompiler(evaluator, validator, resultStyleList);
-
-        final int expDeps =
-            statement.getQuery().getConnection().getContext().getConfig().testExpDependencies();
+        // profiling and the dependency check at once, as hooks of the one compiler: the profile hull innermost, so it
+        // measures the calc and not the check. As decorator compilers before, profiling trumped:
+        // a profiled statement was never checked.
+        final List<org.eclipse.daanse.olap.api.calc.compiler.CompileHook> hooks = new ArrayList<>();
         final ProfileHandler profileHandler = statement.getProfileHandler();
         if (profileHandler != null) {
-            // Cannot test dependencies and profile at the same time. Profiling
-            // trumps.
-            compiler = getConnection().getContext().createProfilingCompiler(compiler, profileHandler.counters());
-        } else if (expDeps > 0) {
-            compiler = getConnection().getContext().createDependencyTestingCompiler(compiler);
+            hooks.add(new org.eclipse.daanse.olap.calc.base.profile.ProfilingHook(profileHandler.counters()));
         }
-        return compiler;
+        if (statement.getQuery().getConnection().getContext().getConfig().testExpDependencies() > 0) {
+            hooks.add(new org.eclipse.daanse.olap.evaluator.DependencyCheckHook(validator));
+        }
+        return factory.createExpressionCompiler(evaluator, validator, resultStyleList, hooks);
     }
 
     /**

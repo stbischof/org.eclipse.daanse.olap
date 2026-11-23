@@ -35,7 +35,7 @@ public class CastFunDef extends AbstractFunctionDefinition {
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final Type targetType = call.getType();
         final Expression arg = call.getArg(0);
-        final Calc<?> calc = compiler.compileScalar(arg, false);
+        final Calc<?> calc = compiler.compileScalar(arg);
         return new CastCalc(arg, calc, targetType);
     }
 }

@@ -41,7 +41,7 @@ public abstract class AbstractCalc<T> implements Calc<T> {
 
 	/**
 	 * The body, called directly: the calc measures nothing. A profiled statement compiles each calc into a
-	 * {@code ProfilingCalc} hull that counts and times it (ProfilingCompiler), so a statement without profiling pays
+	 * {@code ProfilingCalc} hull that counts and times it (ProfilingHook), so a statement without profiling pays
 	 * nothing per evaluation.
 	 */
 	@Override

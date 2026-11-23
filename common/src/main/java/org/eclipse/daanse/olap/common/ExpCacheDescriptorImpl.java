@@ -27,6 +27,7 @@
 
 package org.eclipse.daanse.olap.common;
 
+import org.eclipse.daanse.olap.api.calc.compiler.CompileRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ import org.eclipse.daanse.olap.api.element.Hierarchy;
 import org.eclipse.daanse.olap.api.element.Member;
 import org.eclipse.daanse.olap.api.evaluator.Evaluator;
 import org.eclipse.daanse.olap.api.query.component.Expression;
-import org.eclipse.daanse.olap.calc.base.compiler.EnhancedExpressionCompiler;
+import org.eclipse.daanse.olap.calc.base.compiler.StandardExpressionCompiler;
 
 /**
  * Holds information necessary to add an expression to the expression result
@@ -72,7 +73,7 @@ public class ExpCacheDescriptorImpl implements ExpCacheDescriptor {
      * @param evaluator Evaluator
      */
     public ExpCacheDescriptorImpl(Expression exp, Evaluator evaluator) {
-        this(exp, new EnhancedExpressionCompiler(evaluator, null));
+        this(exp, new StandardExpressionCompiler(evaluator, null));
     }
 
     /**
@@ -88,7 +89,7 @@ public class ExpCacheDescriptorImpl implements ExpCacheDescriptor {
         Calc<?> calcInner = compiler.compile(exp);
         if (calcInner == null) {
             // now allow conversions
-            calcInner = compiler.compileAs(exp, null, ResultStyle.ANY_ONLY);
+            calcInner = compiler.compile(exp, CompileRequest.as(null, ResultStyle.ANY_ONLY));
         }
         this.calc = calcInner;
 

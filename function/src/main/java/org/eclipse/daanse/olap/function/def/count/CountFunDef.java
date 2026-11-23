@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.count;
 
+import org.eclipse.daanse.olap.api.calc.compiler.CompileRequest;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
 import org.eclipse.daanse.olap.api.calc.compiler.ExpressionCompiler;
@@ -31,7 +32,7 @@ public class CountFunDef  extends AbstractAggregateFunDef {
 
     @Override
   public Calc<?> compileCall( ResolvedFunCall call, ExpressionCompiler compiler ) {
-      final Calc<?> calc = compiler.compileAs( call.getArg( 0 ), null, ResultStyle.ITERABLE_ANY );
+      final Calc<?> calc = compiler.compile(call.getArg( 0 ), CompileRequest.as(null, ResultStyle.ITERABLE_ANY));
       final boolean includeEmpty =
           call.getArgCount() < 2 || ( (Literal<?>) call.getArg( 1 ) ).getValue().equals( "INCLUDEEMPTY" );
       return new CountCalc( call.getType(), calc, includeEmpty );

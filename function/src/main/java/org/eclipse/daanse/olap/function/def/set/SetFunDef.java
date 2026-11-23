@@ -128,7 +128,7 @@ public class SetFunDef extends AbstractFunctionDefinition implements SetConstruc
             List<ResultStyle> resultStyles) {
         final Type type = arg.getType();
         if (type instanceof SetType) {
-            final Calc<?> calc = compiler.compileAs(arg, null, resultStyles);
+            final Calc<?> calc = compiler.compile(arg, org.eclipse.daanse.olap.api.calc.compiler.CompileRequest.as(null, resultStyles));
             switch (calc.getResultStyle()) {
             case ITERABLE:
                 final TupleIteratorCalc tupleIteratorCalc = (TupleIteratorCalc) calc;

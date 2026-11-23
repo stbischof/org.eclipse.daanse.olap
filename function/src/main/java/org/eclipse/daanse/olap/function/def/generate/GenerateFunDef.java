@@ -56,7 +56,7 @@ public class GenerateFunDef extends AbstractFunctionDefinition {
 
         @Override
         public Calc compileCall( ResolvedFunCall call, ExpressionCompiler compiler) {
-            final TupleIteratorCalc tupleIteratorCalc = compiler.compileIter(call.getArg(0));
+            final TupleIteratorCalc tupleIteratorCalc = compiler.compileIterable(call.getArg(0));
             if (call.getArg(1).getType() instanceof StringType
                     || call.getArg(1).getType() instanceof NumericType) {
                 final StringCalc stringCalc;

@@ -156,11 +156,11 @@ public class QueryAxisImpl extends AbstractQueryPart implements QueryAxis {
         }
         switch (resultStyle) {
         case LIST:
-            return compiler.compileList(expInner, false);
+            return compiler.compileList(expInner);
         case MUTABLE_LIST:
-            return compiler.compileList(expInner, true);
+            return compiler.compileMutableList(expInner);
         case ITERABLE:
-            return compiler.compileIter(expInner);
+            return compiler.compileIterable(expInner);
         default:
             throw Util.unexpected(resultStyle);
         }

@@ -34,7 +34,7 @@ public class FormatFunDef extends AbstractFunctionDefinition {
         @Override
         public Calc<?> compileCall( ResolvedFunCall call, ExpressionCompiler compiler) {
             final Expression[] args = call.getArgs();
-            final Calc<?> calc = compiler.compileScalar(call.getArg(0), true);
+            final Calc<?> calc = compiler.compileExactScalar(call.getArg(0));
             final Locale locale = compiler.getEvaluator().getConnectionLocale();
             if (args[1] instanceof Literal) {
                 // Constant string expression: optimize by

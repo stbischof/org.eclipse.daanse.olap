@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.set.filter;
 
+import org.eclipse.daanse.olap.api.calc.compiler.CompileRequest;
 import java.util.List;
 
 import org.eclipse.daanse.mdx.model.api.expression.operation.FunctionOperationAtom;
@@ -82,7 +83,7 @@ public class FilterFunDef extends AbstractFunctionDefinition {
      */
     protected TupleIteratorCalc compileCallIterable(final ResolvedFunCall call, ExpressionCompiler compiler) {
         // want iterable, mutable list or immutable list in that order
-        Calc<?> imlcalc = compiler.compileAs(call.getArg(0), null, ResultStyle.ITERABLE_LIST_MUTABLELIST);
+        Calc<?> imlcalc = compiler.compile(call.getArg(0), CompileRequest.as(null, ResultStyle.ITERABLE_LIST_MUTABLELIST));
         BooleanCalc bcalc = compiler.compileBoolean(call.getArg(1));
         Calc<?>[] calcs = new Calc[] { imlcalc, bcalc };
 
@@ -106,7 +107,7 @@ public class FilterFunDef extends AbstractFunctionDefinition {
      * @return Implementation of this function call in the List result style
      */
     protected TupleListCalc compileCallList(final ResolvedFunCall call, ExpressionCompiler compiler) {
-        Calc<?> ilcalc = compiler.compileList(call.getArg(0), false);
+        Calc<?> ilcalc = compiler.compileList(call.getArg(0));
         BooleanCalc bcalc = compiler.compileBoolean(call.getArg(1));
         Calc<?>[] calcs = new Calc[] { ilcalc, bcalc };
 

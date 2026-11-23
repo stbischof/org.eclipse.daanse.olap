@@ -96,6 +96,9 @@ public abstract class EvaluatorRoot {
   int recursionCheckCommandCount;
   public final Execution execution;
 
+  /** The dependency check this query runs under, or null; a mode of the root, so the art keeps its evaluator. */
+  private DependencyCheck dependencyCheck;
+
   /**
    * Creates a EvaluatorRoot.
    *
@@ -319,6 +322,16 @@ public EvaluatorRoot( Statement statement ) {
    *
    * @return the query start time
    */
+  /** The dependency check this query runs under, or null when it is not being checked. */
+  public DependencyCheck dependencyCheck() {
+    return dependencyCheck;
+  }
+
+  /** Switches the dependency check on for this query ({@code testExpDependencies}); null switches it off. */
+  public void dependencyCheck( DependencyCheck check ) {
+    this.dependencyCheck = check;
+  }
+
   public LocalDateTime getQueryStartTime() {
     return queryStartTime;
   }

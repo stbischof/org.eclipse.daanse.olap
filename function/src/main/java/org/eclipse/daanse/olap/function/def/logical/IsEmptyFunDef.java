@@ -27,7 +27,7 @@ public class IsEmptyFunDef extends AbstractFunctionDefinition {
 
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
-        final Calc<?> calc = compiler.compileScalar(call.getArg(0), true);
+        final Calc<?> calc = compiler.compileExactScalar(call.getArg(0));
         return new IsEmptyCalc(call.getType(), calc) {
         };
     }

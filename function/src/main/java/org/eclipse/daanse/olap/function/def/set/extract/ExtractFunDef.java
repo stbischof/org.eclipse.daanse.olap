@@ -130,7 +130,7 @@ public class ExtractFunDef extends AbstractFunctionDefinition {
         ExtractFunDef.findExtractedHierarchies(call.getArgs(), extractedHierarchyList, extractedOrdinalList);
         Util.assertTrue(extractedOrdinalList.size() == extractedHierarchyList.size());
         Expression arg = call.getArg(0);
-        final TupleListCalc tupleListCalc = compiler.compileList(arg, false);
+        final TupleListCalc tupleListCalc = compiler.compileList(arg);
         int inArity = arg.getType().getArity();
         final int outArity = extractedOrdinalList.size();
         if (inArity == 1) {

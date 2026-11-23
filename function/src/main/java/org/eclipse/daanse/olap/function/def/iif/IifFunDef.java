@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.iif;
 
+import org.eclipse.daanse.olap.api.calc.compiler.CompileRequest;
 import org.eclipse.daanse.olap.api.calc.BooleanCalc;
 import org.eclipse.daanse.olap.api.calc.Calc;
 import org.eclipse.daanse.olap.api.calc.ResultStyle;
@@ -74,11 +75,9 @@ public class IifFunDef extends AbstractFunctionDefinition {
         final BooleanCalc booleanCalc =
             compiler.compileBoolean(call.getArg(0));
         final Calc<?> calc1 =
-            compiler.compileAs(
-                call.getArg(1), call.getType(), ResultStyle.ANY_LIST);
+            compiler.compile(call.getArg(1), CompileRequest.as(call.getType(), ResultStyle.ANY_LIST));
         final Calc<?> calc2 =
-            compiler.compileAs(
-                call.getArg(2), call.getType(), ResultStyle.ANY_LIST);
+            compiler.compile(call.getArg(2), CompileRequest.as(call.getType(), ResultStyle.ANY_LIST));
         if (call.getType() instanceof SetType) {
             if (calc1 instanceof TupleListCalc tlc) {
 

@@ -40,8 +40,8 @@ public class BaseExpressionCompilerFactory implements ExpressionCompilerFactory 
 
     @Override
     public ExpressionCompiler createExpressionCompiler(Evaluator evaluator, Validator validator,
-            List<ResultStyle> resultStyles) {
-        return new EnhancedExpressionCompiler(evaluator, validator, resultStyles);
+            List<ResultStyle> resultStyles, List<org.eclipse.daanse.olap.api.calc.compiler.CompileHook> hooks) {
+        return new StandardExpressionCompiler(evaluator, validator, resultStyles, hooks);
     }
 
 }

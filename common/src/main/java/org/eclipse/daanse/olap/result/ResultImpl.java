@@ -110,7 +110,7 @@ import org.eclipse.daanse.olap.api.element.VisualTotalMember;
 import org.eclipse.daanse.olap.api.result.CellReader;
 import org.eclipse.daanse.olap.evaluator.CompoundSlicerMember;
 import org.eclipse.daanse.olap.evaluator.CompoundSlicerMemberImpl;
-import org.eclipse.daanse.olap.evaluator.DependencyTestingEvaluator;
+import org.eclipse.daanse.olap.evaluator.DependencyCheck;
 import org.eclipse.daanse.olap.evaluator.EvaluatorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1489,13 +1489,19 @@ public Cell getCell( int[] pos ) {
   /**
    * The evaluator this result runs with, over a root that answers the result seam. Called twice: once
    * before and once after the subcube members are resolved, because the root collects the default
-   * members. Where the context asks for dependencies to be checked, that is what it gets, whatever the
-   * catalog is made of: a calc that claims not to depend on a hierarchy is made to prove it. Otherwise
-   * the art says which evaluator it runs.
+   * members. The art says which evaluator it runs, always; where the context asks for dependencies to be
+   * checked, the check is switched on at the root of that evaluator (a calc that claims not to depend on a
+   * hierarchy is made to prove it). The check used to be an evaluator of its own put in place of the art's,
+   * which lost the art every hook it has -- the ROLAP slicer predicates, the provider's what-if stand -- for
+   * as long as the switch was on.
    */
   protected EvaluatorImpl createEvaluator() {
+    EvaluatorImpl evaluator = plainEvaluator();
     int checks = dependencyChecks();
-    return checks > 0 ? new DependencyTestingEvaluator( this, checks ) : plainEvaluator();
+    if ( checks > 0 ) {
+      evaluator.getRoot().dependencyCheck( new DependencyCheck( this, checks ) );
+    }
+    return evaluator;
   }
 
   /** How often a claimed independence is put to the test; none unless the context asks for it. */
@@ -1610,10 +1616,11 @@ public Cell getCell( int[] pos ) {
    * whether to keep going. {@code false} raises the error.
    */
   protected boolean onEvalDepthExceeded( EvaluatorImpl evaluator, int count ) {
-    if ( evaluator instanceof DependencyTestingEvaluator ) {
+    DependencyCheck check = evaluator.getRoot().dependencyCheck();
+    if ( check != null ) {
       // Checking dependencies can start a new request every cycle: let it run as usual for a while,
       // then stop checking rather than stop answering.
-      ( (DependencyTestingEvaluator.DteRoot) evaluator.getRoot() ).disabled = true;
+      check.disable();
       return count <= maxEvalDepth() * 2;
     }
     return false;

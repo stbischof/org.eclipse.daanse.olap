@@ -35,12 +35,12 @@ public class TopBottomCountFunDef extends AbstractFunctionDefinition {
       // Compile the member list expression. Ask for a mutable list, because
       // we're going to sort it later.
       final TupleListCalc tupleListCalc =
-        compiler.compileList( call.getArg( 0 ), true );
+        compiler.compileMutableList(call.getArg( 0 ));
       final IntegerCalc integerCalc =
         compiler.compileInteger( call.getArg( 1 ) );
       final Calc<?> orderCalc =
         call.getArgCount() > 2
-          ? compiler.compileScalar( call.getArg( 2 ), true )
+          ? compiler.compileExactScalar(call.getArg( 2 ))
           : null;
       return new TopBottomCountCalc(
               call.getType(), tupleListCalc, integerCalc, orderCalc, call, top) {

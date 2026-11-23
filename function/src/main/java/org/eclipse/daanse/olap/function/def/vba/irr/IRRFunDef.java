@@ -31,7 +31,7 @@ public class IRRFunDef  extends AbstractFunctionDefinition {
 
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
-        final Calc<?> valueArrayCalc = compiler.compileScalar(call.getArg(0), false);
+        final Calc<?> valueArrayCalc = compiler.compileScalar(call.getArg(0));
         DoubleCalc guessCalc = null;
         if (call.getArgCount() == 1) {
             guessCalc = new ConstantDoubleCalc(NumericType.INSTANCE, 0.10);
