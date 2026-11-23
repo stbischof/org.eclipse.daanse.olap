@@ -51,6 +51,12 @@ import org.eclipse.daanse.olap.api.type.Type;
  * Mediates the compilation of an expression (
  * org.eclipse.daanse.olap.api.query.component.Expression) into a compiled
  * expression ( Calc).
+ * <p>
+ * {@link #compile(Expression, CompileRequest)} is the one way in: every typed entry ({@code compileDouble},
+ * {@code compileList}, ...) is that method with a request of its kind; a result type with preferred styles is
+ * {@code compile(exp, CompileRequest.as(type, styles))}. A decorator overrides that one
+ * method and sees every compiled calc once; before, it rebuilt every entry and missed the one it forgot
+ * ({@code compileAs}).
  *
  * @author jhyde
  * @since Sep 28, 2005
@@ -71,91 +77,89 @@ public interface ExpressionCompiler {
     Validator getValidator();
 
     /**
+     * Compiles an expression as the request asks: the calc of the expression ({@link CompileRequest#ANY}), under a
+     * result type and preferred styles ({@link CompileRequest#as}), or converted to the asked kind.
+     *
+     * @param exp     Expression
+     * @param request what the caller asks for
+     * @return Compiled expression, or null if none can satisfy a request of kind ANY
+     */
+    Calc<?> compile(Expression exp, CompileRequest request);
+
+    /**
      * Compiles an expression.
      *
      * @param exp Expression
      * @return Compiled expression
      */
-    Calc<?> compile(Expression exp);
-
-    /**
-     * Compiles an expression to a given result type.
-     *
-     * If resultType is not null, casts the expression to that type. Throws an
-     * exception if that conversion is not allowed by the type system.
-     *
-     * The preferredResultStyles parameter specifies a list of desired result
-     * styles. It must not be null, but may be empty.
-     *
-     * @param exp                   Expression
-     *
-     * @param resultType            Desired result type, or null to use expression's
-     *                              current type
-     *
-     * @param preferredResultStyles List of result types, in descending order of
-     *                              preference. Never null.
-     *
-     * @return Compiled expression, or null if none can satisfy
-     */
-    Calc<?> compileAs(Expression exp, Type resultType, List<ResultStyle> preferredResultStyles);
+    default Calc<?> compile(Expression exp) {
+        return compile(exp, CompileRequest.ANY);
+    }
 
     /**
      * Compiles an expression which yields a Member result.
      */
-    MemberCalc compileMember(Expression exp);
+    default MemberCalc compileMember(Expression exp) {
+        return (MemberCalc) compile(exp, CompileRequest.MEMBER);
+    }
 
     /**
      * Compiles an expression which yields a Level result.
      */
-    LevelCalc compileLevel(Expression exp);
+    default LevelCalc compileLevel(Expression exp) {
+        return (LevelCalc) compile(exp, CompileRequest.LEVEL);
+    }
 
     /**
      * Compiles an expression which yields a Dimension result.
      */
-    DimensionCalc compileDimension(Expression exp);
+    default DimensionCalc compileDimension(Expression exp) {
+        return (DimensionCalc) compile(exp, CompileRequest.DIMENSION);
+    }
 
     /**
      * Compiles an expression which yields a Hierarchy result.
      */
-    HierarchyCalc compileHierarchy(Expression exp);
+    default HierarchyCalc compileHierarchy(Expression exp) {
+        return (HierarchyCalc) compile(exp, CompileRequest.HIERARCHY);
+    }
 
     /**
      * Compiles an expression which yields an int result. The expression is
      * implicitly converted into a scalar.
      */
-    IntegerCalc compileInteger(Expression exp);
+    default IntegerCalc compileInteger(Expression exp) {
+        return (IntegerCalc) compile(exp, CompileRequest.INTEGER);
+    }
 
     /**
      * Compiles an expression which yields a String result. The expression is
      * implicitly converted into a scalar.
      */
-    StringCalc compileString(Expression exp);
+    default StringCalc compileString(Expression exp) {
+        return (StringCalc) compile(exp, CompileRequest.STRING);
+    }
 
     /**
      * Compiles an expression which yields a java.util.Date result. The expression
      * is implicitly converted into a scalar.
      */
-    DateTimeCalc compileDateTime(Expression exp);
+    default DateTimeCalc compileDateTime(Expression exp) {
+        return (DateTimeCalc) compile(exp, CompileRequest.DATE_TIME);
+    }
 
     /**
-     * Compiles an expression which yields an immutable TupleList result.
-     *
-     * Always equivalent to #compileList(exp, false).
+     * Compiles an expression which yields an immutable TupleList result: a list of members or of tuples. The caller
+     * must not change it; {@link #compileMutableList} gives one it may change.
      */
-    TupleListCalc compileList(Expression exp);
+    default TupleListCalc compileList(Expression exp) {
+        return (TupleListCalc) compile(exp, CompileRequest.LIST);
+    }
 
-    /**
-     * Compiles an expression which yields TupleList result.
-     *
-     * Such an expression is generally a list of Member objects or a list of tuples
-     * (each represented by a Member array).
-     *
-     * See #compileList(org.eclipse.daanse.olap.api.query.component.Expression).
-     *
-     * @param exp     Expression
-     * @param mutable Whether resulting list is mutable
-     */
-    TupleListCalc compileList(Expression exp, boolean mutable);
+    /** Compiles an expression which yields a TupleList the caller may change (a copy of an immutable one). */
+    default TupleListCalc compileMutableList(Expression exp) {
+        return (TupleListCalc) compile(exp, CompileRequest.MUTABLE_LIST);
+    }
 
     /**
      * Compiles an expression which yields an immutable Iterable result.
@@ -163,7 +167,9 @@ public interface ExpressionCompiler {
      * @param exp Expression
      * @return Calculator which yields an Iterable
      */
-    TupleIteratorCalc<?> compileIter(Expression exp);
+    default TupleIteratorCalc<?> compileIterable(Expression exp) {
+        return (TupleIteratorCalc<?>) compile(exp, CompileRequest.ITERABLE);
+    }
 
     /**
      * Compiles an expression which yields a boolean result.
@@ -171,7 +177,9 @@ public interface ExpressionCompiler {
      * @param exp Expression
      * @return Calculator which yields a boolean
      */
-    BooleanCalc compileBoolean(Expression exp);
+    default BooleanCalc compileBoolean(Expression exp) {
+        return (BooleanCalc) compile(exp, CompileRequest.BOOLEAN);
+    }
 
     /**
      * Compiles an expression which yields a double result.
@@ -179,7 +187,9 @@ public interface ExpressionCompiler {
      * @param exp Expression
      * @return Calculator which yields a double
      */
-    DoubleCalc compileDouble(Expression exp);
+    default DoubleCalc compileDouble(Expression exp) {
+        return (DoubleCalc) compile(exp, CompileRequest.DOUBLE);
+    }
 
     /**
      * Compiles an expression which yields a tuple result.
@@ -187,23 +197,31 @@ public interface ExpressionCompiler {
      * @param exp Expression
      * @return Calculator which yields a tuple
      */
-    TupleCalc compileTuple(Expression exp);
+    default TupleCalc compileTuple(Expression exp) {
+        return (TupleCalc) compile(exp, CompileRequest.TUPLE);
+    }
 
     /**
-     * Compiles an expression to yield a scalar result.
+     * Compiles an expression to yield a scalar result. If the expression yields a member or tuple, the calculator
+     * applies that member or tuple to the current dimensional context and returns the value of the current measure.
      *
-     * If the expression yields a member or tuple, the calculator will automatically
-     * apply that member or tuple to the current dimensional context and return the
-     * value of the current measure.
-     *
-     * @param exp      Expression
-     * @param specific Whether to try to use the specific compile method for scalar
-     *                 types. For example, if specific is true and exp is a string
-     *                 expression, calls
-     *                 #compileString(org.eclipse.daanse.olap.api.query.component.Expression)
+     * @param exp Expression
      * @return Calculation which returns the scalar value of the expression
      */
-    Calc<?> compileScalar(Expression exp, boolean specific);
+    default Calc<?> compileScalar(Expression exp) {
+        return compile(exp, CompileRequest.SCALAR);
+    }
+
+    /**
+     * Compiles an expression to yield a scalar of its exact type: a string expression as {@link #compileString}, a
+     * numeric one as {@link #compileDouble}, a boolean one as {@link #compileBoolean}.
+     *
+     * @param exp Expression
+     * @return Calculation which returns the scalar value of the expression
+     */
+    default Calc<?> compileExactScalar(Expression exp) {
+        return compile(exp, CompileRequest.EXACT_SCALAR);
+    }
 
     /**
      * Implements a parameter, returning a unique slot which will hold the

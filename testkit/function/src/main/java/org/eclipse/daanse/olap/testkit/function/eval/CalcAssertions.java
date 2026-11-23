@@ -294,9 +294,9 @@ public final class CalcAssertions {
                         handed out a TupleList.subList view (or the child's own list) over something it
                         caches, so the caller's mutation reached the child.
 
-                        ResultStyle.MUTABLE_LIST promises a list the caller owns. Return a copy —
-                        TupleCollections.createList(arity, size) filled from the child — or construct
-                        the Calc with mutable = false so the compiler inserts CopyOfTupleListCalc.
+                        ResultStyle.MUTABLE_LIST promises a list the caller owns. Return a copy,
+                        TupleCollections.createList(arity, size) filled from the child, or construct
+                        the Calc with mutable = false so the compiler inserts CopyingListCalc.
                         """);
             }
             return this;

@@ -55,11 +55,11 @@ class CaseTestFunDef extends AbstractFunctionDefinition {
         for (int i = 0, j = 0; i < exprCalcs.length; i++) {
             conditionCalcs[i] = compiler.compileBoolean(args[j++]);
             calcList.add(conditionCalcs[i]);
-            exprCalcs[i] = scalar ? compiler.compileScalar(args[j++], true) : compiler.compile(args[j++]);
+            exprCalcs[i] = scalar ? compiler.compileExactScalar(args[j++]) : compiler.compile(args[j++]);
             calcList.add(exprCalcs[i]);
         }
         final Calc<?> defaultCalc = args.length % 2 == 1
-                ? (scalar ? compiler.compileScalar(args[args.length - 1], true)
+                ? (scalar ? compiler.compileExactScalar(args[args.length - 1])
                         : compiler.compile(args[args.length - 1]))
                 : ConstantCalcs.nullCalcOf(call.getType());
         calcList.add(defaultCalc);

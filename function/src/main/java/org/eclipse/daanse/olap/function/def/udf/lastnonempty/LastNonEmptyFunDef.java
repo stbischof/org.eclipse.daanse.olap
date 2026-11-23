@@ -42,7 +42,7 @@ public class LastNonEmptyFunDef  extends AbstractFunctionDefinition {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0));
-        final Calc<?> memberCalc = compiler.compileScalar(call.getArg(1), false);
+        final Calc<?> memberCalc = compiler.compileScalar(call.getArg(1));
         return new LastNonEmptyCalc(call.getType(), tupleListCalc, memberCalc);
     }
 

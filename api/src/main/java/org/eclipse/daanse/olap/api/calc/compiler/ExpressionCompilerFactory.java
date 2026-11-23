@@ -48,7 +48,16 @@ public interface ExpressionCompilerFactory {
      * @param resultStyles the initial ResultStyle array for the ExpressionCompiler
      * @return the new ExpressionCompiler
      */
+    default ExpressionCompiler createExpressionCompiler(final Evaluator evaluator, final Validator validator,
+            final List<ResultStyle> resultStyles) {
+        return createExpressionCompiler(evaluator, validator, resultStyles, List.of());
+    }
+
+    /**
+     * A compiler whose every compiled calc passes the hooks in order (the first one's hull innermost): profiling, the
+     * dependency check, or both at once.
+     */
     ExpressionCompiler createExpressionCompiler(final Evaluator evaluator, final Validator validator,
-            final List<ResultStyle> resultStyles);
+            final List<ResultStyle> resultStyles, final List<CompileHook> hooks);
 
 }

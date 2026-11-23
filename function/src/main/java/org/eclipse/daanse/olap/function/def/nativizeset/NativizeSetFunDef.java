@@ -107,7 +107,7 @@ public class NativizeSetFunDef extends AbstractFunctionDefinition {
             return funArg.accept(compiler);
         }
 
-        final Calc<?>[] calcs = {compiler.compileList(funArg, true)};
+        final Calc<?>[] calcs = {compiler.compileMutableList(funArg)};
 
         final int arity = calcs[0].getType().getArity();
         assert arity >= 0;

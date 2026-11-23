@@ -172,10 +172,5 @@ public interface Context<C extends Connection> {
      */
     Evaluator createDummyEvaluator(Statement statement);
 
-    ExpressionCompiler createProfilingCompiler(ExpressionCompiler compiler,
-            org.eclipse.daanse.olap.api.calc.profile.ProfileCounters counters);
-
-    ExpressionCompiler createDependencyTestingCompiler(ExpressionCompiler compiler);
-
     List<CustomAggregatorFactory> getCustomAggregators();
 }

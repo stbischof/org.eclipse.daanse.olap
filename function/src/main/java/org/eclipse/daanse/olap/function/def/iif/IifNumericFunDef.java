@@ -42,8 +42,8 @@ public class IifNumericFunDef extends IifFunDef {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final BooleanCalc booleanCalc = compiler.compileBoolean(call.getArg(0));
-        final Calc<?> calc1 = compiler.compileScalar(call.getArg(1), true);
-        final Calc<?> calc2 = compiler.compileScalar(call.getArg(2), true);
+        final Calc<?> calc1 = compiler.compileExactScalar(call.getArg(1));
+        final Calc<?> calc2 = compiler.compileExactScalar(call.getArg(2));
         return new IifNumericCalc(call.getType(), booleanCalc, calc1, calc2);
     }
 

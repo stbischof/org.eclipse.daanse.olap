@@ -24,6 +24,7 @@
 
 package org.eclipse.daanse.olap.function.def.iif;
 
+import org.eclipse.daanse.olap.api.calc.compiler.CompileRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -57,7 +58,7 @@ class IifFunDefTest {
     when( trueCaseParamMock.getType() ).thenReturn( setTypeMock );
     setListCalc = new SetListCalc( setTypeMock, new Expression[] { args[1] }, compilerMock, ResultStyle.LIST_MUTABLELIST );
     call = new ResolvedFunCallImpl( funDefMock, args, setTypeMock );
-    doReturn( setListCalc ).when( compilerMock ).compileAs( any(), any(), any() );
+    doReturn( setListCalc ).when( compilerMock ).compile(any(), any(CompileRequest.class));
   }
 
   @Test

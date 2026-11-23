@@ -50,7 +50,7 @@ public class ExistingFunDef extends AbstractFunctionDefinition {
 
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
-        final TupleIteratorCalc setArg = compiler.compileIter(call.getArg(0));
+        final TupleIteratorCalc setArg = compiler.compileIterable(call.getArg(0));
         final Type myType = call.getArg(0).getType();
 
         return new ExistingCalc(call.getType(), setArg, myType);

@@ -32,7 +32,7 @@ public class HierarchizeFunDef extends AbstractFunctionDefinition {
 
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
-        final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0), true);
+        final TupleListCalc tupleListCalc = compiler.compileMutableList(call.getArg(0));
         String order = FunUtil.getLiteralArg(call, 1, "PRE", HierarchizeFunDef.prePost);
         final boolean post = order.equals("POST");
         return new HierarchizeCalc(call.getType(), tupleListCalc, post) {

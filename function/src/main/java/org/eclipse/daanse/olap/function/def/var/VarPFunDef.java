@@ -39,7 +39,7 @@ public class VarPFunDef extends AbstractAggregateFunDef {
                 compiler.compileList(call.getArg(0));
             final Calc calc =
                 call.getArgCount() > 1
-                ? compiler.compileScalar(call.getArg(1), true)
+                ? compiler.compileExactScalar(call.getArg(1))
                 : new CurrentValueUnknownCalc(call.getType());
             return new AbstractNestedDoubleCalc(call.getType(), new Calc[] {tupleListCalc, calc}) {
                 @Override

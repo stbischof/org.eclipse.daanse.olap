@@ -45,13 +45,13 @@ class CaseMatchFunDef extends AbstractFunctionDefinition {
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final Expression[] args = call.getArgs();
         final List<Calc<?>> calcList = new ArrayList<>();
-        final Calc<?> valueCalc = compiler.compileScalar(args[0], true);
+        final Calc<?> valueCalc = compiler.compileExactScalar(args[0]);
         calcList.add(valueCalc);
         final int matchCount = (args.length - 1) / 2;
         final Calc<?>[] matchCalcs = new Calc[matchCount];
         final Calc<?>[] exprCalcs = new Calc[matchCount];
         for (int i = 0, j = 1; i < exprCalcs.length; i++) {
-            matchCalcs[i] = compiler.compileScalar(args[j++], true);
+            matchCalcs[i] = compiler.compileExactScalar(args[j++]);
             calcList.add(matchCalcs[i]);
             exprCalcs[i] = compiler.compile(args[j++]);
             calcList.add(exprCalcs[i]);

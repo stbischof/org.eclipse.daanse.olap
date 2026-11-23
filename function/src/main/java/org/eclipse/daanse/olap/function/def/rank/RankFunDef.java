@@ -55,7 +55,7 @@ public class RankFunDef extends AbstractFunctionDefinition {
     public Calc<?> compileCall3( ResolvedFunCall call, ExpressionCompiler compiler ) {
       final Type type0 = call.getArg( 0 ).getType();
       final TupleListCalc tupleListCalc = compiler.compileList( call.getArg( 1 ) );
-      final Calc<?> keyCalc = compiler.compileScalar( call.getArg( 2 ), true );
+      final Calc<?> keyCalc = compiler.compileExactScalar(call.getArg( 2 ));
       Calc<?> sortedListCalc = new SortedListCalc( call.getType(), tupleListCalc, keyCalc );
       final ExpCacheDescriptorImpl cacheDescriptor = new ExpCacheDescriptorImpl( call, sortedListCalc, compiler.getEvaluator() );
       if ( type0 instanceof TupleType ) {

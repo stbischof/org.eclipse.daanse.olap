@@ -40,9 +40,9 @@ public class TopBottomPercentSumFunDef extends AbstractFunctionDefinition {
 
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
-        final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0), true);
+        final TupleListCalc tupleListCalc = compiler.compileMutableList(call.getArg(0));
         final DoubleCalc doubleCalc = compiler.compileDouble(call.getArg(1));
-        final Calc<?> calc = compiler.compileScalar(call.getArg(2), true);
+        final Calc<?> calc = compiler.compileExactScalar(call.getArg(2));
         return new TopBottomPercentSumCalc(call.getType(), tupleListCalc, doubleCalc, calc, top, percent);
     }
 

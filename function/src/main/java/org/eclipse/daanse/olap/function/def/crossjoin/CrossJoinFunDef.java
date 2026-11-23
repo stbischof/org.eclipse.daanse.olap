@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.olap.function.def.crossjoin;
 
+import org.eclipse.daanse.olap.api.calc.compiler.CompileRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -188,7 +189,7 @@ public class CrossJoinFunDef extends AbstractFunctionDefinition {
         final Type type = exp.getType();
         if (type instanceof SetType) {
             // this can return an TupleIteratorCalc or TupleListCalc
-            return compiler.compileAs(exp, null, ResultStyle.ITERABLE_LIST_MUTABLELIST);
+            return compiler.compile(exp, CompileRequest.as(null, ResultStyle.ITERABLE_LIST_MUTABLELIST));
         } else {
             // this always returns an TupleIteratorCalc
             return new ExprIterCalc(new SetType(type), new Expression[] { exp }, compiler,
@@ -255,9 +256,9 @@ public class CrossJoinFunDef extends AbstractFunctionDefinition {
         // a mutable list.
         final Type type = exp.getType();
         if (type instanceof SetType) {
-            final Calc calc = compiler.compileAs(exp, null, ResultStyle.LIST_MUTABLELIST);
+            final Calc calc = compiler.compile(exp, CompileRequest.as(null, ResultStyle.LIST_MUTABLELIST));
             if (calc == null) {
-                return compiler.compileList(exp, false);
+                return compiler.compileList(exp);
             }
             return (TupleListCalc) calc;
         } else {

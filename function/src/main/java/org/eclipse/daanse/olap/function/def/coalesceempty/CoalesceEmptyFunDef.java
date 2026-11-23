@@ -34,7 +34,7 @@ public class CoalesceEmptyFunDef extends AbstractFunctionDefinition {
         final Expression[] args = call.getArgs();
         final Calc<?>[] calcs = new Calc[args.length];
         for (int i = 0; i < args.length; i++) {
-            calcs[i] = compiler.compileScalar(args[i], true);
+            calcs[i] = compiler.compileExactScalar(args[i]);
         }
         return new CoalesceEmptyCalc(call.getType(), calcs);
     }

@@ -31,7 +31,7 @@ import java.io.PrintWriter;
 public sealed interface QueryComponent permits CalculatedFormula, CellProperty, DimensionExpression, DmvQuery,
         DrillThrough, Explain, Formula, HierarchyExpression, Id, LevelExpression, Literal, MemberProperty,
         NamedSetExpression, ParameterExpression, Query, QueryAxis, Refresh, ResolvedFunCall, Subcube,
-        TransactionCommand, UnresolvedFunCall, Update, MemberExpression, WrapExpression, UpdateClause, SqlQuery {
+        TransactionCommand, UnresolvedFunCall, Update, MemberExpression, UpdateClause, SqlQuery {
 
     /**
      * Returns an array of the object's children. Those which are not are ignored.

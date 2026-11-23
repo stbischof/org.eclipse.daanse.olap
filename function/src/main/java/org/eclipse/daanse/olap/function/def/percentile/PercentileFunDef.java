@@ -35,7 +35,7 @@ public class PercentileFunDef extends AbstractAggregateFunDef {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0));
-        final Calc<?> calc = compiler.compileScalar(call.getArg(1), true);
+        final Calc<?> calc = compiler.compileExactScalar(call.getArg(1));
         final DoubleCalc percentCalc = compiler.compileDouble(call.getArg(2));
         return new PercentileCalc(call.getType(), tupleListCalc, calc, percentCalc) {
             @Override

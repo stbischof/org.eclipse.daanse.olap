@@ -36,8 +36,8 @@ public class CorrelationFunDef extends AbstractAggregateFunDef {
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
         final TupleListCalc tupleListCalc = compiler.compileList(call.getArg(0));
-        final Calc<?> calc1 = compiler.compileScalar(call.getArg(1), true);
-        final Calc<?> calc2 = call.getArgCount() > 2 ? compiler.compileScalar(call.getArg(2), true)
+        final Calc<?> calc1 = compiler.compileExactScalar(call.getArg(1));
+        final Calc<?> calc2 = call.getArgCount() > 2 ? compiler.compileExactScalar(call.getArg(2))
                 : new CurrentValueUnknownCalc(call.getType());
         return new AbstractNestedDoubleCalc(call.getType(), new Calc[] { tupleListCalc, calc1, calc2 }) {
             @Override

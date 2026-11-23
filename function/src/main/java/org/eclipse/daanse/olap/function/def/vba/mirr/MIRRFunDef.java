@@ -42,7 +42,7 @@ public class MIRRFunDef  extends AbstractFunctionDefinition {
 
     @Override
     public Calc<?> compileCall(ResolvedFunCall call, ExpressionCompiler compiler) {
-        final Calc<?> valueArrayCalc = compiler.compileScalar(call.getArg(0), false);
+        final Calc<?> valueArrayCalc = compiler.compileScalar(call.getArg(0));
         final DoubleCalc financeRateCalc = compiler.compileDouble(call.getArg(1));
         final DoubleCalc reinvestRateCalc = compiler.compileDouble(call.getArg(2));
         return new MIRRCalc(call.getType(), valueArrayCalc, financeRateCalc, reinvestRateCalc);
