@@ -214,4 +214,28 @@ public interface Cube extends OlapElement, MetaElement {
     default boolean takesWrites() {
         return false;
     }
+
+    /**
+     * Whether a value an UPDATE CUBE writes becomes pending fact rows of this cube ({@link #getAllocationValues},
+     * the relational way), or is written through the cell of its tuple, as a write over MDX is
+     * ({@code Cell.setValue}) -- the way of an art that keeps written values outside fact rows.
+     */
+    default boolean allocatesIntoFactRows() {
+        return true;
+    }
+
+    /**
+     * The measure that counts the atomic cells behind a cell of this cube, when the cube has one. A cell is
+     * atomic when every dimension stands at its lowest level; where a fact table has a primary key this is
+     * the same as the fact count.
+     *
+     * <p>A what-if overlay needs it to spread a value written above the leaves: it asks how many atomic
+     * cells the cell it is evaluating covers, against how many the written cell covered. An art that cannot
+     * say answers nothing, and the overlay then treats every cell as covering one.
+     *
+     * @return the measure, or nothing when this art does not count atomic cells
+     */
+    default java.util.Optional<Member> atomicCellCountMeasure() {
+        return java.util.Optional.empty();
+    }
 }

@@ -119,4 +119,29 @@ public interface Scenario {
 
     /** Forgets everything pending, of both kinds. */
     void clear();
+
+    /**
+     * Makes what this stand holds permanent, for an art that keeps it somewhere of its own rather than as
+     * rows per cube.
+     *
+     * <p>Answering {@code false} means "not mine to do": the caller then walks {@link #pendingCubes()} and
+     * hands each cube its own rows, which is how an art with a writeback table per cube works. An art that
+     * hands what it holds to a sink of its own does that here and answers {@code true}.
+     *
+     * @param userId who is writing, for an art that records it
+     * @return whether this stand made itself permanent
+     */
+    default boolean makePermanent(String userId) {
+        return false;
+    }
+
+    /**
+     * Drops what this stand holds, for an art that keeps it somewhere of its own. Answers {@code false} when
+     * there is nothing of its own to drop, and the caller forgets the stand as before.
+     *
+     * @return whether this stand took its values back itself
+     */
+    default boolean takeBack() {
+        return false;
+    }
 }
