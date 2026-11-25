@@ -140,4 +140,16 @@ public interface Hierarchy extends OlapElement, MetaElement {
     int getOrdinalInCube();
 
     String getSubName();
+
+    /**
+     * Whether a client sees gaps in this hierarchy: one of its levels hides members, so a member may
+     * stand directly under a grandparent because the step in between says nothing.
+     *
+     * <p>The default answers no, which is what a hierarchy without a hide condition on any level says.
+     * An implementation that lets a level hide members answers yes, and a reader then knows that a
+     * parent's children need not all stand on the next level down.
+     */
+    default boolean isRagged() {
+        return false;
+    }
 }

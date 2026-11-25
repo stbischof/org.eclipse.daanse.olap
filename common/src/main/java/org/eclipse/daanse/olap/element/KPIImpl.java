@@ -152,4 +152,16 @@ public class KPIImpl implements KPI {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	private String caption;
+
+	/** {@inheritDoc} */
+	@Override
+	public String getCaption() {
+		return caption == null ? getName() : caption;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
 }
