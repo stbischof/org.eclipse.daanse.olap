@@ -63,4 +63,14 @@ public interface Dimension extends OlapElement, MetaElement {
 
     Cube getCube();
 
+    /**
+     * Whether this dimension is the facts themselves.
+     *
+     * <p>Such a dimension keeps its members in the fact table instead of a table of its own -- an order
+     * number, a transaction kind -- so there is no key pointing anywhere and every fact is its own member.
+     * A catalog that keeps all its dimensions apart from the facts says no to all of them.
+     */
+    default boolean isFactDimension() {
+        return false;
+    }
 }

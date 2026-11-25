@@ -54,4 +54,53 @@ public interface Measure extends Member {
     default boolean addsUp() {
         return false;
     }
+
+    /**
+     * The name of the measure group this measure belongs to.
+     *
+     * <p>A measure group is the granularity its measures share, and with it the facts they are read from.
+     * A metadata document names it for every measure, and a cube with several groups is what used to be
+     * a cube over several fact tables.
+     *
+     * <p>Nothing means the cube is the only group there is, which is what a catalog that does not speak
+     * of groups says.
+     */
+    default Optional<String> measureGroup() {
+        return Optional.empty();
+    }
+
+    /**
+     * Whether a value written into a cell of this measure has somewhere to go.
+     *
+     * <p>Writing belongs to the measure group: the value is kept beside the facts of that group, every
+     * measure of it has to add up for a difference to mean anything, and a catalog may keep somewhere to
+     * put the values of one group and not of another. The default says yes, and the cube is still asked
+     * as well -- a catalog with nowhere to put anything says so once, at the cube.
+     */
+    default boolean takesWrites() {
+        return true;
+    }
+
+    /**
+     * Whether this measure varies by that dimension at all.
+     *
+     * <p>What a measure varies by is the dimensions of its measure group: a group is read from one set of
+     * facts, and those facts carry a coordinate for some dimensions and none for the others. A measure
+     * that varies by everything -- the usual case, and what a cube with a single group means -- says yes
+     * to every dimension.
+     */
+    default boolean varies(Dimension dimension) {
+        return true;
+    }
+
+    /**
+     * The level of that dimension the facts behind this measure reach, where the catalog names one.
+     *
+     * <p>Above that level the facts are already summed up; below it there is nothing that was measured.
+     * Nothing means as finely as the dimension goes, which is the answer for every measure whose catalog
+     * does not speak of granularity.
+     */
+    default Optional<Level> granularityIn(Dimension dimension) {
+        return Optional.empty();
+    }
 }
