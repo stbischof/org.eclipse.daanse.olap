@@ -471,4 +471,48 @@ public boolean isOnSameHierarchyChain( Member otherMember ) {
   }
 
   public abstract Object getCaptionValue();
+
+  /**
+   * Whether the member shows up for a client. What the member declares with the property
+   * {@code $visible} decides; a member that declares nothing is visible the way the element is.
+   */
+  @Override
+  public boolean isVisible() {
+    return declaredVisibility() instanceof Boolean declared ? declared : super.isVisible();
+  }
+
+  /**
+   * The visibility this member declares, or {@code null} when it declares none. A subclass with a
+   * property store of its own answers from that store, never through {@link #getPropertyValue(String)}:
+   * that one falls back to {@link #isVisible()}.
+   */
+  protected Object declaredVisibility() {
+    return null;
+  }
+
+  /**
+   * The name a key stands for.
+   *
+   * <p>The stand-in for a coordinate the data leaves open gets the literal a client is told to show
+   * for it ({@code nullMemberRepresentation}), a name segment gets its name, everything else its own
+   * text -- and a whole number loses the {@code .0} a floating-point column would give it, because
+   * "20319" is the name a reader expects, not "20319.0".
+   *
+   * @param key the key of a member, or null when it has none
+   * @return the name, never null
+   */
+  public static String nameOfKey( Object key ) {
+    String name;
+    if ( key == null || org.eclipse.daanse.olap.common.Util.sqlNullValue.equals( key ) ) {
+      name = org.eclipse.daanse.olap.common.ExecutionConfig.current().nullMemberRepresentation();
+    } else if ( key instanceof org.eclipse.daanse.olap.api.query.NameSegment segment ) {
+      name = segment.getName();
+    } else {
+      name = key.toString();
+    }
+    if ( ( key instanceof Number ) && name.endsWith( ".0" ) ) {
+      name = name.substring( 0, name.length() - 2 );
+    }
+    return name;
+  }
 }

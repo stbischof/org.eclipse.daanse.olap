@@ -232,4 +232,36 @@ public interface Member extends OlapElement, Comparable, MetaElement {
      * @return
      */
     boolean isOnSameHierarchyChain(Member otherMember);
+
+    /**
+     * The member this one stands for, itself when it stands for no other.
+     *
+     * <p>A cube shows the members of a shared hierarchy as its own, one set per use it makes of the
+     * hierarchy, so the same member appears under several names. What such a member <em>means</em> is the
+     * shared member behind it, and that is what anything looking for facts must follow.
+     *
+     * @return the member behind this one, never null
+     */
+    default Member standsFor() {
+        return this;
+    }
+
+    /**
+     * The member this one shows, itself when it shows no other.
+     *
+     * <p>Two relations are easy to confuse and must not be. {@link #standsFor()} is the <em>view</em> of a
+     * member: a cube shows the members of a shared hierarchy as its own, and such a member is the same
+     * member seen from a cube. This one is the <em>derived</em> member: a visual total, a member rolled up
+     * over what a role may see, a member standing in for a set in the slicer. It is a member of its own with
+     * a value of its own, and it shows another.
+     *
+     * <p>Whoever compares members has to say which of the two it means. Following both at once reads a
+     * visual total of a cube's view of a shared member as that shared member, which is two steps and one
+     * meaning too far.
+     *
+     * @return the member shown by this one, never null
+     */
+    default Member shows() {
+        return this;
+    }
 }

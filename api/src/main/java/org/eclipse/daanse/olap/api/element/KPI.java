@@ -37,4 +37,11 @@ public interface KPI {
     String getStatus();
 
     String getDescription();
+
+    /**
+     * The text a client shows for this indicator, which is its name unless the catalog says otherwise.
+     */
+    default String getCaption() {
+        return getName();
+    }
 }
