@@ -498,4 +498,19 @@ public interface CatalogReader {
     Context<?> getContext();
 
     List<? extends DatabaseSchema> getDatabaseSchemas();
+
+    /**
+     * Whether two members of different hierarchies of one dimension stand in rows of that dimension together, as
+     * EXISTING and Exists ask over such hierarchies. The answer is the art's: the rows of the dimension where it
+     * has them, its facts where it has nothing else. The default restricts nothing, as an art that cannot tell
+     * answers.
+     *
+     * @param cube the cube the members are read in
+     * @param a    a member of one hierarchy
+     * @param b    a member of another hierarchy of the same dimension
+     */
+    default boolean standTogether(org.eclipse.daanse.olap.api.element.Cube cube,
+            org.eclipse.daanse.olap.api.element.Member a, org.eclipse.daanse.olap.api.element.Member b) {
+        return true;
+    }
 }

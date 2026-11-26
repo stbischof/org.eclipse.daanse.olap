@@ -88,4 +88,14 @@ public class CrossjoinRegion implements CellRegionShape {
         return components.stream().map( String::valueOf )
                 .collect( Collectors.joining( ", ", "Crossjoin(", ")" ) );
     }
+
+    @Override
+    public boolean touches( List<? extends Member> coordinate ) {
+        for ( CellRegionShape component : components ) {
+            if ( !component.touches( coordinate ) ) {
+                return false;
+            }
+        }
+        return !components.isEmpty();
+    }
 }

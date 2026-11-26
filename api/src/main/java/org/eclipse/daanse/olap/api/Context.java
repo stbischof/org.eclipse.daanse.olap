@@ -173,4 +173,12 @@ public interface Context<C extends Connection> {
     Evaluator createDummyEvaluator(Statement statement);
 
     List<CustomAggregatorFactory> getCustomAggregators();
+
+    /**
+     * The clock a query's start is read off: Now(), Date(), Time() and Timer() answer from it, so a test
+     * can stand it still. The machine's clock in its own zone unless a context names another.
+     */
+    default java.time.Clock clock() {
+        return java.time.Clock.systemDefaultZone();
+    }
 }

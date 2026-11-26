@@ -86,4 +86,17 @@ public class MemberRegion implements CellRegionShape {
     public String toString() {
         return members.stream().map( String::valueOf ).collect( Collectors.joining( ", ", "Member(", ")" ) );
     }
+
+    @Override
+    public boolean touches( List<? extends Member> coordinate ) {
+        for ( Member at : coordinate ) {
+            for ( Member named : members ) {
+                // Either way round: the cell lies in the region, or it sums facts the region names.
+                if ( at.equals( named ) || ( descendants && isBelow( at, named ) ) || isBelow( named, at ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

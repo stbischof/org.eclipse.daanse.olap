@@ -39,4 +39,9 @@ public class EmptyRegion implements CellRegionShape {
     public String toString() {
         return "Empty()";
     }
+
+    @Override
+    public boolean touches( List<? extends Member> coordinate ) {
+        return false;
+    }
 }
