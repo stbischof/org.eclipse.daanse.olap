@@ -868,4 +868,19 @@ public interface ContextConfig {
      * </p>
      */
     int resultLimit();
+
+    /**
+     * What a drill-through answers for a cell of a virtual cube whose measure names no facts -- a
+     * constant or purely computed measure -- when the cube draws on more than one set of facts.
+     *
+     * <p>{@code NONE}, the default, offers no rows: there is no answer, and an arbitrary one is worse
+     * than none. {@code FIRST_FACT_SET} offers the rows of the fact set declared first; it is a
+     * compatibility setting, and the catalog is warned when it takes effect, because the order of the
+     * measures then decides which rows a client is shown.
+     *
+     * @return the mode, {@code NONE} or {@code FIRST_FACT_SET}
+     */
+    default String drillThroughOnAmbiguousVirtualCube() {
+        return "NONE";
+    }
 }

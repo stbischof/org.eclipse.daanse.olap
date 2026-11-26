@@ -354,4 +354,22 @@ public class ResultCell implements Cell {
         }
         return null;
     }
+
+    /**
+     * The cube whose rows lie behind these coordinates, empty when none does. The rule is the same for
+     * every provider; what differs is whether anyone can deliver the rows, which {@link
+     * #rowsLieBehind(Member[])} answers.
+     */
+    protected Optional<org.eclipse.daanse.olap.api.element.Cube> cubeBehind(Member[] coordinates) {
+        org.eclipse.daanse.olap.api.element.Cube queried =
+                result.getQuery() == null ? null : result.getQuery().getCube();
+        return DrillThroughCubeChoice.cubeBehind(coordinates, queried, ambiguityMode());
+    }
+
+    /** What a drill-through answers where a virtual cube draws on more than one set of facts. */
+    protected DrillThroughCubeChoice.Mode ambiguityMode() {
+        return DrillThroughCubeChoice.Mode
+                .named(result.getQuery().getConnection().getContext().getConfig()
+                        .drillThroughOnAmbiguousVirtualCube());
+    }
 }

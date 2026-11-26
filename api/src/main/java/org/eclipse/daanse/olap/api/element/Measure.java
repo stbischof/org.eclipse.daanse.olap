@@ -103,4 +103,17 @@ public interface Measure extends Member {
     default Optional<Level> granularityIn(Dimension dimension) {
         return Optional.empty();
     }
+
+    /**
+     * The cube whose facts this measure reads, empty when it reads none.
+     *
+     * <p>A measure a formula works out reads no facts and answers empty; a measure that does read them
+     * answers the cube they live in, which for a measure taken over into another cube is the cube it was
+     * taken from -- that is where the rows are. Anything looking for the rows behind a cell asks this.
+     *
+     * @return the cube the facts of this measure live in, empty for a measure over no facts
+     */
+    default Optional<Cube> factCube() {
+        return Optional.empty();
+    }
 }

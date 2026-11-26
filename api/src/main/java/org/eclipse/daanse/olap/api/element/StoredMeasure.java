@@ -29,4 +29,10 @@ public interface StoredMeasure extends Measure {
     default Optional<DataTypeJdbc> getDataType() {
         return Optional.empty();
     }
+
+    /** {@inheritDoc} A stored measure reads the facts of the cube it belongs to. */
+    @Override
+    default Optional<Cube> factCube() {
+        return Optional.ofNullable(getCube());
+    }
 }

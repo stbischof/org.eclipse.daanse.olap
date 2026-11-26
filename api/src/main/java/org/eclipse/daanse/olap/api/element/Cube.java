@@ -238,4 +238,18 @@ public interface Cube extends OlapElement, MetaElement {
     default java.util.Optional<Member> atomicCellCountMeasure() {
         return java.util.Optional.empty();
     }
+
+    /**
+     * Whether the rows behind this cube are the rows behind that one.
+     *
+     * <p>Two cubes may read the same facts under different names -- a cube and a second one over the
+     * same table, differently dressed. A cube that cannot tell stands only for its own facts, which is
+     * the careful answer: it makes the rows of another cube nobody's rather than everybody's.
+     *
+     * @param other the cube to compare with
+     * @return true when a client shown the rows of one would be shown the rows of the other
+     */
+    default boolean standsForTheSameFactsAs(Cube other) {
+        return this == other;
+    }
 }

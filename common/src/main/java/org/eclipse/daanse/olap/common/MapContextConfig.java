@@ -527,4 +527,10 @@ public class MapContextConfig implements ContextConfig {
         return value(ConfigConstants.NATIVE_TUPLE_CACHE_MAX_TUPLES,
                 ConfigConstants.NATIVE_TUPLE_CACHE_MAX_TUPLES_DEFAULT_VALUE, Integer.class);
     }
+
+    @Override
+    public String drillThroughOnAmbiguousVirtualCube() {
+        return value(ConfigConstants.DRILL_THROUGH_ON_AMBIGUOUS_VIRTUAL_CUBE,
+                ConfigConstants.DRILL_THROUGH_ON_AMBIGUOUS_VIRTUAL_CUBE_DEFAULT_VALUE, String.class);
+    }
 }
