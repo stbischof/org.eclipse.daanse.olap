@@ -74,4 +74,14 @@ public class UnionRegion implements CellRegionShape {
     public String toString() {
         return regions.stream().map( String::valueOf ).collect( Collectors.joining( ", ", "Union(", ")" ) );
     }
+
+    @Override
+    public boolean touches( List<? extends Member> coordinate ) {
+        for ( CellRegionShape region : regions ) {
+            if ( region.touches( coordinate ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
