@@ -1640,4 +1640,58 @@ public Cell getCell( int[] pos ) {
     return maxEvalDepth;
   }
 
+  /**
+   * The formatters of calculated measures that name a formatter class, made once per result; an empty
+   * entry for a measure that names none.
+   */
+  private java.util.Map<Member, java.util.Optional<FormatStringCellFormatter>> calculatedFormatters;
+
+  /**
+   * The formatter a calculated measure names by its class -- {@code CELL_FORMATTER = 'org.example.Formatter'} in the
+   * query or the catalog -- as an instance of that class; {@code null} for a measure that names none. Shared by
+   * every result whose calculated measures carry no formatter of their own.
+   */
+  protected final FormatStringCellFormatter calculatedMeasureFormatter( Member measure ) {
+    if ( measure == null || !measure.isCalculated() ) {
+      return null;
+    }
+    synchronized ( this ) {
+      if ( calculatedFormatters == null ) {
+        calculatedFormatters = new java.util.HashMap<>();
+      }
+      return calculatedFormatters.computeIfAbsent( measure, this::cellFormatterOf ).orElse( null );
+    }
+  }
+
+  /**
+   * Makes the formatters of the query's calculated measures before any cell: a class that cannot be made fails the
+   * query naming class and member; made during the cell pass, the failure would be caught with the cell and the raw
+   * value shown.
+   */
+  protected final void makeQueryMeasureFormatters() {
+    for ( org.eclipse.daanse.olap.api.query.component.Formula formula
+        : execution.getDaanseStatement().getQuery().getFormulas() ) {
+      if ( formula.isMember() && formula.getMdxMember() != null && formula.getMdxMember().isMeasure() ) {
+        formatterFor( formula.getMdxMember() );
+      }
+    }
+  }
+
+  private java.util.Optional<FormatStringCellFormatter> cellFormatterOf( Member measure ) {
+    Object className = measure.getPropertyValue(
+        org.eclipse.daanse.olap.common.StandardProperty.CELL_FORMATTER.getName() );
+    if ( !( className instanceof String name ) || name.isBlank() ) {
+      return java.util.Optional.empty();
+    }
+    return java.util.Optional.ofNullable( cellFormatterNamed( measure, name ) );
+  }
+
+  /**
+   * An instance of the cell formatter class a calculated measure names; {@code null} where this result makes
+   * none. A result that reads formatters by name makes it with the formatter factory; a class that cannot be
+   * made fails with class and member named.
+   */
+  protected FormatStringCellFormatter cellFormatterNamed( Member measure, String className ) {
+    return null;
+  }
 }

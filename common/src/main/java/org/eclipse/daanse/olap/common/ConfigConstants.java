@@ -174,4 +174,6 @@ public class ConfigConstants {
     /** Weight unit: one member of one cached native tuple. */
     public static final int NATIVE_TUPLE_CACHE_MAX_TUPLES_DEFAULT_VALUE = 1_000_000;
 
+    public static final String DRILL_THROUGH_ON_AMBIGUOUS_VIRTUAL_CUBE = "drillThroughOnAmbiguousVirtualCube";
+    public static final String DRILL_THROUGH_ON_AMBIGUOUS_VIRTUAL_CUBE_DEFAULT_VALUE = "NONE";
 }
