@@ -60,6 +60,7 @@
 
 
   <modules>
+    <module>findings</module>
     <module>api</module>
     <module>common</module>
     <module>function</module>
