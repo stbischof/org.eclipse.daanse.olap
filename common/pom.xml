@@ -53,6 +53,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.olap.metadata</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.olap.util.format</artifactId>
       <version>${revision}</version>
     </dependency>
